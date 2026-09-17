@@ -30,6 +30,22 @@ CTRL_素材
 局部造型内部参数 → 保留局部。
 不要把几百个 Effect / Plugin 参数全暴露。
 
+## Motion Controls
+简单动画不需要先搭 Master Controller。
+
+当 3+ 图层共享同类运动，或任务达到 M3–M4 时，优先让 `CTRL_动画` 暴露真正高频控制，例如：
+- Master Progress
+- In / Out Progress
+- Motion Strength
+- Speed / Duration Scale
+- Stagger
+- Overshoot Strength
+- Settle Strength
+
+不同对象仍可按 Motion Profile 对这些通道产生不同响应，不要把所有层绑定成完全相同的曲线。
+
+完整规则按需读取：`../motion/motion-control-architecture.md`。
+
 ## Typography
 至少有层级：
 - T1 主标题
@@ -46,4 +62,6 @@ CTRL_素材
 
 ## 修改友好
 用户应该快速知道：
-改颜色 / 文字 / 素材 / 动画速度 / 镜头 / 圆角 / 图标 → 去哪里。
+改颜色 / 文字 / 素材 / 动画速度 / Stagger / 镜头 / 圆角 / 图标 → 去哪里。
+
+如果为了调一个共享动画速度必须逐层移动十几组关键帧，应升级 Motion Control Architecture，而不是继续复制关键帧。
