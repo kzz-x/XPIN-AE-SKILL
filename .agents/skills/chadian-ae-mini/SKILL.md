@@ -155,6 +155,15 @@ HOLD
 OUT
 ```
 
+### 口播 / 音频驱动时序
+如果用户要求“按照口播 / 旁白 / 音频节奏做动画”：
+- 先读取目标 Comp 已有 Marker；
+- Marker 已足够表达动画点 → 直接按 Marker 做，仍可留在 Mini；
+- 不因为轨道上有 MP4 就读取 / 转写整条大型源文件；
+- 不为了分析口播完整渲染视频；
+- 若需要自动抽取当前剪辑实际使用的音频、ASR、Source↔Comp 时间映射或自动生成语义 Marker → 升级完整版并加载 `motion/speech-driven-motion.md`；
+- 最终 Motion Timing 以当前 Comp Marker 为准，用户手工 Marker 优先于自动识别结果。
+
 如果出现以下情况，不要在 Mini 里硬堆几十个关键帧，升级完整版 Motion System：
 - 3 个以上图层共享同类运动；
 - 明显 Stagger / Overlap 编排；
@@ -331,6 +340,7 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 - 复杂 2.5D / 3D / Camera / Light / 3D Model；
 - 大型 JSX；
 - Master Motion Controller / 大量共享 Expression；
+- 需要从已剪辑音视频自动抽取口播、ASR、时间映射或生成语义 Marker；
 - MOGRT / Essential Properties；
 - 插件深度使用；
 - Hybrid 大规模构建；
