@@ -24,6 +24,9 @@
 
 ## 质量原则
 - 不把 AE 理解为 Shape + Text 生成器。
+- **Native Feature Before Manual Construction**：AE 已有语义上直接对应的原生能力时，不因 Shape / JSX 更好写而默认手工模拟。
+- **Relationship Before Independent Keyframes**：多个对象存在 Parent / Follow / Attach / Carry / Target / Connect / Shared Motion 等关系时，优先编码关系，不靠多套关键帧人工同步。
+- 能动态引用的目标位置 / 尺寸 / Bounds，不默认烘焙成当前固定数值。
 - 复杂产品、车辆、建筑、机械、人物、设备等，优先真实素材 / 官方素材 / 3D / 高质量外部资产。
 - 简单几何、UI、数据图表、路径动画可优先 AE 原生。
 - 使用高级能力必须有收益，不为炫技堆 3D、Glow、粒子、Camera、Expression、插件。
@@ -44,6 +47,7 @@
 - 禁止所有元素同一套 Ease。
 - 复杂时间优先 Marker / Precomp / Time Remap / 控制器。
 - Camera 与物体动画尽量分离。
+- 目标不是“零关键帧”，而是减少重复关键帧；保留少量有意义、可在 Graph Editor 调整的 Master / Local Keyframes。
 
 ## 素材
 - 最终工程不得依赖实时 URL。
