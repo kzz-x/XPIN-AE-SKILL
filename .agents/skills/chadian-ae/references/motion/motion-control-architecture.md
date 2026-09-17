@@ -1,16 +1,41 @@
 # Motion｜Control Architecture
 
-> 目标：让复杂动画既能统一控制，又保留局部特殊性。不要把同类动画复制成几十层散落关键帧。
+> 目标：让复杂动画既能统一控制，又保留局部特殊性；优先建立关系与共享控制，不把同类动画复制成几十层散落关键帧。
 
 ## 1｜最高原则
 
 **Shared motion goes upward. Unique motion stays local.**
 
-- 共享运动 → 往 Master / Parent / Precomp 提升。
-- 独特运动 → 留在 Layer 局部。
-- 3 个及以上图层共享同类运动时，优先考虑控制器 / Parent / Expression / Stagger，而不是复制关键帧。
+**Relationships should be encoded, not manually synchronized.**
 
-## 2｜三级动画架构
+- 共享运动 → 往 Master / Parent / Precomp 提升。
+- 对象关系 → 用 Parent / Attach / Target / Constraint / Dynamic Reference 表达。
+- 独特运动 → 留在 Layer 局部。
+- 3 个及以上图层共享同类运动时，优先控制器 / Parent / Expression / Stagger，而不是复制关键帧。
+
+---
+
+## 2｜Level 0：Relationship Before Motion
+
+进入 Master / Precomp / Local 分配之前，先做 Relationship Scan：
+- 谁控制谁？
+- 谁跟随谁？
+- 谁携带谁？
+- 谁指向谁？
+- 谁必须保持相对关系？
+- 哪些位置 / 尺寸应该动态引用？
+- 哪些是共享运动？
+- 哪些才是真正独立运动？
+
+如果关系存在，先建立 Parent / Null / Attach / Target / Constraint / Dynamic Reference，再设计动画。
+
+禁止为了让两个对象“看起来同步”，分别给它们复制近似关键帧。
+
+详细：`relationship-rigs.md`
+
+---
+
+## 3｜三级动画架构
 
 ### Level 1｜Master Motion Channels
 负责镜头级、场景级、组级和可复用节奏。
@@ -34,38 +59,56 @@ NULL_镜头Rig
 ```
 
 要求：
-- 整组 Position / Scale / Rotation / Opacity 等整体运动优先交给 Parent Null。
-- Master Progress 负责统一推进共享动作；局部通过 offset / range / expression 派生。
-- 不要为了“统一控制”把所有属性强绑到同一个值；不同 Profile 仍应保留差异化响应。
-- Slider / Angle / Checkbox 等控制只暴露真正高频可调参数。
+- 整组 Position / Scale / Rotation / Opacity 等整体运动优先交 Parent Null。
+- Master Progress 统一推进共享动作；局部通过 offset / range / expression 派生。
+- 不把不同 Motion Profile 强绑成同一个响应。
+- 只暴露真正高频可调参数。
 
 ### Level 2｜Precomp + Time Remap
 负责模块内部动画、重复组件和整体 retiming。
 
-适合：
-- 重复 UI 卡片；
-- 图标动画；
-- 机械子机构；
-- 标签 / 标题模块；
-- 可复用复杂动作。
+适合：重复 UI、图标动画、机械子机构、标签 / 标题、可复用复杂动作。
 
 规则：
 - 组件内部只做一套干净动画。
-- 外层通过 Marker / Time Remap / Stretch / Essential Properties / Master Progress 控制节奏。
-- 需要整体改快慢时，优先 retime 模块，而不是逐层拖关键帧。
-- Precomp 深度以“容易理解和替换”为准，不为动画控制无限套娃。
+- 外层用 Marker / Time Remap / Stretch / Essential Properties / Master Progress 控制节奏。
+- 整体改快慢优先 retime 模块，不逐层拖关键帧。
+- Precomp 深度以容易理解和替换为准。
 
 ### Level 3｜Layer Local Motion
-只保留真正独特的动作：
-- 某个对象单独被点击 / 删除；
+只保留真正独特动作：
+- 单对象被点击 / 删除；
 - 特殊机械部件旋转；
 - 单独数值跳变；
 - 特殊 path / morph；
-- 局部修饰和 Secondary Action。
+- 局部 Secondary Action。
 
-局部动画不应重复承担上层已经负责的整体运动。
+局部动画不重复承担上层已经负责的整体运动。
 
-## 3｜Stagger 架构
+---
+
+## 4｜Keyframe Compression
+
+目标不是零关键帧，而是：
+
+**零重复关键帧，保留少量有意义、可在 Graph Editor 调整的主关键帧。**
+
+判断一个值是否应该烘焙成 Keyframe 前：
+1. 它是否来自另一个对象？
+2. 是否属于可计算关系？
+3. 是否与其他对象共享 Progress？
+4. 用户以后是否可能移动目标？
+5. 用户是否需要 Graph Editor？
+
+动态关系 → Expression / Parent / Rig。
+共享时间 → Master Progress。
+真正独有动作 → Local Keyframes。
+
+不要把当前布局坐标误当永久动画数据。
+
+---
+
+## 5｜Stagger 架构
 
 3 个以上同类对象错帧时优先参数化：
 ```text
@@ -73,73 +116,89 @@ start = masterStart + indexOffset * stagger
 localProgress = remap(masterProgress, start, start + duration)
 ```
 
-实际实现可以使用 Expression、Marker、脚本生成或预合成时间偏移；重点是：
-- Stagger 可统一调节；
-- 单个对象允许局部 override；
-- 不要求所有间隔绝对相等，可按视觉节奏形成短-短-长等分组。
+实际可用 Expression、Marker、脚本生成或预合成时间偏移。
 
-## 4｜关键帧应该放在哪里
+要求：
+- Stagger 可统一调节；
+- 单个对象允许 override；
+- 不强制绝对等间隔，可按视觉层级分组。
+
+---
+
+## 6｜关键帧应该放在哪里
 
 优先级：
-1. 镜头 / 场景整体运动 → Parent Null / Rig。
-2. 多对象共享逻辑 → CTRL_动画 + Expression / Master Progress。
-3. 重复复杂模块 → Precomp 内部一次制作 + 外部 Time Remap / offset。
-4. 单对象特例 → Layer 本地关键帧。
+1. Relationship / Constraint → Parent / Attach / Target / Expression / Rig。
+2. 镜头 / 场景整体运动 → Parent Null / Rig。
+3. 多对象共享逻辑 → CTRL_动画 + Expression / Master Progress。
+4. 重复复杂模块 → Precomp 内部一次制作 + 外部 Time Remap / Offset。
+5. 单对象特例 → Layer 本地 Keyframe。
 
-如果 10 个图层拥有几乎相同的 Position / Scale 关键帧，默认视为架构问题，除非存在明确的独立编辑需求。
+如果多个图层拥有几乎相同的 Transform Keyframes，默认视为架构警报，除非确有独立编辑需求。
 
-## 5｜Editable First
+---
 
-动画系统必须让人类快速回答：
+## 7｜Editable First
+
+人类应能快速回答：
 - 整体快一点 → 改哪里？
-- 所有卡片 stagger 大一点 → 改哪里？
-- 主体 overshoot 小一点 → 改哪里？
+- Stagger 大一点 → 改哪里？
+- 主体 Overshoot 小一点 → 改哪里？
+- Target 换位置 → 是否自动适配？
+- Carrier 移动 → Payload 是否继续跟随？
 - 只改单个对象 → 改哪里？
-- 整个场景向左 / 放大 → 改哪个 Parent Null？
+- 整个场景移动 → 改哪个 Parent Null？
 
-如果这些问题需要逐层查找关键帧，架构还不够好。
+如果这些问题需要逐层查关键帧，架构还不够好。
 
-## 6｜Expression 使用边界
+---
 
-Expression 用于建立关系，不用于制造不可维护的“黑盒”。
+## 8｜Expression 使用边界
+
+Expression 用于建立关系，不用于制造黑盒。
 
 优先：
+- Dynamic Target / Follow / Connector；
 - 简单线性映射；
 - Master Progress；
 - Stagger / Delay；
-- Parent / token 引用；
-- 可解释的 overshoot / damping。
+- Parent / Token 引用；
+- 可解释 Overshoot / Damping。
 
 避免：
-- 超长、无注释、多重层级互相引用；
-- 为了少打几个关键帧写难以人工修改的复杂算法；
+- 超长、无注释、多重互相引用；
+- 为了少打几个关键帧写难修改算法；
 - 同一功能存在多套控制器。
 
-复杂 Expression 必须语义清晰，并尽量通过 Effect 名称 / Comment 说明入口。
+复杂 Expression 要有清晰入口和必要注释。
 
-## 7｜与 Marker 的关系
+---
 
-Marker 表达阶段，Control 表达强度和进度，Precomp / Time Remap 表达模块时长，Layer 表达局部特例。
+## 9｜与 Marker 的关系
 
 推荐职责：
 ```text
+Relationship = 对象之间怎么关联
 Marker = 什么时候发生
 Master Channel = 发生到什么程度
 Parent Null = 整组怎么移动
-Precomp / Time Remap = 模块内部如何被重新定时
-Layer Keyframes = 这个对象独有的动作
+Precomp / Time Remap = 模块如何重定时
+Layer Keyframes = 对象独有动作
 ```
 
 不要把所有职责塞进一种机制。
 
-## 8｜Motion Architecture QA
+---
+
+## 10｜Motion Architecture QA
 
 复杂动画交付前检查：
-- 是否存在 3+ 图层复制同类关键帧却没有共享控制？
-- 整体运动是否错误地下放到每个子层？
-- 是否应该使用 Parent Null？
-- 重复模块是否应该 Precomp + Time Remap？
+- 是否存在 3+ 图层复制同类关键帧？
+- 是否存在 Carrier / Payload、Follow、Target 等关系却仍靠手工同步？
+- 整体运动是否错误地下放到子层？
+- 是否应该 Parent / Precomp + Time Remap / Master Progress？
+- 移动 Target 后相关运动是否仍成立？
 - Master Progress / Stagger 是否真正可调？
-- 局部 override 是否仍然可做？
+- 局部 override 是否保留？
 - Expression 是否清晰、无循环、无错误？
-- 人类是否能在 30 秒内找到主要动画控制入口？
+- 人类是否能在 30 秒内找到主要控制入口？
