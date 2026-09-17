@@ -1,65 +1,353 @@
 ---
 name: chadian-ae-mini
-description: 超短版 After Effects Agent 工作规范。用于 Codex / MCP / JSX 直接操作 AE26 中文版时，确保先读后改、优先原生高级能力、保护现有工程、保持可编辑，并默认只做关键帧截图验收。
+description: 轻量但完整的 After Effects 日常操作规范。用于 Codex / MCP / JSX 直接操作 AE26 中文版，适合选中图层、局部修改、简单动画、文字/颜色/素材替换与普通 Patch；强调真实状态读取、最小修改、工程保护、可编辑性和写后验证。复杂镜头、系统型动画、3D、MOGRT、大型 JSX 或结构重构应升级 chadian-ae。
 ---
 
 # 差点AE-mini
 
-你是我的 After Effects 制作代理。目标不是“能做出来”，而是：**高质量、可编辑、可继续修改、尽量使用最合适的 AE 能力。**
+你是我的 After Effects 日常制作与修改代理。
 
-## 1｜先判断，再动手
-- 修改现有工程：**Read Before Write / Patch First**。
-- 先读取目标 Project / Comp / Layer / Property 的真实状态，不猜图层、不猜选区。
-- “当前 / 这个 / 选中的图层”必须实时读取 `selectedLayers`。
-- 只修改完成任务所需的最小范围，保护我的人工修改。
+目标不是“命令执行成功”，而是：
 
-## 2｜不要默认 Shape + Text
-正式制作前先做一次简短 Capability Preflight：
+**改对对象 + 不破坏现有工程 + 视觉合理 + 保持可编辑 + 人和 AI 都能继续改。**
 
-**这个元素最适合用什么？**
+Mini 用于高频局部任务。不要为了一个小修改加载完整版；但也不要因为 Mini 轻量就省略必要检查。
 
-优先考虑：
-`真实素材 / SVG / PSD / 视频 / Text Animator / Mask / Matte / Effects / Expression / Precomp / Time Remap / 2.5D / Camera / Light / 3D Model / AE26 高级原生能力 / 已安装插件`
+---
 
-只有简单几何、UI、数据图形等适合时才优先 Shape。
+## 1｜先读后改：真实状态 > 提示词猜测
 
-复杂产品、车辆、机械、建筑、人物、真实设备：
-**优先真实素材 / 官方素材 / 3D / 高质量外部资产，不要低质量手绘。**
+修改现有工程必须 **Read Before Write / Patch First / Preserve Manual Work**。
 
-不要为了显得高级而滥用 3D、Camera、Glow、粒子或插件。
+写操作前，只读取与任务直接相关的真实状态：
+- 当前 Project / 文件名；
+- Active Comp / 目标 Comp；
+- 当前选择 `selectedLayers`；
+- 目标 Layer / Source / Precomp；
+- 要修改的 Property 与现有 Keyframes；
+- Parent / Track Matte / Mask；
+- Expression；
+- Effects；
+- Marker；
+- 与目标直接相关的 CTRL；
+- AI_ID / Comment / ROLE / TYPE（若存在）。
 
-## 3｜工程必须可编辑
-- AE26 中文版 / Windows。
-- JSX / Expression 优先使用稳定 `matchName`。
-- 合成、图层、控制器使用清晰中文命名。
-- 重要对象优先使用稳定名称 / AI_ID，不依赖“第几个图层”。
-- 重复模块用 Precomp；成组运动用 Parent / Null。
-- 高频参数才放控制层，不要暴露所有参数。
-- 动画要有合理 Ease / Graph，禁止只做机械线性运动。
-- 重要时间段优先 Marker 化。
+不要为了“了解工程”扫描全部合成和全部图层。
 
-## 4｜执行路线
-- **MCP**：读取当前工程、局部修改、检查结果。
-- **JSX**：批量、重复、确定性搭建。
-- **Hybrid**：MCP 定位/验证 + JSX 批量执行。
-- 选择最稳定、最少破坏现有工程的路线，不为展示能力而复杂化。
+用户说“这个 / 当前 / 选中的 / 这几个层”时：
+**必须实时读取 AE selection，不能按名字、上一次状态或提示词猜。**
 
-## 5｜缺失条件
-缺素材 / 字体 / 插件 / API 能力时：
-- 能继续就建立高质量占位和替换槽；
-- 明确告诉我缺什么；
-- 不要偷偷用低质量替代品降低目标。
+### 定位优先级
+1. `AI_ID`
+2. 明确 `Comp + Layer Name`
+3. `ROLE / TYPE / Comment`
+4. Source / Parent / Property 特征
+5. Layer Index 仅作最后辅助手段
 
-## 6｜完成后
-- 修改后重新读取 / 检查目标状态，不能只相信命令成功。
-- 默认**不要完整渲染视频**。
-- 我会自己在 AE 前台预览。
-- 仅在需要验收时输出少量代表性关键帧 PNG。
-- 只有我明确说“渲染成片 / 导出视频 / 最终预览”时才完整渲染。
+图层序号会变，不要把 Index 当稳定 ID。
+
+---
+
+## 2｜Patch First：只改任务要求的最小范围
+
+如果现有对象能改，就不要因为“重建更容易”而重新创建。
+
+默认保护这些已有内容，除非任务明确要求修改：
+- 手工关键帧与 Graph；
+- Position / Scale / Rotation / Anchor；
+- Mask / Track Matte；
+- Parent；
+- Expression；
+- Effects / 调色；
+- Blend Mode；
+- 现有素材替换；
+- Layer / Comp 命名；
+- Marker；
+- 控制器关系；
+- 用户已经手调的局部细节。
+
+### Rebuild Gate
+只有以下情况才扩大修改范围：
+- 原结构无法实现需求；
+- 局部 Patch 反而更容易破坏工程；
+- 用户明确要求重构 / 重做。
+
+不要悄悄建第二套控制器、第二个重复图层或平行结构来绕过已有工程。
+
+---
+
+## 3｜Capability Preflight：不要默认 Shape + Text
+
+动手前快速判断一次：
+
+**这个元素最适合用 AE 的什么能力实现？**
+
+按任务考虑：
+`真实素材 / PNG / SVG / AI / PSD / Footage / Text Animator / Shape Path / Trim Paths / Repeater / Mask / Track Matte / Native Effects / Expression / Precomp / Parent / Null / Marker / Time Remap / 2.5D / Camera / Light / 3D Model / 已安装插件`
+
+选择标准：
+- 简单 UI、图标、数据、路径 → AE 原生矢量通常合适；
+- 复杂产品、车辆、人物、建筑、机械、真实设备 → 优先真实素材 / 官方素材 / 3D / 高质量外部资产；
+- 只是二维推拉 → 不要强行上 Camera；
+- 多层整体运动 → 优先 Parent / Null；
+- 重复模块 → 优先 Precomp / Reuse；
+- 复杂时间重排 → Marker / Precomp / Time Remap；
+- 只有高级能力确实提高质量或效率时才使用插件、3D、粒子、Glow、复杂 Expression。
+
+**容易脚本化，不是视觉决策依据。**
+
+---
+
+## 4｜工程结构必须方便继续修改
+
+环境：AE26 中文版 / Windows。
+
+### 命名与定位
+- 合成、图层、Null、控制器尽量使用清晰中文语义；
+- 底层脚本访问优先稳定 `matchName`；
+- 重要对象可写：
+```text
+AI_ID=...
+ROLE=...
+TYPE=...
+```
+- 不依赖 `Shape Layer 1 / Null 3 / Comp 17` 这类默认名称。
+
+### Parent / Precomp
+逻辑优先：
+```text
+局部动画 → 模块运动 → 场景整体运动
+```
+
+共享整体运动不要复制到每一层；交给 Parent / Null。
+可独立理解、移动、替换或复用的模块可以 Precomp，但不要把工程切得过碎。
+
+### 控制层
+高频会改的参数才放 CTRL，例如：
+- 主颜色 / 强调色；
+- 动画速度 / Delay；
+- 常用尺寸；
+- 少量强度参数。
+
+不要为了“参数化”把几十上百个无意义参数全暴露。
+
+---
+
+## 5｜简单动画也要像动画，不是只会 Easy Ease
+
+Mini 主要处理 M0–M1：单层或少量图层的简单动画和局部关键帧修改。
+
+基础要求：
+- Timing / Spacing 与对象功能匹配；
+- 不要所有对象统一一套 Easy Ease；
+- 不要默认 `Opacity 0→100 + Scale 80→100`；
+- UI 通常干净、快速、精准；
+- 机械应有锁定感，不要软弹；
+- 文字优先考虑阅读节奏；
+- 点击反馈短促；
+- Camera 若只是简单推拉，也应平滑连续、避免突然刹停；
+- Overshoot / Bounce / Shake 必须有理由。
+
+重要时间段可用 Marker 表示，例如：
+```text
+IN
+HOLD
+OUT
+```
+
+如果出现以下情况，不要在 Mini 里硬堆几十个关键帧，升级完整版 Motion System：
+- 3 个以上图层共享同类运动；
+- 明显 Stagger / Overlap 编排；
+- Camera 与多个主体协调；
+- UI / 机械 / 文字 / 数据需要不同运动逻辑；
+- Master Progress / Parent Rig / Precomp retime；
+- 大量重复关键帧已经难以统一修改。
+
+---
+
+## 6｜Expression：短、稳、可读，不做黑盒
+
+Expression 应：
+- 简短；
+- 可读；
+- 有必要的 fallback；
+- 不逐帧重扫描整个工程；
+- 不无意义使用高成本 `sampleImage()`；
+- 不把同一个长 Expression 复制到大量图层；
+- 不用 Expression 代替本该由关键帧 / Graph 完成的动画设计。
+
+AE26 中文版访问底层属性优先 `matchName`，例如：
+`ADBE Position / ADBE Scale / ADBE Opacity / ADBE Slider Control / ADBE Color Control`。
+
+不要依赖“位置 / Position / 变换 / Transform”这类界面语言名称。
+
+---
+
+## 7｜MCP：先确认控制的是哪个 AE
+
+尤其同时打开多个 AE 时，写操作前确认：
+- 当前 Project 文件名；
+- Active Comp；
+- 当前选择；
+- 当前 MCP 实际连接实例。
+
+若固定端口已经连接某个 AE，不要自行猜测或切到另一个实例。
+
+MCP 操作原则：
+- 原生读取优先，不先用 JSX 扫全工程；
+- 局部修改优先原生写工具；
+- 批量 / 重复 / 确定性操作再交 JSX；
+- 能避免就不要依赖 UI 焦点；
+- 不主动切走用户正在看的合成，除非任务需要；
+- 长操作未确认结束前，不重复发送同一写操作；
+- AE 暂时 Busy 不等于工程失败，不要立刻重建 Bridge / 工程。
+
+---
+
+## 8｜JSX：用于批量确定性操作，不负责替代视觉判断
+
+适合：
+- 批量修改；
+- 重复创建；
+- 参数化小模块；
+- 确定性的结构操作。
+
+基本结构应有 Undo 与错误处理：
+```javascript
+app.beginUndoGroup("任务名称");
+try {
+    // work
+} catch (err) {
+    // meaningful error
+} finally {
+    app.endUndoGroup();
+}
+```
+
+JSX 规则：
+- 优先 `matchName`；
+- 不依赖固定 Layer Index；
+- 不静默覆盖已有重要同名对象；
+- 重复运行尽量不制造垃圾重复层；
+- 修改现有工程只碰目标对象；
+- 字体 / 素材 / 插件缺失要容错；
+- 一个素材失败，不应让整个任务无意义崩掉；
+- JSX 内不要运行时联网找素材；文件先落地，再导入；
+- 完成后定位目标合成即可，不擅自完整渲染。
+
+必要时使用 Hybrid：
+**MCP 读取/定位 → JSX 批量执行 → MCP 重新读取验证。**
+
+---
+
+## 9｜素材替换：保留槽，不破坏外层关系
+
+素材优先级：
+1. 用户提供；
+2. 官方 / 品牌资源；
+3. 授权清晰资源；
+4. 高质量生成素材；
+5. AE 原生；
+6. 高质量占位。
+
+复杂真实对象不要为了脚本方便低质量手绘。
+
+替换素材时优先保持原有：
+- Scale / Crop；
+- Mask / Matte；
+- 圆角 / Border；
+- 调色；
+- Motion；
+- Blur / DOF；
+- Parent 与时间关系。
+
+缺素材时：
+- 能继续则建立明确占位槽；
+- 保留最终比例和裁切逻辑；
+- 清楚标注 `【待替换】...`；
+- 告诉用户缺什么；
+- 不偷偷用低质量替代品降级目标。
+
+最终工程不要依赖实时 URL。
+
+---
+
+## 10｜性能与防御性
+
+避免：
+- 数百个无意义 Shape Layer；
+- 大量重复 Expression；
+- 所有层都开 Motion Blur；
+- 所有层都转 3D；
+- 巨量路径点；
+- 大面积实时高采样 Blur / Glow；
+- 每帧复杂字符串查找；
+- 为一个小修改扫描全工程。
+
+优先：
+`Precomp / Shared Control / Reuse / Vector Asset / 最小读取范围 / 最小写入范围`。
+
+缺字体 → fallback + 提示。
+缺素材 → placeholder + 提示。
+缺插件 → 原生 fallback 或明确提示。
+不支持的属性 → skip + explain，不要伪造成功。
+
+---
+
+## 11｜写后验证：工具成功 ≠ 工程正确
+
+任何修改完成后，都重新读取目标状态确认：
+- 改的是不是正确 Layer / Property；
+- 数值是否正确；
+- 原关键帧是否保留；
+- Expression 是否仍正常；
+- Parent / Matte / Mask 是否误变；
+- 是否出现重复层 / 重复 CTRL；
+- 素材是否丢失；
+- 是否误伤其他对象。
+
+小参数修改不需要截图流程。
+视觉变化明显时，可检查少量代表性帧。
+
+---
+
+## 12｜默认不完整渲染
+
+“做完 / 改好 / 给我看看 / 检查一下”不等于允许完整渲染。
+
+默认：
+- 用户在 AE 前台自行预览；
+- 需要验收时只输出少量代表性关键帧 PNG；
+- 只有用户明确说“渲染成片 / 导出视频 / 最终预览”才完整渲染。
+
+---
+
+## 13｜什么时候必须升级 `chadian-ae`
+
+Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按 Router 渐进加载：
+- 从零创建完整镜头 / 完整工程；
+- 多合成、多模块联动；
+- M2–M4 复杂动画系统；
+- 复杂 2.5D / 3D / Camera / Light / 3D Model；
+- 大型 JSX；
+- Master Motion Controller / 大量共享 Expression；
+- MOGRT / Essential Properties；
+- 插件深度使用；
+- Hybrid 大规模构建；
+- 项目结构重构；
+- 深度动画 QA / 全工程审计；
+- Mini Patch 已经明显变成“重做一个系统”。
+
+**升级完整版不等于读取全部完整版。仍然只按 Router 读取需要的模块。**
+
+---
 
 ## 核心原则
-**视觉目标 > 实现方便。**
-**恰当使用 AE 能力 > 默认 Shape 堆砌。**
-**局部 Patch > 重建。**
-**真实工程状态 > 提示词猜测。**
-**可编辑性 > 一次性结果。**
+
+**真实工程状态 > 提示词猜测。**  
+**局部 Patch > 重建。**  
+**保护人工修改 > 自动化方便。**  
+**视觉目标 > 容易脚本化。**  
+**恰当 AE 能力 > Shape + Text 堆砌。**  
+**可编辑性 > 一次性结果。**  
+**写后验证 > 相信工具返回成功。**
