@@ -2,13 +2,28 @@
 
 目的：防止 Agent 只会 Position / Scale / Opacity / Shape，同时避免为了动画质量默认加载整套 Motion System。
 
-正式制作前快速扫一遍能力类别，只在触发时加载详细模块。
+正式制作前快速扫能力类别，只在触发时加载详细模块。
+
+## AE Native Decision
+
+创建新元素、效果或动画结构时，不只检查“AE 能不能做”，还要检查：
+- 是否存在更直接的 Native Feature；
+- 是否正在用 Shape / Keyframe 手工模拟已有功能；
+- 是否存在对象 Relationship；
+- 是否应该动态引用而不是烘焙坐标 / 尺寸；
+- 用户以后最可能修改什么。
+
+创建 / 重构视觉元素时详细读：
+`capabilities/native-ae.md`
+
+出现 Attach / Follow / Target / Carry / Connector / Auto Layout / Dynamic Bounds / Constraint / Destination-driven Motion 时，再读：
+`motion/relationship-rigs.md`
+
+---
 
 ## 二维 / 矢量
-- Shape Layer
-- Shape Path / Morph
-- Trim Paths
-- Repeater
+- Shape Layer / Shape Path / Morph
+- Trim Paths / Repeater
 - Text / Text Animator
 - Range Selector / Expression Selector
 - SVG / AI / PSD
@@ -20,12 +35,10 @@
 适合：UI、图表、路径、标签、线条、文字系统、图标。
 
 ## 时间 / 动画
-- Keyframes
-- Graph Editor
+- Keyframes / Graph Editor
 - Motion Blur
 - Marker
-- Time Remap
-- Time Stretch
+- Time Remap / Time Stretch
 - Posterize Time
 - Expression
 - Parent / Null
@@ -36,12 +49,11 @@
 → `engineering/animation-and-timing.md`
 
 复杂 M2–M4 按 Router 增量加载：
-- 运动设计原则 → `motion/motion-principles.md`
-- 对象差异化运动 → `motion/motion-profiles.md`
-- Master / Parent / Precomp / Local 架构 → `motion/motion-control-architecture.md`
+- 运动原则 → `motion/motion-principles.md`
+- 对象运动差异 → `motion/motion-profiles.md`
+- 关系 / 约束 → `motion/relationship-rigs.md`（触发时）
+- Master / Parent / Precomp / Local → `motion/motion-control-architecture.md`
 - 深度动画验收 → `quality/animation-qa.md`
-
-触发信号：复杂时序、循环、模块复用、模板、批量动画、多对象编排、Camera choreography、共享动画控制。
 
 ## 合成 / 后期
 - Adjustment Layer
@@ -51,38 +63,28 @@
 - Noise / Grain
 - Keying
 - Channel / Matte
-- Generate
-- Stylize
-- Perspective
-- Time Effects
+- Generate / Stylize / Perspective / Time Effects
 
 触发：统一质感、抠像、扭曲、后期处理。
 详细读：`capabilities/effects-and-plugins.md`
 
 ## 空间 / 3D
 - 2.5D Layer
-- Camera
-- Light
-- Depth of Field
+- Camera / Light / Depth of Field
 - Camera Rig / Target Null
 - Z-space / Parallax
-- Advanced 3D
-- 3D Model
-- Parametric Mesh（仅在当前 AE 版本与工具接口实际可用时）
-- 外部 GLB / GLTF / OBJ / 渲染序列 / EXR
+- Advanced 3D / 3D Model
+- Parametric Mesh（仅当前版本与工具实际支持时）
+- GLB / GLTF / OBJ / Render Sequence / EXR
 
-触发：真实空间、多面物体、镜头环绕、景深、透视、真实 3D 模型。
+触发：真实空间、多面物体、镜头环绕、景深、透视、真实 3D。
 详细读：`capabilities/3d-camera-models.md`
 
-若 3D 任务包含复杂 Camera / 多对象运动，额外走 Motion Router，不把 3D 等同于复杂 Motion。
+复杂 Camera / 多对象运动额外走 Motion Router。
 
 ## 素材
-- PNG / JPG
-- PSD
-- AI / SVG
-- Footage
-- Image Sequence
-- Audio
+- PNG / JPG / PSD / AI / SVG
+- Footage / Image Sequence / Audio
 - 3D Asset
 - 官方品牌资源
 - 外部生成图片 / 视频 / 纹理
@@ -106,7 +108,7 @@
 - JSX / ExtendScript
 - Hybrid MCP + JSX
 
-触发：根据任务路由加载对应 Workflow。
+根据 Task Router 加载对应 Workflow。
 
 ## 插件
 只在：
@@ -116,31 +118,34 @@
 4. 能可靠调用；
 时使用。
 
-详细读：`capabilities/effects-and-plugins.md`
-
 ## 快速决策
 
 真实复杂对象
-→ 官方 / 实拍 / 3D / 外部高质量资产
-→ 不要低质量 Shape 手绘
+→ 官方 / 实拍 / 3D / 高质量资产
 
 二维信息设计
-→ AE 原生矢量 / Text / Mask / Effects
+→ AE Native Text / Shape / Mask / Effect
+
+已有语义对应功能
+→ Native Feature Before Manual Construction
+
+对象有关联
+→ Relationship Rig Before Independent Keyframes
 
 真正空间关系
 → 3D / Camera / Model
 
 只是二维推拉
-→ 不要强行 Camera
+→ 不强行 Camera
 
 重复模块
 → Precomp / Repeater / Essential Properties
 
 简单时间
-→ Marker / Keyframes / 基础 Timing
+→ Marker / Keyframe / Graph
 
 复杂共享时间
-→ Motion Router → Master Progress / Parent / Precomp + Time Remap / Expression
+→ Master Progress / Parent / Precomp + Time Remap / Expression
 
 统一后期
 → Adjustment Layer + Native Effects
