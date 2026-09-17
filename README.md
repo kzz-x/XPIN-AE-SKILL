@@ -8,3 +8,11 @@ Codex / Agent 使用的 After Effects Skill 仓库。
 - `chadian-ae`：完整模块化版，适合复杂工程、完整镜头、3D、素材/插件/MOGRT、重构和深度验收。
 
 Codex 的选择规则写在根目录 `AGENTS.md`。默认先使用 Mini；只有任务复杂度需要时才升级到完整版。完整版也采用渐进式加载，不应默认读取整个 archive。
+
+完整版现包含按需加载的 Motion System：
+- `motion-principles.md`：运动设计原则与动作结构；
+- `motion-profiles.md`：UI / Mechanical / Typography / Data / Camera / Soft Graphic 的差异化运动逻辑；
+- `motion-control-architecture.md`：Master Motion Channels → Precomp + Time Remap → Layer Local Motion；
+- `quality/animation-qa.md`：复杂动画与关键帧可编辑性验收。
+
+普通局部关键帧修改仍优先 Mini，不因 Motion System 的存在增加默认上下文成本。
