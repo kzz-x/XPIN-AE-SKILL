@@ -135,6 +135,25 @@ Motion Complexity 只用于判断是否加载 Motion System，不替代任务类
 
 不要因为“有 Overshoot”“有 Easy Ease”“有 3 个关键帧”就升级。
 
+## Speech-Driven Motion Trigger
+
+当用户要求：
+- 按口播 / 旁白 / 音频节奏制作动画；
+- 自动识别当前已剪辑音视频中的语义点；
+- 根据口播生成 / 校准 Motion Marker；
+
+额外加载：
+- `motion/speech-driven-motion.md`
+
+规则：
+- 已有足够 Marker 时，Marker First，不跑 ASR；
+- Marker 不足时才 Speech Assist；
+- 只分析当前时间线实际使用的 source ranges，不处理整条大型 MP4；
+- 自动识别结果先转成 Comp Marker，再让 Motion System 使用；
+- 用户 Marker / 手工调整始终优先于自动 transcript timing。
+
+Speech-Driven Motion 本身不强制 M3/M4。若只是少量语义点 + 简单动画，可保持 M1/M2；若同时出现复杂编排、Camera、共享控制，再按 Motion Complexity 升级。
+
 ---
 
 ## 风险等级
