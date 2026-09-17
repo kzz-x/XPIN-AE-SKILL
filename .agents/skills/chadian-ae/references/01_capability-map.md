@@ -1,6 +1,6 @@
 # 01｜AE Capability Map
 
-目的：防止 Agent 只会 Position / Scale / Opacity / Shape。
+目的：防止 Agent 只会 Position / Scale / Opacity / Shape，同时避免为了动画质量默认加载整套 Motion System。
 
 正式制作前快速扫一遍能力类别，只在触发时加载详细模块。
 
@@ -32,8 +32,16 @@
 - Precomp
 - Essential Properties
 
-触发：复杂时序、循环、模块复用、模板、批量动画。
-详细读：`engineering/animation-and-timing.md`
+普通 M0–M1：
+→ `engineering/animation-and-timing.md`
+
+复杂 M2–M4 按 Router 增量加载：
+- 运动设计原则 → `motion/motion-principles.md`
+- 对象差异化运动 → `motion/motion-profiles.md`
+- Master / Parent / Precomp / Local 架构 → `motion/motion-control-architecture.md`
+- 深度动画验收 → `quality/animation-qa.md`
+
+触发信号：复杂时序、循环、模块复用、模板、批量动画、多对象编排、Camera choreography、共享动画控制。
 
 ## 合成 / 后期
 - Adjustment Layer
@@ -65,6 +73,8 @@
 
 触发：真实空间、多面物体、镜头环绕、景深、透视、真实 3D 模型。
 详细读：`capabilities/3d-camera-models.md`
+
+若 3D 任务包含复杂 Camera / 多对象运动，额外走 Motion Router，不把 3D 等同于复杂 Motion。
 
 ## 素材
 - PNG / JPG
@@ -126,8 +136,11 @@
 重复模块
 → Precomp / Repeater / Essential Properties
 
-复杂时间
-→ Marker / Time Remap / 控制器
+简单时间
+→ Marker / Keyframes / 基础 Timing
+
+复杂共享时间
+→ Motion Router → Master Progress / Parent / Precomp + Time Remap / Expression
 
 统一后期
 → Adjustment Layer + Native Effects
