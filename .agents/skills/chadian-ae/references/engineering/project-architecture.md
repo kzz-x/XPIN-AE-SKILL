@@ -49,12 +49,28 @@ TYPE=replaceable
 
 ## Parent / Null
 层级：
-局部动画
-→ 模块运动
-→ 场景运动
-→ 镜头运动
+```text
+Layer 局部特殊动画
+→ 模块 / Precomp 动画
+→ Parent Null 场景 / 组运动
+→ Camera / 镜头 Rig
+```
 
 成组运动使用 Parent / Null，不重复复制关键帧。
+
+复杂动画进一步遵守：
+**Master Motion Channels → Precomp + Time Remap → Layer 局部特殊动画**。
+
+详细规则只在 M2–M4 需要时读取：`../motion/motion-control-architecture.md`。
+
+## Motion Ownership
+同一运动只保留一个主要负责人：
+- 场景整体位移 / 缩放 → Parent Null；
+- 多对象共享节奏 → Master Motion Channel；
+- 模块内部动作 → Precomp；
+- 单对象特例 → Layer。
+
+避免上层和下层重复做同一件事，导致人工调整时互相抵消。
 
 ## 版本
 重要项目记录：
