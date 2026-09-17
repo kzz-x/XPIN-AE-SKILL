@@ -18,6 +18,16 @@
 - 素材风格统一
 - 没有为了自动化而低质量手绘
 
+## Native / Editable
+创建或重构结构时检查：
+- 是否用基础 Shape / Transform 手工模拟了已有更合适的 Native Feature；
+- 是否因为“方便脚本化”而放弃 Layer Style / Text Animator / Mask / Matte / Repeater / Adjustment Layer / Parent 等更合适机制；
+- 是否存在可以 Parent / Attach / Follow / Target 却分别打关键帧的对象；
+- 可动态引用的位置 / 尺寸是否被无意义烘焙成固定值；
+- 用户移动目标、修改文字、调整布局后，相关结构是否仍成立。
+
+简单 Patch 不要求为了这项检查重构用户原有合理结构。
+
 ## Motion｜基础
 M0–M1 只检查当前范围：
 - 曲线与元素属性匹配
@@ -37,6 +47,7 @@ M2–M4 或用户明确要求深度动画验收时，追加读取：
 - 素材可独立替换
 - Marker / 时序逻辑清晰
 - 复杂共享动画没有无脑复制成大量关键帧
+- Relationship Rig 不依赖隐藏的手工同步
 
 ## Compatibility
 - AE26 中文版
@@ -55,4 +66,4 @@ M2–M4 或用户明确要求深度动画验收时，追加读取：
 视觉任务需要时选 4–6 个真正有代表性的时间点：
 开场 / 运动中间态 / Hero / 最终 / 必要的转场状态。
 
-静帧只能检查 staging / 状态 / 构图；Timing、Spacing、Weight、Continuity 仍需在 AE 前台连续预览或 Graph / Keyframe 数据中判断。
+静帧只能检查 staging / 状态 / 构图；Timing、Spacing、Weight、Continuity、Relationship 稳定性仍需在 AE 前台连续预览或实际修改目标做验证。
