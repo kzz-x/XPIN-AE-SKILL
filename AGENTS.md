@@ -15,6 +15,7 @@
   - 完整模块化版。
   - 在以下情况升级使用：从零创建完整镜头/工程；多模块或多合成联动；复杂动画系统；2.5D/3D/Camera/Light/3D Model；素材搜索/替换槽；插件；MOGRT/Essential Properties；大型 JSX；Hybrid MCP+JSX；结构重构；质量不达标后的深度排查；全工程审计。
   - 使用完整版时仍然必须渐进式加载：先读其 `SKILL.md`，再按 Router 只读需要的 references / recipes。不要默认读取 `references/archive/ae-standard-v1.4-full.md`。
+  - Motion System 位于 `references/motion/`，只有明显动画设计 / 编排 / 共享控制需求时才按 Router 加载。
 
 ## Routing rules
 
@@ -24,4 +25,6 @@
 4. 同一聊天/会话已经读取过的 Skill 或 reference，不要无意义重复读取；任务类型变化、上下文压缩、规则冲突或用户要求复核时再重读。
 5. 用户说“这个/当前/选中的图层”时，必须实时读取 AE selection，不按名称猜。
 6. 默认不完整渲染成片；用户会在 AE 前台预览。需要验收时只输出少量关键帧静帧，除非用户明确授权完整渲染。
-7. 本仓库当前版本暂未加入新的 Motion Principles / Master Motion Controller 方案；不要自行假定该部分已经成为硬规范。
+7. **不要因为任务里出现关键帧就升级 Motion System。** 单层/少量图层简单关键帧仍走 Mini。
+8. 当任务出现多对象编排、对象运动逻辑差异、Camera choreography、3+ 图层共享同类运动、Master Progress / Parent Rig / Precomp retime、复杂机械运动或大量重复关键帧时，升级完整版并按 `02_task-router.md` 判断 M2–M4。
+9. 复杂 Motion 的目标不是“多打关键帧”，而是让 AI 先设计运动，再建立人类易调的控制系统：**Shared motion goes upward. Unique motion stays local.**
