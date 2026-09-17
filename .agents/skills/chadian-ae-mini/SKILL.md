@@ -1,6 +1,6 @@
 ---
 name: chadian-ae-mini
-description: 轻量但完整的 After Effects 日常操作规范。用于 Codex / MCP / JSX 直接操作 AE26 中文版，适合选中图层、局部修改、简单动画、文字/颜色/素材替换与普通 Patch；强调真实状态读取、修改前恢复点、最小修改、工程保护、可编辑性和写后验证。复杂镜头、系统型动画、3D、MOGRT、大型 JSX 或结构重构应升级 chadian-ae。
+description: 轻量但完整的 After Effects 日常操作规范。用于 Codex / MCP / JSX 直接操作 AE26 中文版，适合选中图层、局部修改、简单动画、文字/颜色/素材替换与普通 Patch；强调真实状态读取、修改前恢复点、最小修改、Native/Relationship First、工程保护、可编辑性和写后验证。复杂镜头、系统型动画、3D、MOGRT、大型 JSX 或结构重构应升级 chadian-ae。
 ---
 
 # 差点AE-mini
@@ -99,18 +99,35 @@ Mini 用于高频局部任务。不要为了一个小修改加载完整版；但
 **这个元素最适合用 AE 的什么能力实现？**
 
 按任务考虑：
-`真实素材 / PNG / SVG / AI / PSD / Footage / Text Animator / Shape Path / Trim Paths / Repeater / Mask / Track Matte / Native Effects / Expression / Precomp / Parent / Null / Marker / Time Remap / 2.5D / Camera / Light / 3D Model / 已安装插件`
+`真实素材 / PNG / SVG / AI / PSD / Footage / Text Animator / Shape Path / Trim Paths / Repeater / Mask / Track Matte / Layer Style / Native Effects / Adjustment Layer / Expression / Precomp / Parent / Null / Marker / Time Remap / 2.5D / Camera / Light / 3D Model / 已安装插件`
 
 选择标准：
 - 简单 UI、图标、数据、路径 → AE 原生矢量通常合适；
 - 复杂产品、车辆、人物、建筑、机械、真实设备 → 优先真实素材 / 官方素材 / 3D / 高质量外部资产；
-- 只是二维推拉 → 不要强行上 Camera；
+- 普通描边 / 阴影先考虑 Layer Style / Native Effect，不默认额外画 Shape；
+- 逐字 / 逐词动画先考虑 Text Animator，不默认拆文字层；
+- Reveal 先考虑 Mask / Matte，不默认用遮挡 Shape；
+- 重复结构先考虑 Repeater / Precomp；
+- 只是二维推拉 → 不强行 Camera；
 - 多层整体运动 → 优先 Parent / Null；
-- 重复模块 → 优先 Precomp / Reuse；
 - 复杂时间重排 → Marker / Precomp / Time Remap；
-- 只有高级能力确实提高质量或效率时才使用插件、3D、粒子、Glow、复杂 Expression。
+- 高级能力确实提高质量或效率时才用插件、3D、粒子、Glow、复杂 Expression。
 
 **容易脚本化，不是视觉决策依据。**
+
+### Native / Relationship First
+创建或修改结构时快速判断：
+- AE 是否已有更直接的 Native Feature？
+- 多个对象是否存在 Parent / Follow / Attach / Carry / Target / Connect / Shared Motion 关系？
+- 一个对象的位置 / 尺寸是否应该引用另一个对象，而不是写死？
+- 用户以后移动 Target / 修改文字 / 调整布局后，结构是否应该自动适配？
+
+简单关系可直接用 Parent / Null / 短 Expression 修复。
+
+如果需要复杂 Attach / Detach、Constraint、Auto Layout、Dynamic Bounds、Destination-driven Motion、Path Rig 或系统型 Relationship Rig：
+→ 升级完整版并加载 `motion/relationship-rigs.md`。
+
+**不要因为 Shape + Keyframe 最容易自动生成，就默认使用它们。**
 
 ---
 
@@ -132,7 +149,7 @@ TYPE=...
 ### Parent / Precomp
 逻辑优先：
 ```text
-局部动画 → 模块运动 → 场景整体运动
+关系 / 约束 → 局部动画 → 模块运动 → 场景整体运动
 ```
 
 共享整体运动不要复制到每一层；交给 Parent / Null。
@@ -159,34 +176,44 @@ Mini 主要处理 M0–M1：单层或少量图层的简单动画和局部关键�
 - 不要默认 `Opacity 0→100 + Scale 80→100`；
 - UI 通常干净、快速、精准；
 - 机械应有锁定感，不要软弹；
-- 文字优先考虑阅读节奏；
+- 文字优先阅读节奏；
 - 点击反馈短促；
-- Camera 若只是简单推拉，也应平滑连续、避免突然刹停；
+- Camera 简单推拉也应平滑连续；
 - Overshoot / Bounce / Shake 必须有理由。
 
-重要时间段可用 Marker 表示，例如：
+重要时间段可用 Marker：
 ```text
 IN
 HOLD
 OUT
 ```
 
+### Keyframe Compression
+目标不是 0 Keyframe，而是减少重复 Keyframe。
+
+如果 A 的终点来自 B，优先引用 B 的实时位置，而不是把 B 当前坐标烘焙进 A。
+如果多个对象整体同步，优先 Parent / Null。
+如果多个对象共享同一进度，优先少量 Master Progress + 简单派生。
+
+同时保留人类可调性：需要 Graph Editor 的主节奏可以继续保留少量真正有意义的关键帧。
+
 ### 口播 / 音频驱动时序
 如果用户要求“按照口播 / 旁白 / 音频节奏做动画”：
 - 先读取目标 Comp 已有 Marker；
-- Marker 已足够表达动画点 → 直接按 Marker 做，仍可留在 Mini；
+- Marker 足够 → 直接按 Marker 做，仍可留 Mini；
 - 不因为轨道上有 MP4 就读取 / 转写整条大型源文件；
 - 不为了分析口播完整渲染视频；
-- 若需要自动抽取当前剪辑实际使用的音频、ASR、Source↔Comp 时间映射或自动生成语义 Marker → 升级完整版并加载 `motion/speech-driven-motion.md`；
-- 最终 Motion Timing 以当前 Comp Marker 为准，用户手工 Marker 优先于自动识别结果。
+- 若需要自动抽取实际使用音频、ASR、Source↔Comp 时间映射或自动语义 Marker → 升级完整版并加载 `motion/speech-driven-motion.md`；
+- 最终 Motion Timing 以当前 Comp Marker 为准，用户手工 Marker 优先。
 
-如果出现以下情况，不要在 Mini 里硬堆几十个关键帧，升级完整版 Motion System：
-- 3 个以上图层共享同类运动；
-- 明显 Stagger / Overlap 编排；
+如果出现以下情况，不要在 Mini 里硬堆关键帧，升级完整版 Motion System：
+- 3+ 图层共享同类运动；
+- 明显 Stagger / Overlap；
 - Camera 与多个主体协调；
 - UI / 机械 / 文字 / 数据需要不同运动逻辑；
 - Master Progress / Parent Rig / Precomp retime；
-- 大量重复关键帧已经难以统一修改。
+- 大量重复关键帧难以统一修改；
+- 复杂 Relationship / Constraint Rig。
 
 ---
 
@@ -195,11 +222,11 @@ OUT
 Expression 应：
 - 简短；
 - 可读；
-- 有必要的 fallback；
+- 有必要 fallback；
 - 不逐帧重扫描整个工程；
 - 不无意义使用高成本 `sampleImage()`；
 - 不把同一个长 Expression 复制到大量图层；
-- 不用 Expression 代替本该由关键帧 / Graph 完成的动画设计。
+- 不用 Expression 代替本应由关键帧 / Graph 完成的动画设计。
 
 AE26 中文版访问底层属性优先 `matchName`，例如：
 `ADBE Position / ADBE Scale / ADBE Opacity / ADBE Slider Control / ADBE Color Control`。
@@ -310,7 +337,7 @@ JSX 规则：
 - 为一个小修改扫描全工程。
 
 优先：
-`Precomp / Shared Control / Reuse / Vector Asset / 最小读取范围 / 最小写入范围`。
+`Native Feature / Parent / Relationship / Precomp / Shared Control / Reuse / Vector Asset / 最小读取范围 / 最小写入范围`。
 
 缺字体 → fallback + 提示。
 缺素材 → placeholder + 提示。
@@ -329,7 +356,8 @@ JSX 规则：
 - Parent / Matte / Mask 是否误变；
 - 是否出现重复层 / 重复 CTRL；
 - 素材是否丢失；
-- 是否误伤其他对象。
+- 是否误伤其他对象；
+- 新建 Relationship 是否真的随 Target / Parent 调整而保持成立。
 
 小参数修改不需要截图流程。
 视觉变化明显时，可检查少量代表性帧。
@@ -356,6 +384,7 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 - 复杂 2.5D / 3D / Camera / Light / 3D Model；
 - 大型 JSX；
 - Master Motion Controller / 大量共享 Expression；
+- 复杂 Attach / Constraint / Auto Layout / Relationship Rig；
 - 需要从已剪辑音视频自动抽取口播、ASR、时间映射或生成语义 Marker；
 - MOGRT / Essential Properties；
 - 插件深度使用；
@@ -373,8 +402,10 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 **真实工程状态 > 提示词猜测。**  
 **先留恢复点 > 直接写入。**  
 **局部 Patch > 重建。**  
+**关系优先 > 手工同步。**  
+**Native Feature > 基础图层模拟。**  
 **保护人工修改 > 自动化方便。**  
 **视觉目标 > 容易脚本化。**  
-**恰当 AE 能力 > Shape + Text 堆砌。**  
 **可编辑性 > 一次性结果。**  
+**少量有意义的关键帧 > 大量重复关键帧。**  
 **写后验证 > 相信工具返回成功。**
