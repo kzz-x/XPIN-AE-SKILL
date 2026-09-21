@@ -17,7 +17,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 1. 先读 `references/00_core-invariants.md`。
 2. 再读 `references/01_capability-map.md`。
 3. 用 `references/02_task-router.md` 判断任务类型与 Motion Complexity。
-4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。
+4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。
 5. 当前会话已读过的模块不要重复读取，除非：
    - 上下文压缩后精确规则丢失；
    - 任务类型发生变化；
@@ -36,7 +36,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 优先选择最符合 AE 工作方式、最能保留可编辑性的实现。
 - AE26 中文版 / Windows；脚本底层优先稳定 `matchName`。
 - 默认不自动完整渲染视频；只做少量关键帧静帧验收。
-- 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。
+- 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。\n- **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
 
 ## 2｜任务启动
@@ -100,7 +100,7 @@ M2–M4 额外验证：
 - 核心规则：`references/00_core-invariants.md`
 - AE 能力索引：`references/01_capability-map.md`
 - 路由：`references/02_task-router.md`
-- Workflow：`references/workflows/`
+- Workflow：`references/workflows/`\n  - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
 - 工程规范：`references/engineering/`
 - Motion System：`references/motion/`（M2–M4 按需）
 - 高级能力：`references/capabilities/`
