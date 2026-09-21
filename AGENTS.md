@@ -29,4 +29,4 @@
 8. **不要因为任务里出现关键帧就升级 Motion System。** 单层/少量图层简单关键帧仍走 Mini。
 9. 当任务出现多对象编排、对象运动逻辑差异、Camera choreography、3+ 图层共享同类运动、Master Progress / Parent Rig / Precomp retime、复杂机械运动或大量重复关键帧时，升级完整版并按 `02_task-router.md` 判断 M2–M4。
 10. 复杂 Motion 的目标不是“多打关键帧”，而是让 AI 先设计运动，再建立人类易调的控制系统：**Shared motion goes upward. Unique motion stays local.**
-11. 用户要求“整理老工程 / 模板 / 小元素动画 / 让人和 AI 都方便改 / 降低后续 Token”时，直接升级完整版并走 `recipes/refactor-existing-asset.md`。默认只读资产根合成及必要依赖，不进行全工程扫描。
+11. 用户要求“整理老工程 / 模板 / 小元素动画 / 让人和 AI 都方便改 / 降低后续 Token”时，直接升级完整版并走 `recipes/refactor-existing-asset.md`。默认只读资产根合成及必要依赖，不进行全工程扫描。\n12. **Reference First**：创建新视觉/新动画，或任务涉及准确产品、复杂机械、类生物运动、物理规律、成熟 UI/HUD/Camera 语言时，先判断是否需要图片、视频、GIF/Lottie、成熟动效或可复用资产参考。普通改字改色和已有动画小 Patch 不增加这一步；复杂任务按完整版 Router 加载 `workflows/reference-first.md`。
