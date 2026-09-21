@@ -74,6 +74,26 @@
 动画质量 / 节奏 / Camera / 关键帧架构 → `quality/animation-qa.md`。
 若问题是 Shape 堆砌、错误手工模拟、对象同步困难 → 加载 Native / Relationship 模块。
 
+## I｜ASSET_REFACTOR
+典型：整理用户历史 AEP、半模板、小元素动画、复杂插件/表达式工程，使其同时适合人工维护与 AI 低 Token 快速修改。
+
+加载：
+- `recipes/refactor-existing-asset.md`
+- `workflows/modify-existing.md`
+- `engineering/project-architecture.md`
+- `engineering/controls-and-tokens.md`
+- `engineering/expressions-and-compatibility.md`
+
+规则：
+- 先锁定资产根合成，只沿必要依赖读取，不默认全工程扫描；
+- 保持最终视觉与动画结果，不借整理之名重做；
+- 高频参数集中到明确控制入口，低频参数不要过度暴露；
+- 第三方插件允许保留，只记录与映射关键依赖；
+- 整理后未来 AI 默认走 `Asset Map / 00_CTRL → 目标图层 → 必要依赖`；
+- 批量整理时一次一个 AEP / 一个资产根合成，避免上下文、Undo 和依赖混杂。
+
+这是结构重构，默认完整版；但不自动加载 Motion / 3D / 素材模块，只有真实触发时才追加。
+
 ---
 
 # AE Expert Preflight Trigger
