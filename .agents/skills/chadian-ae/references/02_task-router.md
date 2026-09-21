@@ -121,6 +121,27 @@ Relationship Rig 本身不自动意味着 M3/M4。简单 Parent / Follow Patch �
 
 ---
 
+# Reference-First Trigger
+
+以下情况加载 `workflows/reference-first.md`：
+- 从零创建新视觉 / 新动画，且参考会显著影响结果；
+- 产品 / 品牌 / 设备 / 零件外观必须准确；
+- 人、手、动物等类生物动作；
+- 复杂机械、装配、液体、金属、碰撞等结构或物理运动；
+- UI / HUD / 产品广告 / Camera 需要成熟运动语言；
+- 用户反馈“动作不自然 / 太模板 / 一眼 AI / 结构画错”；
+- 存在直接复用 PNG / SVG / Lottie / Footage / 3D / Template 的可能。
+
+以下情况通常不加载：
+- 改文字 / 颜色 / 尺寸；
+- 已有动画的小型 Patch；
+- 简单几何 / 数据 / 路径，且运动规律明确；
+- 用户明确要求只按现有参考 / 素材执行。
+
+Reference-First 不自动升级 Motion Complexity，也不等于必须搜索互联网；优先读取用户提供、工程已有和本地可用参考，必要时再外搜。
+
+---
+
 # Motion Router
 
 Motion Complexity 只判断 Motion System 加载范围，不替代任务类型路由。
