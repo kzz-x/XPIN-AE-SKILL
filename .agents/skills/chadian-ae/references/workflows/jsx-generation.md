@@ -22,6 +22,16 @@ try {
 }
 ```
 
+## Undo Architecture｜BUILD ≠ PATCH
+JSX 执行前先判断本次属于：
+- **BUILD**：首次创建较大模块 / 工程。按逻辑模块拆成少量独立 UndoGroup，通常 5–10 个；不要把整个工程包成一个巨大 Undo，也不要细到每层 / 每关键帧一个 Undo。
+- **PATCH**：修改现有工程。一次用户请求只建立一个小型 UndoGroup，只修改目标属性或目标子模块；禁止为了改几个参数重新运行完整 BUILD。
+- Undo 名称必须可读，例如“创建主体模块”“修改标题字号”“调整入场速度”。
+- 每个 `beginUndoGroup()` 都必须用 `try / finally` 确保 `endUndoGroup()` 被调用。
+- 大型 BUILD 完成并验证后，建立可靠工程检查点，再进入人工调整 / 后续 PATCH。
+
+目标是让 AE Undo 历史仍然适合人类继续工作：撤销小修改时不应轻易退回整套 AI 构建。
+
 ## 规则
 - 优先 `matchName`。
 - 不依赖中文版 / 英文版属性名。
