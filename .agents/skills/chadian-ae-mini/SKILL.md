@@ -276,6 +276,15 @@ try {
 }
 ```
 
+### Undo Safety｜BUILD 分组，PATCH 原子撤销
+- 禁止把大型工程从创建到动画全部长期包进一个巨大 UndoGroup。
+- **BUILD**：按逻辑模块拆成少量独立 UndoGroup，通常 5–10 个即可，例如初始化 / 背景 / 主体 / 文字 / 动画 / 控制器 / 整理；不要细到每层、每关键帧一个 UndoGroup。
+- **PATCH**：一次用户修改 = 一个小 UndoGroup，只碰本次目标属性；修改字号、位置、速度等时禁止重跑完整 BUILD 脚本。
+- 每个 UndoGroup 使用清晰名称，如“修改标题字号”“调整主体位置”“创建文字模块”。
+- 所有 `beginUndoGroup()` 必须通过 `try / finally` 保证对应 `endUndoGroup()` 执行，避免异常后污染后续 Undo。
+- 能修改现有对象就不删除重建；避免一次 Ctrl+Z 把用户后续人工调整连同整套 AI 构建一起带走。
+- 大型 BUILD 完成并验证后，优先形成一个可靠工程检查点，再进入人工微调 / AI Patch 阶段。
+
 JSX 规则：
 - 优先 `matchName`；
 - 不依赖固定 Layer Index；
