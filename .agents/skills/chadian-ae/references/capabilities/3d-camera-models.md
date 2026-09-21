@@ -38,6 +38,8 @@ Camera 与对象动画分离。
 
 不要把 AE 当 Blender / C4D / Houdini。
 
+若 GLB / GLTF / OBJ 被 Trapcode 导入器接管（显示 `3D MODEL FOR USE WITH TRAPCODE`），提醒用户自行前往 `C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\Plug-ins\\Format\\Trapcode` 将对应导入器文件的格式名/扩展名改掉并重启 AE，不要默认用鼠标绕过。
+
 默认不承诺用 JSX 稳定完成：
 - 顶点级建模
 - UV
