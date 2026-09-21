@@ -49,6 +49,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - HYBRID
 - MOGRT_TEMPLATE
 - REVIEW_DEBUG
+- ASSET_REFACTOR
 - COMPLEX_3D
 
 若涉及动画，再判断 Motion Complexity：M0 / M1 / M2 / M3 / M4。
@@ -105,4 +106,5 @@ M2–M4 额外验证：
 - 高级能力：`references/capabilities/`
 - 质量与验收：`references/quality/`
 - 常用任务 Recipe：`recipes/`
+  - 历史工程 / 半模板 / 小元素标准化：`recipes/refactor-existing-asset.md`
 - 完整旧规范：`references/archive/ae-standard-v1.4-full.md`
