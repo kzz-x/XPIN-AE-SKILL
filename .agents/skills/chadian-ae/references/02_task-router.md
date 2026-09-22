@@ -23,6 +23,7 @@
 
 创建新视觉元素 / 动画模块时按下方 AE Expert Preflight 判断是否加载 Native / Relationship 模块。
 若 Motion Complexity 达 M2–M4，再走 Motion Router。
+若 NEW_PROJECT 同时要求 AI 自己决定设计 / 构图 / Motion，先按 `K｜AE_DESIGN_PLAN` 做 Creative Authority Gate；若视觉与 Motion 已由用户 / 上游 Handoff 锁定，则直接执行，不重复发散。
 
 ## C｜JSX_BUILD
 加载：
@@ -119,6 +120,50 @@
 - 写入 `references/learned/`、修改已有 learned card 或提升到核心 reference 前，必须进入 Promotion Gate，向用户说明候选规律、证据、建议 scope、目标位置、冲突与“新增 / 并存 / 合并 / 覆盖”建议，并明确询问用户；
 - 只有用户明确批准的条目才能写入；未确认内容保持候选状态；
 - 单案例默认进入 learned library，不直接升级为核心通用规则。
+
+## K｜AE_DESIGN_PLAN
+典型：
+- “给我出 AE 制作方案 / 动效方案”
+- “这镜头适不适合直接让 AI 做”
+- “给 Codex 一份执行方案”
+- “我先做好模板，AI 接下来做什么”
+- “把模板 B 改成模板 A 的液态玻璃 / 插件 / 材质系统”
+
+加载：
+- `workflows/creative-authority.md`
+- `engineering/ae-implementation-spec.md`
+- `engineering/animation-and-timing.md`（有 Motion 时）
+- 创建新元素 / 材质时按 AE Expert Preflight 决定是否加 `capabilities/native-ae.md`
+- 需要真实参考时走 Reference-First Trigger
+- Motion 达 M2–M4 时再按 Motion Router 增量加载，不因“写方案”自动读取整套 Motion
+
+规则：
+- 先判断 `AI_DIRECT_BUILD / HUMAN_DESIGN_AI_ENGINEER / HUMAN_MOTION_AI_ASSIST`；
+- 再判断 Creative Authority 0–3；默认优先 Authority 1，Authority 3 默认关闭；
+- 方案必须同时说明“怎么动”和“AE 里怎么实现”：Keyframe / Expression / Relationship / Native / Layer Style / Plugin / CTRL / 人工可调边界；
+- 结构型信息镜头可以 Authority 2 直接生成；Hero / 品牌 Motion / 高级 Typography / 复杂 Camera / 类生物与真实物理默认由人主导；
+- 已有模板 / 已批准 AEP / 已确定 Motion 时，AI 以读取、迁移、扩展为主，不重新发明视觉语言；
+- 用户只要求执行一个已锁定方案时，不必重复做完整 Creative Authority 讨论，只保留已确定权限边界。
+
+## Creative Authority / Implementation Trigger
+
+以下情况命中 `workflows/creative-authority.md`：
+- 从零设计 AE 镜头；
+- 判断某镜头是否值得交给 AI；
+- 规划 Codex / MCP / JSX 的工作范围；
+- 已有模板 / AEP，要扩展、迁移风格或复制 Motion / Material System；
+- 用户反馈 AI 构图 / 节奏 / 动画 taste 不稳定，希望改成辅助模式。
+
+以下情况同时命中 `engineering/ae-implementation-spec.md`：
+- 要输出 AE 制作方案 / 施工说明；
+- 设计阶段需要决定 Keyframe vs Expression；
+- 需要明确 wiggle / loop / spring / distance-driven / Follow / Auto Layout 等程序化技巧；
+- 需要明确 Layer Style / Native Effect / Plugin / Adjustment Layer / CTRL 的实现方式；
+- 需要把设计方案直接交给 Codex 执行。
+
+普通改字 / 改色 / 改参数 / 已有动画小 Patch 不加载这两个模块。
+
+---
 
 ## Learned Library Trigger
 
