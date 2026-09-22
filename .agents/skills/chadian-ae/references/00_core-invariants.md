@@ -33,6 +33,8 @@
 - 视觉目标 > 实现方便。
 - 事实正确 > 静帧参考中的错误。
 - 用户最后确认的设计目标 > AI 自己临时改风格。
+- **Creative Authority**：有现成模板 / AEP / 人工设计结论时，默认读取并扩展，不重新发明；AI 自主决定构图、Motion taste 与视觉语言只在用户明确授权时启用。
+- **AI Assist Before AI Replace**：当镜头高级感主要依赖构图、Timing、Spacing、Camera 或 Typography 判断时，优先让人锁定设计，AI 做工程化、表达式、控制层、批量扩展和 QA。
 
 ## Reference First\n- 新视觉 / 新动画 / 复杂结构 / 真实性重要时，先判断是否需要图片、视频、成熟动效、真实运动或可复用资产参考。\n- 准确产品、人物、复杂机械、类生物运动、物理现象不要因为 JSX / Shape 更容易写就凭空发明。\n- 静帧主要约束视觉；明显 Motion 任务应优先有视频 / GIF / Lottie / 成熟动画参考。\n- 能直接复用官方素材、SVG、Lottie、Footage、3D 或模板时，先评估复用，不默认从零重建。\n- 关键参考缺失时优先使用可替换 Placeholder，并明确未核验部分；不得把占位或 AI 猜测说成真实结构。\n- 详细流程仅在 Router 命中时读取 `workflows/reference-first.md`，普通局部 Patch 不增加上下文成本。\n\n## AE26 / 脚本
 - 兼容 AE26 中文版 / Windows。
@@ -50,6 +52,7 @@
 - 复杂时间优先 Marker / Precomp / Time Remap / 控制器。
 - Camera 与物体动画尽量分离。
 - 目标不是“零关键帧”，而是减少重复关键帧；保留少量有意义、可在 Graph Editor 调整的 Master / Local Keyframes。
+- **设计阶段决定实现法**：AE 制作方案不能只写“漂浮 / 弹性 / 高级”；主 Motion 应说明 Keyframe / Graph，持续程序化行为可说明 wiggle / loop / spring / distance-driven / Relationship，视觉材质应说明 Layer Style / Native Effect / Plugin / CTRL 的实现方向。详细格式仅在设计任务时加载 `engineering/ae-implementation-spec.md`。
 
 ## 素材
 - 最终工程不得依赖实时 URL。
