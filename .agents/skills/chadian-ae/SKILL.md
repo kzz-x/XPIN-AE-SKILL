@@ -17,7 +17,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 1. 先读 `references/00_core-invariants.md`。
 2. 再读 `references/01_capability-map.md`。
 3. 用 `references/02_task-router.md` 判断任务类型与 Motion Complexity。
-4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。
+4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。若任务包含 AE 设计 / 制作方案、AI 适用性判断或模板迁移，按 Router 增量读取 `references/workflows/creative-authority.md` 与 `references/engineering/ae-implementation-spec.md`。
 5. 当前会话已读过的模块不要重复读取，除非：
    - 上下文压缩后精确规则丢失；
    - 任务类型发生变化；
@@ -39,6 +39,8 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 默认不自动完整渲染视频；只做少量关键帧静帧验收。
 - 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。\n- **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
+- **Creative Authority Before Build**：不要默认让 AI 同时承担导演、构图、Motion Design 与 AE 执行；先判断 AI 应该直接生成、扩展已有系统，还是只做工程辅助。
+- **Design Includes Implementation**：AE 方案要写清实现技法；主 Timing / Hero Motion 是否保留真实关键帧，持续 / 程序化行为是否用 Expression，以及 Layer Style / Native Effect / Plugin / CTRL 的实现方向。
 
 ## 2｜任务启动
 
@@ -53,13 +55,23 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - ASSET_REFACTOR
 - COMPLEX_3D
 - AE_PROJECT_LEARN
+- AE_DESIGN_PLAN
 
 若涉及动画，再判断 Motion Complexity：M0 / M1 / M2 / M3 / M4。
 
 如果用户已经明确说“直接做”“不用出图”“不要方案”，不要机械阻塞。
 如果需求清晰，不要默认 Grill-me；只有重大歧义、高返工风险或路线分叉时才问 1–5 个关键问题。
 
-## 3｜执行方式
+## 3｜设计到执行
+
+当用户要求“出 AE 制作方案 / 设计镜头 / 判断 Codex 怎么做 / 这个镜头是否适合 AI / 用已有模板迁移风格”时：
+- 先按 `references/workflows/creative-authority.md` 输出极短 `AE ROUTE`；
+- 默认优先 `HUMAN_DESIGN_AI_ENGINEER + Authority 1`，不是默认 AI 从零创作；
+- 再按 `references/engineering/ae-implementation-spec.md` 把关键帧 / Expression / Relationship / Layer Style / Native Effect / Plugin / CTRL / 人工可调边界写进方案；
+- M0 / 极小 Patch 不机械输出完整设计块；
+- Authority 3 只有用户明确授权才启用。
+
+## 4｜执行方式
 
 - **MCP**：真实状态读取、目标定位、局部修改、验证。
 - **JSX**：批量创建、确定性结构、重复模块、参数化搭建。
@@ -76,7 +88,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 
 共享运动优先上提；独特运动留在局部。3+ 图层共享同类运动时，优先控制器 / Parent / Expression / Stagger，而不是复制关键帧。
 
-## 4｜完成条件
+## 5｜完成条件
 
 完成前必须验证：
 - 目标对象真的被正确修改；
@@ -102,8 +114,8 @@ M2–M4 额外验证：
 - 核心规则：`references/00_core-invariants.md`
 - AE 能力索引：`references/01_capability-map.md`
 - 路由：`references/02_task-router.md`
-- Workflow：`references/workflows/`\n  - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
-- 工程规范：`references/engineering/`
+- Workflow：`references/workflows/`\n  - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）\n  - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
+- 工程规范：`references/engineering/`\n  - AE 设计实现说明：`references/engineering/ae-implementation-spec.md`（需要把设计翻译成 AE 技法时加载）
 - Motion System：`references/motion/`（M2–M4 按需）
 - 高级能力：`references/capabilities/`
 - 质量与验收：`references/quality/`
