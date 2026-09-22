@@ -13,6 +13,8 @@ description: 轻量但完整的 After Effects 日常操作规范。用于 Codex 
 
 Mini 用于高频局部任务。不要为了一个小修改加载完整版；但也不要因为 Mini 轻量就省略必要检查。
 
+如果用户要的是“AE 制作方案 / 从零镜头设计 / 判断 AI 该做到什么程度 / 模板视觉系统迁移”，这不是普通 Mini Patch：升级完整版，让 `creative-authority.md` 决定创作权限，并用 `ae-implementation-spec.md` 写清真实 AE 实现技法。
+
 ---
 
 ## 1｜先读后改：真实状态 > 提示词猜测
@@ -413,6 +415,7 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 - Hybrid 大规模构建；
 - 项目结构重构；
 - 整理历史 AEP / 半模板 / 小元素动画，使其变成人类易维护、AI 易读取、低 Token 快速 Patch 的标准化资产；
+- AE 制作方案 / 从零镜头设计 / AI 适用性与 Creative Authority 判断 / 模板视觉系统迁移；
 - 深度动画 QA / 全工程审计；
 - Mini Patch 已经明显变成“重做一个系统”。
 
