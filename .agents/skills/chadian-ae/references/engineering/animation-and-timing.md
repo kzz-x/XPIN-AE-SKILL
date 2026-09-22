@@ -1,6 +1,8 @@
 # Engineering｜Animation & Timing
 
 > 这是轻量基础模块。普通 M0–M1 动画只读这里；M2–M4 再按 Router 加载 `references/motion/`。
+>
+> 如果当前任务是在“写 AE 制作方案 / 把设计交给 Codex”，同时读取 `ae-implementation-spec.md`，在设计阶段就决定 Keyframe / Expression / Relationship / Layer Style / Plugin / CTRL，而不是执行时再猜。
 
 ## Marker First
 主时序优先通过 Marker 表达阶段，例如：
@@ -20,6 +22,15 @@ END
 ```
 
 不要把所有时序写死在散落关键帧中。
+
+## Implementation Choice First
+在打关键帧前先判断实现法：
+- **主 Timing / Hero Motion / Camera / 关键 Typography** → 优先真实 Keyframe + Graph Editor；
+- **常驻漂浮 / 呼吸 / loop / 自动延迟 / 距离驱动 / 跟随 / 自动连线 / 响应式尺寸** → 优先短、可控 Expression 或 Relationship；
+- **高质量常见组合** → 主节奏 Keyframe + Secondary Motion / Settle Expression；
+- 不因为 Expression 能写，就把所有 Motion 程序化；也不因为 Keyframe 直观，就手工复制大量重复行为。
+
+例如轻微常驻漂浮可在方案里直接指定低频、低幅 `wiggle()` 并把 Frequency / Amplitude 接到 CTRL；主入场则保留真实关键帧，方便人工按帧微调。
 
 ## 基础元素级控制
 按需要控制：
