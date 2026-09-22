@@ -37,7 +37,8 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 优先选择最符合 AE 工作方式、最能保留可编辑性的实现。
 - AE26 中文版 / Windows；脚本底层优先稳定 `matchName`。
 - 默认不自动完整渲染视频；只做少量关键帧静帧验收。
-- 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。\n- **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
+- 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。
+- **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
 - **Creative Authority Before Build**：不要默认让 AI 同时承担导演、构图、Motion Design 与 AE 执行；先判断 AI 应该直接生成、扩展已有系统，还是只做工程辅助。
 - **Design Includes Implementation**：AE 方案要写清实现技法；主 Timing / Hero Motion 是否保留真实关键帧，持续 / 程序化行为是否用 Expression，以及 Layer Style / Native Effect / Plugin / CTRL 的实现方向。
@@ -114,8 +115,11 @@ M2–M4 额外验证：
 - 核心规则：`references/00_core-invariants.md`
 - AE 能力索引：`references/01_capability-map.md`
 - 路由：`references/02_task-router.md`
-- Workflow：`references/workflows/`\n  - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）\n  - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
-- 工程规范：`references/engineering/`\n  - AE 设计实现说明：`references/engineering/ae-implementation-spec.md`（需要把设计翻译成 AE 技法时加载）
+- Workflow：`references/workflows/`
+  - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
+  - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
+- 工程规范：`references/engineering/`
+  - AE 设计实现说明：`references/engineering/ae-implementation-spec.md`（需要把设计翻译成 AE 技法时加载）
 - Motion System：`references/motion/`（M2–M4 按需）
 - 高级能力：`references/capabilities/`
 - 质量与验收：`references/quality/`
