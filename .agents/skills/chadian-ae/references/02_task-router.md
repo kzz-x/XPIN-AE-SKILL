@@ -94,6 +94,43 @@
 
 这是结构重构，默认完整版；但不自动加载 Motion / 3D / 素材模块，只有真实触发时才追加。
 
+
+## J｜AE_PROJECT_LEARN
+典型：
+- “学习这个 AE 工程 / AEP”
+- “把这个镜头里的关键帧曲线、构图、材质学下来”
+- “提炼这个优秀工程的动效规律”
+- “以后照这个工程的审美做”
+
+加载：
+- `recipes/learn-from-ae-project.md`
+- 若 Motion 是重点，再按需加载 `motion/motion-principles.md` / `motion/motion-profiles.md`
+- 共享控制 / 复杂 Motion 才追加 `motion/motion-control-architecture.md`
+- 曲线质量需要深度判断时追加 `quality/animation-qa.md`
+- 材质 / 插件 / 3D 只有真实触发时才加载对应 Capability
+
+规则：
+- 这是完整版任务，但**学习阶段默认只读**，不修改源 AEP；
+- 先锁定用户指定的资产根合成，只沿必要依赖读取，不默认扫描整个 Project；
+- 优先采样代表性静帧 + 工程结构 + 真实关键帧 / Ease / Effect 证据；
+- 把绝对坐标、秒数和参数同时归一化为比例 / 帧数 / 动作百分比，区分 `OBSERVED` 与 `INFERRED`；
+- 输出候选 `COMPOSITION_CARD / MOTION_CARD / MATERIAL_CARD / VISUAL_CARD`，工程结构确有价值时再加 `ENGINEERING_CARD`；
+- **学习不等于写入 Skill**。先生成候选 Learning Pack；
+- 写入 `references/learned/`、修改已有 learned card 或提升到核心 reference 前，必须进入 Promotion Gate，向用户说明候选规律、证据、建议 scope、目标位置、冲突与“新增 / 并存 / 合并 / 覆盖”建议，并明确询问用户；
+- 只有用户明确批准的条目才能写入；未确认内容保持候选状态；
+- 单案例默认进入 learned library，不直接升级为核心通用规则。
+
+## Learned Library Trigger
+
+只有以下情况读取 `references/learned/index.md`：
+- 用户明确说“用之前学的 / 用频道风格 / 用这个工程学到的规律”；
+- 用户点名某个已学习的 motion / composition / material / visual；
+- 当前 Handoff 明确带有 learned tag；
+- 当前任务明确属于某个已批准的 channel / project / asset scope。
+
+读取 Index 后只加载最相关的 1–3 张卡，不扫描全部 learned 文件。
+简单 Patch 不因为存在 learned library 就额外增加上下文。
+
 ---
 
 # AE Expert Preflight Trigger
