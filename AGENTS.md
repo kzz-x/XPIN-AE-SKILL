@@ -13,7 +13,7 @@
 - `chadian-ae`
   - 路径：`.agents/skills/chadian-ae/SKILL.md`
   - 完整模块化版。
-  - 在以下情况升级使用：从零创建完整镜头/工程；多模块或多合成联动；复杂动画系统；2.5D/3D/Camera/Light/3D Model；素材搜索/替换槽；插件；MOGRT/Essential Properties；大型 JSX；Hybrid MCP+JSX；结构重构；历史 AEP / 半模板 / 小元素动画标准化整理；质量不达标后的深度排查；全工程审计。
+  - 在以下情况升级使用：从零创建完整镜头/工程；多模块或多合成联动；复杂动画系统；2.5D/3D/Camera/Light/3D Model；素材搜索/替换槽；插件；MOGRT/Essential Properties；大型 JSX；Hybrid MCP+JSX；结构重构；历史 AEP / 半模板 / 小元素动画标准化整理；学习 / 拆解优秀 AEP 的构图、关键帧曲线、Motion、材质与视觉规律并形成可复用知识包；质量不达标后的深度排查；全工程审计。
   - 使用完整版时仍然必须渐进式加载：先读其 `SKILL.md`，再按 Router 只读需要的 references / recipes。不要默认读取 `references/archive/ae-standard-v1.4-full.md`。
   - Motion System 位于 `references/motion/`，只有明显动画设计 / 编排 / 共享控制需求时才按 Router 加载。
 
@@ -32,3 +32,4 @@
 11. 用户要求“整理老工程 / 模板 / 小元素动画 / 让人和 AI 都方便改 / 降低后续 Token”时，直接升级完整版并走 `recipes/refactor-existing-asset.md`。默认只读资产根合成及必要依赖，不进行全工程扫描。
 12. **Reference First**：创建新视觉/新动画，或任务涉及准确产品、复杂机械、类生物运动、物理规律、成熟 UI/HUD/Camera 语言时，先判断是否需要图片、视频、GIF/Lottie、成熟动效或可复用资产参考。普通改字改色和已有动画小 Patch 不增加这一步；复杂任务按完整版 Router 加载 `workflows/reference-first.md`。
 13. **来自差点后期的 Handoff**：若上游来自 `kzz-x/chadian-post-GTP-project`，把其已确认的镜头目标、构图、参考、素材、时长/画幅和锁定约束视为输入，不重新从零发散视觉方案。差点AE负责把它转成可执行 AE 方案/工程；仅在 AE 可实现性、工程安全或素材条件确有冲突时提出调整。
+14. **AE Project Learning**：用户说“学习这个 AE 工程 / 学一下这个 AEP / 把这个镜头的构图、动画、材质学下来”等时，直接升级完整版并走 `recipes/learn-from-ae-project.md`。学习阶段默认只读，只分析用户指定资产根合成及必要依赖；先生成候选 Learning Pack，不得自动写入 Skill。写入 `references/learned/` 或修改核心规则前，必须先向用户展示候选规律、建议作用域与写入位置，并明确询问“哪些要加入、怎么加入、并存/合并/覆盖哪一种”。只有用户明确确认后才能晋升；后续 learned 内容继续按 Index → 相关卡片渐进读取。
