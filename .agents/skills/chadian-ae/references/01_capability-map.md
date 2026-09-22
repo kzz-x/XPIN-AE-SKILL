@@ -4,6 +4,14 @@
 
 正式制作前快速扫能力类别，只在触发时加载详细模块。
 
+## 设计 / AI 协作
+
+当任务不是单纯执行，而是在决定“这个镜头怎么做、AI 应该做多少、如何交给 Codex”时：
+- AI 适用性 / Production Mode / Creative Authority → `workflows/creative-authority.md`
+- AE 施工方法（Keyframe / Expression / Relationship / Layer Style / Native Effect / Plugin / CTRL）→ `engineering/ae-implementation-spec.md`
+
+普通改字、改色、改参数、小型 Patch 不读取这两个模块。
+
 ## AE Native Decision
 
 创建新元素、效果或动画结构时，不只检查“AE 能不能做”，还要检查：
