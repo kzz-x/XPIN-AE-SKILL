@@ -1,6 +1,6 @@
 ---
 name: chadian-ae
-description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。用于创建、修改、调试、验证 AE26 中文版工程；采用渐进式加载，先路由任务，再只读取需要的模块。强调 Read Before Write、Patch First、AE 原生高级能力、可编辑工程结构、素材/3D/插件的合理使用、关键帧静帧验收与默认禁止完整渲染。
+description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。用于创建、修改、调试、验证 AE26 中文版工程，也用于从优秀 AEP 中学习并提炼构图、关键帧曲线、Motion、材质和视觉规律；采用渐进式加载，先路由任务，再只读取需要的模块。强调 Read Before Write、Patch First、AE 原生高级能力、可编辑工程结构、可审阅的学习晋升流程、关键帧静帧验收与默认禁止完整渲染。
 ---
 
 # 差点AE
@@ -25,6 +25,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
    - 用户要求重新核查。
 6. `references/archive/ae-standard-v1.4-full.md` 是冷档案 / Source of Truth。只有模块未覆盖、规则冲突、全工程审计或维护 Skill 本身时才读取。
 7. 不要因为任务里出现关键帧就读取 Motion System。普通 M0–M1 动画只使用轻量规则；M2–M4 才按 Router 增量加载 Motion 模块。
+8. 用户要求“学习这个 AE 工程 / 提炼这个 AEP 的审美与动画规律”时，路由到 `recipes/learn-from-ae-project.md`。学习阶段默认只读；先生成候选 Learning Pack。任何长期知识写入 `references/learned/` 或核心 reference 前，都必须经过用户明确确认的 Promotion Gate，禁止边学边自动污染 Skill。
 
 ## 1｜永远生效的底线
 
@@ -51,6 +52,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - REVIEW_DEBUG
 - ASSET_REFACTOR
 - COMPLEX_3D
+- AE_PROJECT_LEARN
 
 若涉及动画，再判断 Motion Complexity：M0 / M1 / M2 / M3 / M4。
 
@@ -107,4 +109,6 @@ M2–M4 额外验证：
 - 质量与验收：`references/quality/`
 - 常用任务 Recipe：`recipes/`
   - 历史工程 / 半模板 / 小元素标准化：`recipes/refactor-existing-asset.md`
+  - 学习优秀 AEP / 提炼构图、Motion、材质与视觉规律：`recipes/learn-from-ae-project.md`
+- 已批准长期学习库：`references/learned/index.md`（仅命中 Learned Library Trigger 时读取，再只加载相关 1–3 张卡）
 - 完整旧规范：`references/archive/ae-standard-v1.4-full.md`
