@@ -17,7 +17,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 1. 先读 `references/00_core-invariants.md`。
 2. 再读 `references/01_capability-map.md`。
 3. 用 `references/02_task-router.md` 判断任务类型与 Motion Complexity。
-4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。若任务包含 AE 设计 / 制作方案、AI 适用性判断或模板迁移，按 Router 增量读取 `references/workflows/creative-authority.md` 与 `references/engineering/ae-implementation-spec.md`。Motion-sensitive 镜头按需加载 `references/workflows/previs-first.md`；复杂执行前按需生成 `references/engineering/ae-build-spec.md`。当前执行底座为 Engine Room 时，按需加载 `references/adapters/engine-room-mcp.md`。
+4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。从零设计或中高视觉复杂度镜头若命中 Visual Anchor Trigger，再读取 `references/workflows/visual-anchor.md`，先锁定参考图 / 关键帧视觉再进入 BUILD。若任务包含 AE 设计 / 制作方案、AI 适用性判断或模板迁移，按 Router 增量读取 `references/workflows/creative-authority.md` 与 `references/engineering/ae-implementation-spec.md`。Motion-sensitive 镜头按需加载 `references/workflows/previs-first.md`；复杂执行前按需生成 `references/engineering/ae-build-spec.md`。当前执行底座为 Engine Room 时，按需加载 `references/adapters/engine-room-mcp.md`。
 5. 当前会话已读过的模块不要重复读取，除非：
    - 上下文压缩后精确规则丢失；
    - 任务类型发生变化；
@@ -40,6 +40,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 默认不自动完整渲染视频；只做少量关键帧静帧验收。
 - 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。
 - **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
+- **Visual Anchor Before Expensive Build**：从零设计、中高视觉复杂度、2.5D/3D、口播转视觉或构图/材质/光影决定质量时，先生成或确认一个明确的视觉锚点。**图不满意，先不做。** Anchor 锁“长什么样”，执行提示词只补 Motion / Timing / Audio / Relationship / Constraints / Verify。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
 - **Creative Authority Before Build**：不要默认让 AI 同时承担导演、构图、Motion Design 与 AE 执行；先判断 AI 应该直接生成、扩展已有系统，还是只做工程辅助。
 - **Design Includes Implementation**：AE 方案要写清实现技法；主 Timing / Hero Motion 是否保留真实关键帧，持续 / 程序化行为是否用 Expression，以及 Layer Style / Native Effect / Plugin / CTRL 的实现方向。
@@ -71,6 +72,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 
 当用户要求“出 AE 制作方案 / 设计镜头 / 判断 Codex 怎么做 / 这个镜头是否适合 AI / 用已有模板迁移风格”时：
 - 先按 `references/workflows/creative-authority.md` 输出极短 `AE ROUTE`；
+- 若命中 Visual Anchor Trigger，先用 `references/workflows/visual-anchor.md` 生成 / 选择 / 确认视觉锚点；用户未认可画面时不进入正式 BUILD；
 - 默认优先 `HUMAN_DESIGN_AI_ENGINEER + Authority 1`，不是默认 AI 从零创作；
 - 再按 `references/engineering/ae-implementation-spec.md` 把关键帧 / Expression / Relationship / Layer Style / Native Effect / Plugin / CTRL / 人工可调边界写进方案；
 - M0 / 极小 Patch 不机械输出完整设计块；
@@ -123,6 +125,7 @@ M2–M4 额外验证：
 - 路由：`references/02_task-router.md`
 - Workflow：`references/workflows/`
   - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
+  - 视觉锚点门禁：`references/workflows/visual-anchor.md`（从零 / 中高视觉复杂度 / 口播转视觉时按需；图未确认不进入正式 BUILD）
   - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
   - Previs：`references/workflows/previs-first.md`（Motion-sensitive 镜头按需）
 - 工程规范：`references/engineering/`
