@@ -208,9 +208,9 @@ Mini 主要处理 M0–M1：单层或少量图层的简单动画和局部关键�
 
 重要时间段可用 Marker：
 ```text
-IN
-HOLD
-OUT
+入场｜IN
+停留｜HOLD
+出场｜OUT
 ```
 
 ### Keyframe Compression
