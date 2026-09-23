@@ -207,6 +207,8 @@ AI Tasks: 绑定 CTRL、表达式、批量扩展、材质迁移、命名整理
 
 M0 / 极简单 Patch 不需要机械输出完整块。
 
+复杂镜头、Previs 已通过、或要把完整方案交给 Codex 稳定执行时，不要继续把施工细节堆在自然语言方案里；升级为 `ae-build-spec.md`，形成结构化 Build Contract。
+
 ---
 
 ## 8｜设计者提醒
@@ -236,3 +238,20 @@ M0 / 极简单 Patch 不需要机械输出完整块。
 5. 自动化方便。
 
 第 5 条不能反过来支配前 4 条。
+
+
+---
+
+## 10｜Motion Primitive Vocabulary
+
+当需要描述可复用程序化动作时，优先使用 `../motion/motion-primitives.md` 的标准词汇，例如：
+`EASE / SPRING / FOLLOW / DRIFT / RECOIL / KINETIC / PATH_FOLLOW / STAGGER / SEQUENCE / RETIME`。
+
+方案至少说明：
+- Primary 还是 Secondary；
+- Keyframe / Expression / Hybrid；
+- 核心可调参数；
+- 哪些对象禁用该 Primitive；
+- 是否最终需要 Bake 为关键帧。
+
+不要用“弹性一点 / 丝滑一点 / 有点惯性”代替实现定义。
