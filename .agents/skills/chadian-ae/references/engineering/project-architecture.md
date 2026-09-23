@@ -1,4 +1,4 @@
-# Engineering｜Project Architecture
+# 工程｜项目结构（Project Architecture）
 
 ## 目标
 工程打开后，人和 AI 都能快速理解、快速改。
@@ -17,7 +17,7 @@
 
 复杂项目按实际需求调整，不机械套模板。
 
-## Precomp
+## 预合成（Precomp）
 一个视觉模块如果可以独立理解、移动、替换或复用，优先做独立预合成。
 
 不要：
@@ -25,19 +25,19 @@
 - 为每个小点都建预合成；
 - 深到用户要钻 5 层才能换一个常用素材。
 
-## Naming
+## 命名（Naming）
 尽量中文且语义明确：
 - 背景_主
 - 电脑_屏幕
 - 窗口_钢板
 - 标签_设备编号
 - 素材槽_驾驶室
-- CTRL_动画
+- 动画控制｜CTRL_MOTION
 
 避免：
 Shape Layer 1 / Null 3 / Comp 17。
 
-## Stable ID
+## 稳定 ID（Stable ID）
 重要对象 Comment：
 ```text
 AI_ID=window_steel_01
@@ -47,7 +47,7 @@ TYPE=replaceable
 
 名字给人看，ID 给 Agent / Script。
 
-## Parent / Null
+## 父子与空对象（Parent / Null）
 层级：
 ```text
 Layer 局部特殊动画
@@ -63,7 +63,7 @@ Layer 局部特殊动画
 
 详细规则只在 M2–M4 需要时读取：`../motion/motion-control-architecture.md`。
 
-## Motion Ownership
+## 动画职责归属（Motion Ownership）
 同一运动只保留一个主要负责人：
 - 场景整体位移 / 缩放 → Parent Null；
 - 多对象共享节奏 → Master Motion Channel；
