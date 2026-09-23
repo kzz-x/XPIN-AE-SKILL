@@ -203,7 +203,9 @@ AI Tasks: 表达式 / CTRL / 批量扩展 / 材质迁移 / 工程整理
 
 不需要写成长报告。
 
-如果路由为 HUMAN_MOTION_AI_ASSIST，应明确提醒用户：先锁定关键 Pose / Previs / Motion 参考，再进入 Codex 制作。
+如果路由为 HUMAN_MOTION_AI_ASSIST，应明确提醒用户：先锁定关键 Pose / Previs / Motion 参考，再进入 Codex 制作，并按需加载 `previs-first.md`。
+
+对于 HUMAN_DESIGN_AI_ENGINEER：如果 Motion taste / Camera / Typography 是主要难点、又没有成熟模板或已批准动画，同样优先做 Previs；如果结构与 Motion 已锁定，则直接进入 BUILD SPEC / 执行，不机械多做一步。
 
 ---
 
@@ -215,3 +217,19 @@ AI Tasks: 表达式 / CTRL / 批量扩展 / 材质迁移 / 工程整理
 - 不让 AI 重做用户已经设计好的 Motion；
 - 不把“更自动化”放在“更好看、好改”之前；
 - 不用 Authority 3 作为默认模式。
+
+
+---
+
+## 8｜Style / Truth Priority
+
+出现设计冲突时按以下优先级处理：
+
+1. 用户本轮明确要求；
+2. 本轮已确认 Reference / Handoff / Previs；
+3. 当前 AEP 真实实现；
+4. 当前项目 `house-style`；
+5. 已批准 Learned Library；
+6. Generic Skill Default。
+
+AI 不得用长期记忆覆盖当前工程已经成立的设计事实。
