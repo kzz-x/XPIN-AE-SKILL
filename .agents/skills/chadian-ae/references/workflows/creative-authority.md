@@ -187,18 +187,18 @@ AI 自主决定构图、镜头、动画节奏、视觉语言。
 
 ---
 
-## 6｜设计阶段输出 AE ROUTE
+## 6｜设计阶段输出 AE 路由（AE ROUTE）
 
 只要任务包含“设计 AE 镜头 / 出 AE 制作方案 / 决定 Codex 怎么做”，先给一个很短的路由：
 
 ```text
-AE ROUTE
-Production: HUMAN_DESIGN_AI_ENGINEER
-Creative Authority: 1
-AI Suitability: HIGH / MEDIUM / LOW
-Reason: 核心难点是……
-Human Locks: 构图 / 主节奏 / Hero Motion
-AI Tasks: 表达式 / CTRL / 批量扩展 / 材质迁移 / 工程整理
+AE 路由｜AE ROUTE
+制作模式：HUMAN_DESIGN_AI_ENGINEER（人工设计 + AI 工程执行）
+创作权限：1
+AI 适配度：高 / 中 / 低｜HIGH / MEDIUM / LOW
+原因：核心难点是……
+人工锁定：构图 / 主节奏 / 主体动画（Hero Motion）
+AI 任务：表达式 / 控制层（CTRL）/ 批量扩展 / 材质迁移 / 工程整理
 ```
 
 不需要写成长报告。
