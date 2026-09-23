@@ -40,6 +40,7 @@ Shape Layer 1 / Null 3 / Comp 17。
 ## 稳定 ID（Stable ID）
 重要对象 Comment：
 ```text
+说明=钢板内容窗口（可替换）
 AI_ID=window_steel_01
 ROLE=content_window
 TYPE=replaceable
