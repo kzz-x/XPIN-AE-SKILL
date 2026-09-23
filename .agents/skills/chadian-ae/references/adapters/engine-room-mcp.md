@@ -151,6 +151,44 @@ return withoutUndoGroup(function () {
 - 不要在 Raw `run_jsx` 里直接把 `comp.saveFrameToPng(...)` 当常规截图方案：它存在异步写盘 / 对话框等宿主边界。优先使用 Engine Room 的 `screenshot_frame / screenshot_layer`，由执行器负责等待 PNG 完整落盘与返回图像。
 - `run_jsx` 失败不会自动回滚已经落地的前半段；仍按 §6 的 Partial Write Safety 先看 diff / read-back，再决定 Patch。
 
+### ⚠️ 端口陷阱：7777 被别的 CEP 面板占用会让 MCP 永久卡死
+
+**现象**
+`check_setup` 报告面板健康，但每个 op 都失败：
+
+```text
+bridgeReachable  = responding on port 7799
+portAgreement    = tool calls are being sent to port 7777
+                   (port 7777 answered HTTP 404, which is not the panel),
+                   but the panel is answering on port 7799
+```
+
+**成因**
+服务端**只在启动时解析一次端口**：`pinnedPort() ?? portFile() ?? DEFAULT(7777)`。
+关闭 AE 会删掉端口文件，所以服务端若在「AE 已关闭」的时机启动，就会落到 7777。
+而 7777 常被另一个 CEP 扩展占用（典型是 Motion Bro：AE 与 PR 都装、端口写死 7777）。
+它**会应答但答错**（HTTP 404）—— 服务端把 404 当普通错误，**不触发重新发现**，
+于是永久卡在 7777，每次调用都失败。
+
+**为什么「先开 PR」会稳定复现**
+PR 先启动会改变 AE 面板的启动时机，让「服务端先于面板解析端口」这一幕必然发生。
+它的表现是「PR 一开，AE MCP 必挂」，但根因不在 PR。
+
+**修法（按推荐度）**
+
+1. **给服务端钉死端口**（一劳永逸）：面板侧与服务端侧钉同一个端口，服务端就再也不会去试 7777。
+   - OpenCode `~/.config/opencode/opencode.json`：
+     `"after-effects": { ..., "environment": { "AE_MCP_PORT": "7799" } }`
+   - Codex `~/.codex/config.toml`：`[mcp_servers.after-effects.env]` + `AE_MCP_PORT = "7799"`
+   - 面板侧：`~/.engineroom-ae-mcp/config.json` 的 `port` + `allowPortWalk: false`
+2. **腾空 7777**：关掉占用它的那个 CEP 面板。连接被**拒绝**会触发重新发现，
+   服务端会自己切到真正的面板端口。
+3. **重新连接 MCP**：让服务端重启并重新解析端口。
+
+**巡检动作**
+驱动 AE 前先看 `check_setup` 的 `portAgreement`，不要只看 `bridgeReachable` ——
+后者只说明面板活着，不说明请求发对了地方。
+
 ## 8｜撤销安全封存
 
 Engine Room 执行大型 BUILD / ASSET_REFACTOR 后：
