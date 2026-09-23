@@ -42,8 +42,54 @@
 - 需要给人看的名称可中文。
 - 对字体、插件、素材缺失必须容错。
 - 未实际检测到的插件或能力，不得声称已存在。
-- **Undo Safety**：大型 BUILD 不使用一个覆盖全工程的巨大 UndoGroup；按逻辑模块拆成少量可理解步骤。后续 PATCH 一次请求只做一个小型原子 Undo，禁止为改几个参数重跑完整 BUILD。
+- **Undo Safety**：大型 BUILD 不使用一个覆盖全工程的巨大 UndoGroup；默认在单次或少量执行中，脚本内部按约 3–6 个逻辑阶段建立独立 UndoGroup。禁止最外层再包一个覆盖全部 BUILD 的总 UndoGroup。后续 PATCH 一次请求只做一个小型原子 Undo，禁止为改几个参数重跑完整 BUILD。
+- **Undo 分组 ≠ 多轮 MCP**：不要仅为了拆 Undo 而增加 MCP 往返、重复读取真实状态或拆成大量 Agent 回合；能在一个 JSX 内完成的逻辑分组就留在同一脚本内部。
 - 每个 UndoGroup 必须可靠闭合；优先 `try / finally`，避免异常导致后续人工 Undo 行为异常。
+
+
+
+## Undo Finalization Gate｜撤销安全封存
+
+目标：大型 AI BUILD 完成后，把已经验收的结果变成新的工作起点，避免用户之后误按 Ctrl+Z 把整套 AI 构建撤回。
+
+### 触发
+默认考虑自动封存：
+- 大型 BUILD / NEW_PROJECT；
+- ASSET_REFACTOR / 结构重构；
+- 大型 JSX / 多模块创建；
+- 用户明确要求“做完就封存 / 清掉旧撤销”。
+
+默认不封存：
+- LOW 风险小 PATCH；
+- 单层 / 少量属性修改；
+- 试验性修改、Previs、尚未批准的视觉方案；
+- 用户明确要求保留 Undo。
+
+### Purge 前四项硬条件
+只有以下全部成立，才允许执行 `app.purge(PurgeTarget.UNDO_CACHES)`：
+1. 修改前恢复点已真实创建并验证可用；
+2. 本轮 BUILD 已完成必要的结构 / 表达式 / 素材 / 控制器 / 视觉验证，没有未处理错误；
+3. 当前正式工作 AEP 已成功保存，且没有把备份副本切成 Active Project；
+4. 清 Undo 前再次确认修改前恢复点仍存在。
+
+任一条件失败 → 不清 Undo；明确说明“已保存但未封存”的原因。
+
+### 顺序固定
+`Backup First → Build → Verify → Save → Re-check Backup → Purge Undo`
+
+禁止：
+- 先 Purge 再保存；
+- 仅因为调用过 `app.project.save()` 就假设保存成功；
+- 把 AE Auto-Save 当成默认可靠恢复点；
+- BUILD 中途报错后仍 Purge；
+- 小 PATCH 完成后自动 Purge；
+- Purge 后声称仍能撤销 Purge 前的操作。
+
+### 完成语义
+成功封存后可以说明：
+“当前大型 BUILD 已验证并保存，修改前恢复点仍存在，旧 Undo Cache 已清除；从现在开始的新 Ctrl+Z 只针对后续新操作。”
+
+没有实际执行并验证 Purge 时，不得声称“已清除撤销记录”。
 
 
 ## 中文优先的人机界面
