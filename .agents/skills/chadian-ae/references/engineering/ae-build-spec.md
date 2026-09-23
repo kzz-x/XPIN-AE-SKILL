@@ -1,4 +1,4 @@
-# Engineering｜AE BUILD SPEC
+# 工程｜AE 执行合同（AE BUILD SPEC）
 
 > 复杂 AE 任务在“设计方案”和“实际 MCP / JSX 执行”之间的结构化施工合同。它不是最终工程的数据库，也不是强制 JSON；目标是让 Codex 在执行前已经知道：什么锁定、什么可变、工程怎么搭、动作怎么实现、如何验收。
 
@@ -26,55 +26,49 @@
 ## 2｜最小字段
 
 ```text
-AE BUILD SPEC
+AE 执行合同｜AE BUILD SPEC
 
-TARGET
-- project / comp / fps / duration / aspect
+目标｜TARGET
+- 工程 / 合成 / 帧率 / 时长 / 画幅
 
-LOCKED
-- 用户已确认、不得擅自改的设计、参考、Pose、Timing、事实内容
+锁定项｜LOCKED
+- 用户已确认、不得擅自改的设计、参考、关键姿态（Pose）、时序（Timing）、事实内容
 
-SOURCE OF TRUTH
-- reference / previs / current AEP / house-style / learned card
+事实依据｜SOURCE OF TRUTH
+- 参考 / 预演（Previs）/ 当前 AEP / 频道规范 / 已批准学习卡
 
-STRUCTURE
-- root comp
-- precomps
-- important layers
-- control layers
+工程结构｜STRUCTURE
+- 根合成 / 预合成 / 重要图层 / 控制层
 
-ASSETS
-- real assets
-- placeholders
-- replaceable slots
-- dependencies
+素材｜ASSETS
+- 真实素材 / 占位素材 / 可替换素材槽 / 依赖
 
-RELATIONSHIPS
-- parent / follow / attach / target / connector / dynamic bounds
+关系｜RELATIONSHIPS
+- 父子 / 跟随 / 吸附 / 目标 / 连线 / 动态边界
 
-MOTION PHASES
-- frame/time ranges + semantic phase
+动画阶段｜MOTION PHASES
+- 帧或时间范围 + 中文语义阶段
 
-PRIMARY MOTION
-- real keyframes / graph / camera / path
+主动画｜PRIMARY MOTION
+- 真实关键帧 / 曲线 / 镜头 / 路径
 
-SECONDARY MOTION
-- expression / loop / wiggle / spring / follow-through
+次级动画｜SECONDARY MOTION
+- 表达式 / 循环 / 漂浮（wiggle）/ 弹性（spring）/ 跟随收尾
 
-MATERIAL
-- native effects / layer style / adjustment / plugin / blend
+材质｜MATERIAL
+- 原生效果 / 图层样式 / 调整层 / 插件 / 混合模式
 
-CONTROLS
-- only high-frequency controls
+控制项｜CONTROLS
+- 只暴露高频参数，用户可见名称中文优先
 
-HUMAN POLISH
-- deliberately retained manual adjustment points
+人工精修｜HUMAN POLISH
+- 明确保留给人工调整的点
 
-VERIFY
-- state checks + representative visual times
+验证｜VERIFY
+- 状态回读 + 代表性视觉时间点
 
-DO NOT
-- explicit anti-goals / forbidden rebuilds
+禁止项｜DO NOT
+- 明确禁止的做法 / 不允许的重建
 ```
 
 只有当前任务需要的字段才填写，不为了模板完整而制造废话。
@@ -89,7 +83,7 @@ BUILD SPEC 的作用是“声明目标结构”，不是每次把整个 Comp rep
 - 人工修改后 → 只 Patch 对应 section；
 - 不因为 Spec 存在就覆盖用户后来手调的内容。
 
-## 4｜Managed / Manual Boundary
+## 4｜AI / 人工边界（Managed / Manual Boundary）
 
 每个复杂 BUILD 应尽量区分：
 - `AI_MANAGED`：结构、批量层、可再生模块；
@@ -98,7 +92,7 @@ BUILD SPEC 的作用是“声明目标结构”，不是每次把整个 Comp rep
 
 可使用 Comment / AI_ID / ROLE / 文档记录表达边界。
 
-## 5｜Motion Phase Contract
+## 5｜动画阶段合同（Motion Phase Contract）
 
 复杂镜头优先把自然语言阶段转成明确时间：
 
@@ -106,7 +100,7 @@ BUILD SPEC 的作用是“声明目标结构”，不是每次把整个 Comp rep
 P01  000–018f  主体出现
 P02  016–034f  UI stagger
 P03  034–052f  状态切换
-P04  052–090f  HOLD / explain
+P04  052–090f  停留 / 说明｜HOLD / EXPLAIN
 ```
 
 允许 overlap，不要求阶段首尾严格串行。
