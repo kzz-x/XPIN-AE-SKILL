@@ -15,6 +15,8 @@ Mini 用于高频局部任务。不要为了一个小修改加载完整版；但
 
 如果用户要的是“AE 制作方案 / 从零镜头设计 / 判断 AI 该做到什么程度 / 模板视觉系统迁移”，这不是普通 Mini Patch：升级完整版，让 `creative-authority.md` 决定创作权限，并用 `ae-implementation-spec.md` 写清真实 AE 实现技法。
 
+如果任务是从零设计、中高视觉复杂度、2.5D/3D、口播转视觉，或构图 / 材质 / 光影明显决定质量，也不要在 Mini 里直接开做：升级完整版并走 **Visual Anchor Gate**。默认提醒用户先生成 / 确认参考图或关键帧图；**图不满意，先不做。** 已有明确参考 / Blockout / 已批准静帧则直接复用，不重复生图。
+
 ---
 
 ## 1｜先读后改：真实状态 > 提示词猜测
@@ -139,6 +141,8 @@ Mini 用于高频局部任务。不要为了一个小修改加载完整版；但
 
 普通改字、改色、改尺寸、已有动画小 Patch 不必额外搜索。若需要系统性参考搜索、复杂 Motion 或多种实现路线比较：
 → 升级完整版并加载 `workflows/reference-first.md`。
+
+如果不是“参考真实性”问题，而是**画面本身尚未锁定**（从零构图、空间、材质、口播转视觉），同样升级完整版，但改走 `workflows/visual-anchor.md`：先把关键帧图确认好，再写短执行 Prompt。
 
 ### Native / Relationship First
 创建或修改结构时快速判断：
@@ -429,6 +433,7 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 - 项目结构重构；
 - 整理历史 AEP / 半模板 / 小元素动画，使其变成人类易维护、AI 易读取、低 Token 快速 Patch 的标准化资产；
 - AE 制作方案 / 从零镜头设计 / AI 适用性与 Creative Authority 判断 / 模板视觉系统迁移；
+- Visual Anchor Gate：从零 / 中高视觉复杂度 / 口播转视觉但尚无已确认画面；
 - Motion-sensitive 镜头需要 Previs Gate、复杂 AE BUILD SPEC 或 Visual Feedback Loop；
 - 深度动画 QA / 全工程审计；
 - Mini Patch 已经明显变成“重做一个系统”。
