@@ -36,6 +36,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 不要默认退化成 `Shape + Text`；先做 Capability Preflight。
 - 优先选择最符合 AE 工作方式、最能保留可编辑性的实现。
 - AE26 中文版 / Windows；脚本底层优先稳定 `matchName`。
+- **中文优先的人机界面**：所有最终给用户看的工程名称、控制项、Marker、注释、Undo 名称、方案标题和验收说明默认中文；必须保留技术英文时追加中文说明。机器接口（如 `matchName`、API、Expression / JSX 标识符、插件固定参数）保持原值。
 - 默认不自动完整渲染视频；只做少量关键帧静帧验收。
 - 用户确认的视觉目标、事实内容和素材真实性，优先于“脚本更好写”。
 - **Reference First**：新视觉 / 新动画 / 复杂结构或真实性重要时，先用图片、视频、成熟动效、真实运动或可复用资产约束实现；静帧不能替代 Motion 参考。
