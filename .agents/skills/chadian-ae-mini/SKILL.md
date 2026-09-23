@@ -303,12 +303,15 @@ try {
 
 ### Undo Safety｜BUILD 分组，PATCH 原子撤销
 - 禁止把大型工程从创建到动画全部长期包进一个巨大 UndoGroup。
-- **BUILD**：按逻辑模块拆成少量独立 UndoGroup，通常 5–10 个即可，例如初始化 / 背景 / 主体 / 文字 / 动画 / 控制器 / 整理；不要细到每层、每关键帧一个 UndoGroup。
+- **BUILD**：默认优先单次或少量脚本执行，在脚本内部按约 3–6 个逻辑阶段拆独立 UndoGroup，例如基础结构 / 视觉元素 / 动画系统 / 材质效果 / 控制与整理；不要细到每层、每关键帧一个 UndoGroup。
+- **禁止最外层总 UndoGroup**：不能再用一个总 `beginUndoGroup()` 包住上述所有阶段，否则内部拆分仍可能失去意义。
+- **Undo 分组不等于多轮执行**：禁止仅为了拆 Undo 增加 MCP 往返、重复读工程或拆成大量 Agent 回合；优先在同一 JSX 中完成逻辑分组，节省 Token 与执行时间。
 - **PATCH**：一次用户修改 = 一个小 UndoGroup，只碰本次目标属性；修改字号、位置、速度等时禁止重跑完整 BUILD 脚本。
 - 每个 UndoGroup 使用清晰名称，如“修改标题字号”“调整主体位置”“创建文字模块”。
 - 所有 `beginUndoGroup()` 必须通过 `try / finally` 保证对应 `endUndoGroup()` 执行，避免异常后污染后续 Undo。
 - 能修改现有对象就不删除重建；避免一次 Ctrl+Z 把用户后续人工调整连同整套 AI 构建一起带走。
-- 大型 BUILD 完成并验证后，优先形成一个可靠工程检查点，再进入人工微调 / AI Patch 阶段。
+- 大型 BUILD 完成并验证后，若已确认“修改前恢复点存在 + 正式 AEP 保存成功”，可进入撤销安全封存：再次确认恢复点存在后执行 `app.purge(PurgeTarget.UNDO_CACHES)`。小 PATCH 禁止自动清 Undo。
+- Purge 任一前置条件失败、BUILD 报错、当前仍是试验 / Previs、或用户要求保留 Undo 时，不执行 Purge。
 
 JSX 规则：
 - 优先 `matchName`；
