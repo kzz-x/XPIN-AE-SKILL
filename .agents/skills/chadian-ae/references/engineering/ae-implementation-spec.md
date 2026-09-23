@@ -157,27 +157,27 @@ A 的结果依赖 B：
 
 ---
 
-## 6｜Control Surface 在设计阶段确定
+## 6｜控制面板（Control Surface）在设计阶段确定
 
 只暴露高频真正会改的参数。
 
 建议按需要拆：
-- `CTRL_GLOBAL`
-- `CTRL_LAYOUT`
-- `CTRL_MOTION`
-- `CTRL_STYLE`
-- `CTRL_MATERIAL`
-- `CTRL_CAMERA`
+- `全局控制｜CTRL_GLOBAL`
+- `布局控制｜CTRL_LAYOUT`
+- `动画控制｜CTRL_MOTION`
+- `样式控制｜CTRL_STYLE`
+- `材质控制｜CTRL_MATERIAL`
+- `镜头控制｜CTRL_CAMERA`
 
 常见可控项：
-- Duration / Speed；
-- Stagger / Delay；
-- Motion Strength；
-- Wiggle Frequency / Amplitude；
-- Overshoot / Settle；
-- Offset；
-- Color / Stroke / Shadow；
-- Blur / Glass / Distortion；
+- 时长 / 速度｜Duration / Speed；
+- 错帧 / 延迟｜Stagger / Delay；
+- 动画强度｜Motion Strength；
+- 漂浮频率 / 幅度｜Wiggle Frequency / Amplitude；
+- 过冲 / 收束｜Overshoot / Settle；
+- 偏移｜Offset；
+- 颜色 / 描边 / 阴影｜Color / Stroke / Shadow；
+- 模糊 / 玻璃 / 扭曲｜Blur / Glass / Distortion；
 - Plugin 的少量关键参数；
 - 全局开关。
 
@@ -192,17 +192,17 @@ A 的结果依赖 B：
 AE 制作方案中，对主要镜头至少给一个精简实现块：
 
 ```text
-AE IMPLEMENTATION
-Structure: 主体 Precomp + HUD Precomp + CTRL_MOTION
-Primary Motion: Position / Scale 真实关键帧，Graph Editor 精修
-Secondary Motion: 低频 wiggle Expression
-Settle: 轻微 spring，仅用于尾部
-Material: 复用 Liquid Glass Template 的现有 Effect / Plugin Chain
-Layer Style: Stroke + Inner Shadow + Highlight
-Relationship: HUD 跟随主体 Null；连线实时引用端点
-Controls: Duration / Stagger / Glass Amount / Wiggle Strength
-Editable by Human: 主 Timing、路径、Hero Pose
-AI Tasks: 绑定 CTRL、表达式、批量扩展、材质迁移、命名整理
+AE 实现说明｜AE IMPLEMENTATION
+工程结构：主体预合成 + HUD（界面信息）预合成 + 动画控制｜CTRL_MOTION
+主动画：位置（Position）/ 缩放（Scale）使用真实关键帧，曲线编辑器（Graph Editor）精修
+次级动画：低频漂浮（wiggle）表达式
+收束：轻微弹性（spring），仅用于尾部
+材质：复用液态玻璃模板（Liquid Glass Template）的现有效果 / 插件链
+图层样式：描边（Stroke）+ 内阴影（Inner Shadow）+ 高光（Highlight）
+关系：HUD（界面信息）跟随主体空对象（Null）；连线实时引用端点
+控制项：时长 / 错帧 / 玻璃强度 / 漂浮强度｜Duration / Stagger / Glass Amount / Wiggle Strength
+人工可调：主时序（Timing）、路径、主体关键姿态（Hero Pose）
+AI 任务：绑定控制层、表达式、批量扩展、材质迁移、中文命名整理
 ```
 
 M0 / 极简单 Patch 不需要机械输出完整块。
