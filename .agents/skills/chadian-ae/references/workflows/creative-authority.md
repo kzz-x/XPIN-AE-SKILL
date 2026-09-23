@@ -207,6 +207,8 @@ AI 任务：表达式 / 控制层（CTRL）/ 批量扩展 / 材质迁移 / 工�
 
 对于 HUMAN_DESIGN_AI_ENGINEER：如果 Motion taste / Camera / Typography 是主要难点、又没有成熟模板或已批准动画，同样优先做 Previs；如果结构与 Motion 已锁定，则直接进入 BUILD SPEC / 执行，不机械多做一步。
 
+如果核心问题首先是“画面长什么样”尚未锁定，而不是 Motion 本身：优先进入 `visual-anchor.md`。从零设计、中高视觉复杂度、口播转视觉、2.5D/3D 信息场默认先确定 Visual Anchor；**图不满意，先不做正式 BUILD。** Visual Anchor 通过后再判断是否还需要 Previs。
+
 ---
 
 ## 7｜禁止行为
