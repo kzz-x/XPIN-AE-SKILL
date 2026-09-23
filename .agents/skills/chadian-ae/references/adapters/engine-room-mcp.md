@@ -142,6 +142,15 @@ return withoutUndoGroup(function () {
 
 **Undo 架构验证不作为生产 BUILD 的破坏性必做步骤。** 需要验证该机制时，只在测试工程 / 新版本升级检查中人工确认一次 AE Edit 菜单和 Ctrl+Z 行为；生产工程不要为了“自检”主动撤销再重做。
 
+
+### Engine Room 特有脚本边界
+
+这些属于**当前 Engine Room 执行器行为**，不写进通用 AE26 Gotchas；版本升级后优先以 Engine Room 自身 Skill / Guide / tool schema 为准。
+
+- `app.executeCommand()` 依赖宿主焦点 / 当前选择，在 Bridge / MCP 环境可能静默无效；优先使用明确的 DOM / Engine Room API 等价操作，例如 `CompItem.duplicate()`、`layer.duplicate()`、原生 reorder 工具等。
+- 不要在 Raw `run_jsx` 里直接把 `comp.saveFrameToPng(...)` 当常规截图方案：它存在异步写盘 / 对话框等宿主边界。优先使用 Engine Room 的 `screenshot_frame / screenshot_layer`，由执行器负责等待 PNG 完整落盘与返回图像。
+- `run_jsx` 失败不会自动回滚已经落地的前半段；仍按 §6 的 Partial Write Safety 先看 diff / read-back，再决定 Patch。
+
 ## 8｜撤销安全封存
 
 Engine Room 执行大型 BUILD / ASSET_REFACTOR 后：
