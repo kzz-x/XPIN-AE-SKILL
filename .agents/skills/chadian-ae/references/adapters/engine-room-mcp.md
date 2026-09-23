@@ -87,42 +87,60 @@ Engine Room 写失败不代表“什么都没发生”。
 
 大型 BUILD 不使用“一个不可验证的巨大事务”覆盖全部施工，但也不要为了 Undo 分组机械拆成大量 MCP 往返。默认优先单次或少量执行调用：先 bounded read 确认状态，再让 JSX 在内部按约 3–6 个逻辑 UndoGroup 完成 BUILD，最后统一做必要的 diff / property read-back / visual check。只有确实需要中间验证或存在高风险边界时，才拆成多个 MCP 阶段。
 
-### ⚠️ 执行缺口：`run_jsx` 自带 Undo 组 → 必须用 `withoutUndoGroup`
+### ⚠️ Undo 执行缺口：`run_jsx` 默认外层组会吞掉内部阶段
 
-**这是最容易踩、而且后果最重的一条。**
+Engine Room 当前的 `run_jsx` 默认会在调用外层建立一个 UndoGroup。AE 的嵌套 UndoGroup 会并入外层，因此如果直接在默认 `run_jsx` 里再写 3–6 个 `app.beginUndoGroup()`，用户最终仍可能只得到一个「整场 BUILD」撤销步。
 
-`run_jsx` 在自己的外层**已经建立了一个 Undo 组**。所以直接在脚本里写多个
-`app.beginUndoGroup("阶段N")` **不会**产生多个独立撤销步 —— 最外层那个组会把它们全部吞掉。
-结果是「**一次 Ctrl+Z 撤掉整场 BUILD**」，而核心规则里要求的
-「BUILD 内部 3–6 个可独立撤销阶段」实际上没有生效。
+### 大型 BUILD：首选 `undoGroup:false`
 
-要真正实现分段撤销，必须显式取消 run_jsx 自带的外层组：
+当目标就是让一个 `run_jsx` 内部产生 3–6 个真正独立的撤销阶段时，**首选在工具调用层关闭默认外层组**：
+
+```text
+run_jsx({
+  ...,
+  undoGroup: false
+})
+```
+
+然后由 JSX 自己管理阶段：
+
+```js
+app.beginUndoGroup("阶段一｜基础结构");
+try { /* ... */ } finally { app.endUndoGroup(); }
+
+app.beginUndoGroup("阶段二｜视觉元素");
+try { /* ... */ } finally { app.endUndoGroup(); }
+
+app.beginUndoGroup("阶段三｜动画系统");
+try { /* ... */ } finally { app.endUndoGroup(); }
+```
+
+这样才与核心规则「BUILD 内约 3–6 个独立 UndoGroup、且不增加无意义 MCP 往返」一致。
+
+### `withoutUndoGroup(fn)`：只做局部 escape hatch
+
+`withoutUndoGroup(fn)` 的职责不同：当本次 `run_jsx` **仍保留默认外层 UndoGroup**，但某一个操作必须临时脱离该组时使用。典型例子是当前 Engine Room 已知的 `copyToComp` 限制。
+
+不要把「整个 BUILD 自己管理 3–6 个 UndoGroup」默认实现成：
 
 ```js
 return withoutUndoGroup(function () {
-  app.beginUndoGroup("阶段一 建节点");
-  try { /* ... */ } finally { app.endUndoGroup(); }
-
-  app.beginUndoGroup("阶段二 建连接线");
-  try { /* ... */ } finally { app.endUndoGroup(); }
-
-  app.beginUndoGroup("阶段三 打运动关键帧");
-  try { /* ... */ } finally { app.endUndoGroup(); }
-
-  return "完成";
+  // 整场 BUILD
 });
 ```
 
-要点：
-- `withoutUndoGroup(fn)` 只取消 **run_jsx 自带的那一层**，不影响内部 `beginUndoGroup`；
-- 阶段名用中文，用户在 Undo 菜单里能直接读懂（对应核心规则「中文优先的人机界面」）；
-- 顺序保持「**Backup → Build → Verify → Save → 再确认备份 → Purge**」，
-  Purge 与封存**不能**放进任何中间阶段组（见 §8）；
-- 小 PATCH（一次请求只改目标属性）**保持默认即可**，不必套 `withoutUndoGroup`；
-- 若脚本中途抛错，已闭合的阶段仍留在 Undo 历史里 —— 便于只回退出错的那一段。
+因为它会关闭当前外层组，并在结束后重新打开 Engine Room 的 continuation group；这不是大型 BUILD 自主管理完整 Undo 架构的最清晰入口。
 
-**写后自检（必做）**：BUILD 完成后在 AE 里按一次 `Ctrl+Z`，
-确认撤销的是**最后一个阶段**，而不是整场。若一次撤掉全部，说明分组没生效。
+要点：
+- 大型 BUILD 需要内部独立撤销阶段 → **`undoGroup:false` + JSX 内部 3–6 个 UndoGroup**；
+- 小 PATCH → 保持 `run_jsx` 默认单一 UndoGroup 即可；
+- 单个特殊操作必须暂时离开默认 UndoGroup → `withoutUndoGroup(fn)`；
+- 每个自建 UndoGroup 必须在**同一次 `run_jsx` / evalScript 调用内**打开并关闭，不能跨调用；
+- 阶段名按中文优先规则命名；
+- 顺序仍为「Backup → Build → Verify → Save → 再确认备份 → Purge」，Purge 不放入任何阶段组；
+- Engine Room 版本变化时，以当前工具 schema / 官方 guide 为准；若 `undoGroup:false` 不存在，不要猜替代行为。
+
+**Undo 架构验证不作为生产 BUILD 的破坏性必做步骤。** 需要验证该机制时，只在测试工程 / 新版本升级检查中人工确认一次 AE Edit 菜单和 Ctrl+Z 行为；生产工程不要为了“自检”主动撤销再重做。
 
 ## 8｜撤销安全封存
 
@@ -154,7 +172,7 @@ Engine Room 返回写入成功 ≠ 可以直接 Purge；必须通过上述验证
 详细闭环见：
 `../quality/visual-feedback-loop.md`
 
-## 9｜Engine Room 故障边界
+## 10｜Engine Room 故障边界
 
 - timeout：可能仍在 AE 执行，不立即重发。
 - connection refused：先走 Engine Room setup / discovery，不用重建工程。
@@ -163,7 +181,7 @@ Engine Room 返回写入成功 ≠ 可以直接 Purge；必须通过上述验证
 
 具体版本行为以 Engine Room 当前 Skill / Guide 为准；XPIN 不复制易过期的工具实现细节。
 
-## 10｜完成条件
+## 11｜完成条件
 
 Engine Room 执行结束至少确认：
 - diff 与预期修改范围一致；
