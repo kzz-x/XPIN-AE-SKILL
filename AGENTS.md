@@ -17,6 +17,7 @@
   - 使用完整版时仍然必须渐进式加载：先读其 `SKILL.md`，再按 Router 只读需要的 references / recipes。不要默认读取 `references/archive/ae-standard-v1.4-full.md`。
   - Motion System 位于 `references/motion/`，只有明显动画设计 / 编排 / 共享控制需求时才按 Router 加载。
   - AE 设计 / 制作方案先按需加载 `references/workflows/creative-authority.md` 判断 AI 应做到什么程度，再用 `references/engineering/ae-implementation-spec.md` 把关键帧 / Expression / Layer Style / Native Effect / Plugin / CTRL 等实现方法写进方案。
+  - Motion taste / Camera / Typography 是主难点时按需进入 `workflows/previs-first.md`；复杂执行前按需生成 `engineering/ae-build-spec.md`；使用 Engine Room MCP 时按需加载 `adapters/engine-room-mcp.md`。
 
 ## Routing rules
 
@@ -36,3 +37,10 @@
 14. **Design Includes Implementation**：AE 制作方案不能只写画面和动作结果；应按需明确主 Motion 用关键帧还是 Expression、哪些持续行为用 wiggle / loop / spring / 距离驱动、Layer Style / Native Effect / Plugin 怎么用、控制层暴露什么、哪些必须保留人工 Graph 调整。详细规则按 Router 加载 `engineering/ae-implementation-spec.md`。
 15. **来自差点后期的 Handoff**：若上游来自 `kzz-x/chadian-post-GTP-project`，把其已确认的镜头目标、构图、参考、素材、时长/画幅和锁定约束视为输入，不重新从零发散视觉方案。差点AE负责把它转成可执行 AE 方案/工程；仅在 AE 可实现性、工程安全或素材条件确有冲突时提出调整。
 16. **AE Project Learning**：用户说“学习这个 AE 工程 / 学一下这个 AEP / 把这个镜头的构图、动画、材质学下来”等时，直接升级完整版并走 `recipes/learn-from-ae-project.md`。学习阶段默认只读，只分析用户指定资产根合成及必要依赖；先生成候选 Learning Pack，不得自动写入 Skill。写入 `references/learned/` 或修改核心规则前，必须先向用户展示候选规律、建议作用域与写入位置，并明确询问“哪些要加入、怎么加入、并存/合并/覆盖哪一种”。只有用户明确确认后才能晋升；后续 learned 内容继续按 Index → 相关卡片渐进读取。
+
+
+17. **Previs Before Polish**：Hero / 品牌 Motion / Camera / 高级 Typography 等 Motion-sensitive 镜头，如果没有成熟模板或已锁定动画，优先先做灰盒 Previs，确认构图、Pose、节奏、Camera、Hold 后再工程化和上材质。
+18. **Build Contract**：复杂完整镜头、多模块、M2–M4、或“给 Codex 完整执行方案”时，设计与执行之间按需建立 `AE BUILD SPEC`；明确 LOCKED、STRUCTURE、RELATIONSHIPS、MOTION PHASES、PRIMARY/SECONDARY、CONTROLS、HUMAN POLISH、VERIFY、DO NOT。
+19. **Engine Room Adapter**：当前执行底座是 Engine Room 时，XPIN 负责设计 / 路由，Engine Room 负责真实状态与执行；优先 bounded read、stable id、snapshot→diff、property read-back。写失败可能已经部分落地，禁止原样盲目重跑。
+20. **Visual Feedback Loop**：明显视觉变化使用少量代表性关键 Pose / Contact Sheet 做 See→Measure→Correct；截图只定位视觉症状，真实 AE 数据用于定位原因。连续 Motion 的最终手感仍需 AE 前台人工预览。
+21. **Learned ≠ Pattern**：`references/learned/` 保存已批准审美与规律；`references/patterns/` 保存已验证 Rig / Expression / JSX / Layout / Build Pattern。成功执行不自动晋升，长期写入仍需用户批准。
