@@ -1,4 +1,4 @@
-# Engineering｜Project Context Map
+# 工程｜项目上下文地图（Project Context Map）
 
 > 用于整理后的历史 AEP、长期模板或持续迭代项目。目标是给 AI 一个极短 Fast Path，避免每次都重新扫描整个工程。
 
@@ -24,51 +24,51 @@ XPIN 不强制具体目录，优先尊重项目已有结构。
 ## 3｜最小内容
 
 ```text
-PROJECT / ASSET
-ROOT COMP
+项目 / 资产｜PROJECT / ASSET
+根合成｜ROOT COMP
 
-IMPORTANT IDS
-- main subject
-- title
-- camera rig
-- control layers
+重要 ID｜IMPORTANT IDS
+- 主体｜main subject
+- 标题｜title
+- 镜头控制｜camera rig
+- 控制层｜control layers
 
-CONTROLLERS
-- CTRL_MOTION
-- CTRL_STYLE
-- CTRL_MATERIAL
+控制器｜CONTROLLERS
+- 动画控制｜CTRL_MOTION
+- 样式控制｜CTRL_STYLE
+- 材质控制｜CTRL_MATERIAL
 
-ASSET SLOTS
-- product
-- footage
-- icon / logo
+素材槽｜ASSET SLOTS
+- 产品｜product
+- 实拍素材｜footage
+- 图标 / Logo｜icon / logo
 
-DEPENDENCIES
-- plugins
-- fonts
-- external files
+依赖｜DEPENDENCIES
+- 插件｜plugins
+- 字体｜fonts
+- 外部文件｜external files
 
-FAST PATCH
+快速修改｜FAST PATCH
 - 改文案 → ...
 - 改颜色 → ...
 - 改整体时长 → ...
 - 换素材 → ...
 
-MANUAL ZONES
-- Hero Graph
-- Camera Path
-- Typography polish
+人工区域｜MANUAL ZONES
+- 主体曲线｜Hero Graph
+- 镜头路径｜Camera Path
+- 文字精修｜Typography polish
 
-KNOWN RISKS
-- fragile expressions
-- missing plugin fallback
+已知风险｜KNOWN RISKS
+- 脆弱表达式｜fragile expressions
+- 插件缺失回退方案｜missing plugin fallback
 ```
 
 ## 4｜读取策略
 
 未来打开该资产时：
 1. Context Map；
-2. `00_CTRL` / 主要控制入口；
+2. 主要控制入口（优先中文命名；旧资产可能仍为 `00_CTRL`）；
 3. 当前目标 Layer；
 4. 直接依赖；
 5. 只有遇到不一致 / 缺失 / 深度重构才扩大读取范围。
