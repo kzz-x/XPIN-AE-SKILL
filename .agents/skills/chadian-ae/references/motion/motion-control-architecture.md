@@ -1,4 +1,4 @@
-# Motion｜Control Architecture
+# 动画｜控制架构（Control Architecture）
 
 > 目标：让复杂动画既能统一控制，又保留局部特殊性；优先建立关系与共享控制，不把同类动画复制成几十层散落关键帧。
 
@@ -42,10 +42,10 @@
 
 推荐：
 ```text
-CTRL_动画
+动画控制｜CTRL_MOTION
   Master Progress
-  In Progress
-  Out Progress
+  入场进度｜In Progress
+  出场进度｜Out Progress
   Motion Strength
   Speed / Duration Scale
   Stagger
@@ -130,7 +130,7 @@ localProgress = remap(masterProgress, start, start + duration)
 优先级：
 1. Relationship / Constraint → Parent / Attach / Target / Expression / Rig。
 2. 镜头 / 场景整体运动 → Parent Null / Rig。
-3. 多对象共享逻辑 → CTRL_动画 + Expression / Master Progress。
+3. 多对象共享逻辑 → 动画控制｜CTRL_MOTION + Expression / Master Progress。
 4. 重复复杂模块 → Precomp 内部一次制作 + 外部 Time Remap / Offset。
 5. 单对象特例 → Layer 本地 Keyframe。
 
