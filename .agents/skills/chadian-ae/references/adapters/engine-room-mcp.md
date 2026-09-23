@@ -85,9 +85,23 @@ Engine Room 写失败不代表“什么都没发生”。
 - DOM 缺口 / 参数化复杂结构 → `run_jsx`；
 - 不因为 JSX 能写就绕过已有原生工具。
 
-大型 BUILD 不追求“一个巨大调用完成全部”；按可验证模块分阶段构建。
+大型 BUILD 不使用“一个不可验证的巨大事务”覆盖全部施工，但也不要为了 Undo 分组机械拆成大量 MCP 往返。默认优先单次或少量执行调用：先 bounded read 确认状态，再让 JSX 在内部按约 3–6 个逻辑 UndoGroup 完成 BUILD，最后统一做必要的 diff / property read-back / visual check。只有确实需要中间验证或存在高风险边界时，才拆成多个 MCP 阶段。
 
-## 8｜视觉检查
+## 8｜撤销安全封存
+
+Engine Room 执行大型 BUILD / ASSET_REFACTOR 后：
+- 先确认没有 partial write 未处理；
+- 完成必要 diff / property read-back；
+- 确认修改前恢复点仍存在；
+- 保存当前正式 AEP 并确认成功；
+- 再次确认恢复点；
+- 最后才可通过受控 JSX 执行 `app.purge(PurgeTarget.UNDO_CACHES)`。
+
+小 PATCH 不 Purge。
+Engine Room 返回写入成功 ≠ 可以直接 Purge；必须通过上述验证。
+若 Purge 执行结果无法可靠确认，不得向用户声称“撤销缓存已清除”。
+
+## 9｜视觉检查
 
 不要把 screenshot 当持续逐帧反馈。
 
