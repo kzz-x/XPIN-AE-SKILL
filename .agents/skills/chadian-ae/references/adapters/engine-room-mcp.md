@@ -151,43 +151,135 @@ return withoutUndoGroup(function () {
 - 不要在 Raw `run_jsx` 里直接把 `comp.saveFrameToPng(...)` 当常规截图方案：它存在异步写盘 / 对话框等宿主边界。优先使用 Engine Room 的 `screenshot_frame / screenshot_layer`，由执行器负责等待 PNG 完整落盘与返回图像。
 - `run_jsx` 失败不会自动回滚已经落地的前半段；仍按 §6 的 Partial Write Safety 先看 diff / read-back，再决定 Patch。
 
-### ⚠️ 端口陷阱：7777 被别的 CEP 面板占用会让 MCP 永久卡死
+### ⚠️ 端口陷阱：旧 op port 被非 AE MCP HTTP 服务占用时，自动重发现可能失效
 
 **现象**
-`check_setup` 报告面板健康，但每个 op 都失败：
+
+`check_setup` 能看到真正的 AE MCP Panel 已经健康运行在端口 Y，但实际 tool call 仍发往旧端口 X；X 上恰好有另一个本地 HTTP 服务，因此调用返回 HTTP 404、非预期 JSON 或其他普通错误，而不是 connection refused。
+
+典型诊断形态：
 
 ```text
-bridgeReachable  = responding on port 7799
-portAgreement    = tool calls are being sent to port 7777
-                   (port 7777 answered HTTP 404, which is not the panel),
-                   but the panel is answering on port 7799
+bridgeReachable = Panel 正在端口 Y 正常响应
+portAgreement   = tool calls 仍指向端口 X
 ```
 
-**成因**
-服务端**只在启动时解析一次端口**：`pinnedPort() ?? portFile() ?? DEFAULT(7777)`。
-关闭 AE 会删掉端口文件，所以服务端若在「AE 已关闭」的时机启动，就会落到 7777。
-而 7777 常被另一个 CEP 扩展占用（典型是 Motion Bro：AE 与 PR 都装、端口写死 7777）。
-它**会应答但答错**（HTTP 404）—— 服务端把 404 当普通错误，**不触发重新发现**，
-于是永久卡在 7777，每次调用都失败。
+### 成因
 
-**为什么「先开 PR」会稳定复现**
-PR 先启动会改变 AE 面板的启动时机，让「服务端先于面板解析端口」这一幕必然发生。
-它的表现是「PR 一开，AE MCP 必挂」，但根因不在 PR。
+Engine Room 启动时会根据：
 
-**修法（按推荐度）**
+```text
+AE_MCP_PORT（若设置）
+→ port file
+→ 默认端口 7777
+```
 
-1. **给服务端钉死端口**（一劳永逸）：面板侧与服务端侧钉同一个端口，服务端就再也不会去试 7777。
-   - OpenCode `~/.config/opencode/opencode.json`：
-     `"after-effects": { ..., "environment": { "AE_MCP_PORT": "7799" } }`
-   - Codex `~/.codex/config.toml`：`[mcp_servers.after-effects.env]` + `AE_MCP_PORT = "7799"`
-   - 面板侧：`~/.engineroom-ae-mcp/config.json` 的 `port` + `allowPortWalk: false`
-2. **腾空 7777**：关掉占用它的那个 CEP 面板。连接被**拒绝**会触发重新发现，
-   服务端会自己切到真正的面板端口。
-3. **重新连接 MCP**：让服务端重启并重新解析端口。
+确定初始 op port。
 
-**巡检动作**
-驱动 AE 前先看 `check_setup` 的 `portAgreement`，不要只看 `bridgeReachable` ——
-后者只说明面板活着，不说明请求发对了地方。
+当前版本**不是“一次确定后永不重新发现”**：
+- 当 tool call 遇到 connection refused / unreachable 时，服务端会重新探测候选端口；
+- 如果找到另一个真正回答 AE MCP health 的端口，会自动切换并安全重发一次；
+- timeout 不会自动重发，因为请求可能已经进入 AE。
+
+真正的盲区是：
+
+> **旧 op port 虽然不是 AE MCP Panel，但上面有其他 HTTP 服务正常响应。**
+
+这时请求并没有发生 connection refused，因此可能被包装成普通 `AeError` / 非 JSON / HTTP 错误，而**没有进入现有的 port rediscovery 路径**。于是 `check_setup` 能看到 Panel 在 Y，但实际 op 仍持续发往 X。
+
+### 关于 Premiere / 其他 CEP
+
+如果当前机器上，先启动 Premiere 会同时启动某个占用目标端口的 CEP / 本地 HTTP 服务，那么“先开 PR → 再开 AE”**可能稳定触发**这个问题。
+
+但：
+- **Premiere 本身不是根因**；
+- 也不要把某个具体插件（例如 Motion Bro）写成通用结论；
+- 真正根因是：**当前缓存的 op port 被“不是 AE MCP、但会正常响应 HTTP”的程序占用，而 AE MCP Panel 已在另一个端口。**
+
+具体占用者以当前机器实测为准。
+
+### 修复顺序
+
+#### A｜先诊断
+
+1. 运行 `check_setup`；
+2. 同时看 `bridgeReachable` 和 `portAgreement`；
+3. 如果 Panel 在 Y，而 tool calls 仍指向 X，先按“port disagreement”处理，不要直接重装 / 重启 AE。
+
+#### B｜优先恢复
+
+1. 重新连接 / 重启 **MCP Server**，让它重新读取当前 port file；
+2. 再运行一次 `check_setup`；
+3. 只有 `portAgreement` 一致后，才继续 AE 写操作。
+
+Panel 已经健康运行时，**不要优先重启 After Effects**；这会打断用户工作，而且通常不是根因。
+
+#### C｜长期重复冲突时，再考虑固定专用端口
+
+只有已经确认某个端口长期空闲，并且确实希望固定 Engine Room 时，才同时配置：
+
+服务端：
+
+```text
+AE_MCP_PORT=<确认空闲的端口>
+```
+
+Panel：
+
+```json
+{
+  "port": 7799,
+  "allowPortWalk": false
+}
+```
+
+Windows 的 Panel 配置文件：
+
+```text
+%USERPROFILE%\.engineroom-ae-mcp\config.json
+```
+
+Unix 风格路径：
+
+```text
+~/.engineroom-ae-mcp/config.json
+```
+
+**重要区别：**
+- `AE_MCP_PORT` 是服务端的**硬 pin**。一旦设置，服务端不会自动寻找其他端口；
+- Panel 的 `config.json.port` 是**起始绑定端口**，不是绝对硬锁；
+- `allowPortWalk:false` 主要控制“目标端口被另一个 AE MCP Panel 占用”时是否绕过去；如果目标端口被**非 AE MCP 服务**占用，Panel 仍可能向后寻找空闲端口。
+
+因此固定端口前必须确认该端口真的空闲。否则可能出现：
+
+```text
+Panel：7799 被其他程序占用 → 自动走到 7800
+Server：AE_MCP_PORT=7799 → 永远只打 7799
+```
+
+这会把本来可恢复的端口漂移变成真正的硬失配。
+
+### 判断表
+
+| 情况 | 优先处理 |
+|---|---|
+| op port X connection refused，Panel 在 Y | 重试一次；Engine Room 通常可自动 rediscover |
+| op port X 有其他 HTTP 服务响应，Panel 在 Y | 重新连接 MCP Server，再检查 `portAgreement` |
+| `AE_MCP_PORT=X`，但 Panel 在 Y | 修改或取消 pin，再重新连接 MCP Server |
+| Panel 本身没有运行 / 没有任何端口响应 | 进入 Panel / AE setup 诊断 |
+| 同一端口冲突长期重复 | 确认空闲端口后，再考虑 Panel + Server 同时固定 |
+
+### 巡检原则
+
+驱动 AE 前如果怀疑连接异常：
+- 不要只看 `bridgeReachable`；
+- 必须同时看 `portAgreement`；
+- `bridgeReachable` 只说明“某个 Panel 活着”；
+- `portAgreement` 才说明“实际 tool calls 是否会发到它那里”。
+
+**核心记忆：**
+
+> Connection refused 可以触发 Engine Room 自动找新端口；错误端口如果被其他 HTTP 服务正常占用，反而可能绕过 rediscovery。遇到 `bridgeReachable` 与 `portAgreement` 不一致时，优先重新连接 MCP Server；长期冲突才考虑 pin，而且 pin 前必须确认端口真的空闲。
 
 ## 8｜撤销安全封存
 
