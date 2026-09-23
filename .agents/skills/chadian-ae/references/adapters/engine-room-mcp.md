@@ -87,6 +87,43 @@ Engine Room 写失败不代表“什么都没发生”。
 
 大型 BUILD 不使用“一个不可验证的巨大事务”覆盖全部施工，但也不要为了 Undo 分组机械拆成大量 MCP 往返。默认优先单次或少量执行调用：先 bounded read 确认状态，再让 JSX 在内部按约 3–6 个逻辑 UndoGroup 完成 BUILD，最后统一做必要的 diff / property read-back / visual check。只有确实需要中间验证或存在高风险边界时，才拆成多个 MCP 阶段。
 
+### ⚠️ 执行缺口：`run_jsx` 自带 Undo 组 → 必须用 `withoutUndoGroup`
+
+**这是最容易踩、而且后果最重的一条。**
+
+`run_jsx` 在自己的外层**已经建立了一个 Undo 组**。所以直接在脚本里写多个
+`app.beginUndoGroup("阶段N")` **不会**产生多个独立撤销步 —— 最外层那个组会把它们全部吞掉。
+结果是「**一次 Ctrl+Z 撤掉整场 BUILD**」，而核心规则里要求的
+「BUILD 内部 3–6 个可独立撤销阶段」实际上没有生效。
+
+要真正实现分段撤销，必须显式取消 run_jsx 自带的外层组：
+
+```js
+return withoutUndoGroup(function () {
+  app.beginUndoGroup("阶段一 建节点");
+  try { /* ... */ } finally { app.endUndoGroup(); }
+
+  app.beginUndoGroup("阶段二 建连接线");
+  try { /* ... */ } finally { app.endUndoGroup(); }
+
+  app.beginUndoGroup("阶段三 打运动关键帧");
+  try { /* ... */ } finally { app.endUndoGroup(); }
+
+  return "完成";
+});
+```
+
+要点：
+- `withoutUndoGroup(fn)` 只取消 **run_jsx 自带的那一层**，不影响内部 `beginUndoGroup`；
+- 阶段名用中文，用户在 Undo 菜单里能直接读懂（对应核心规则「中文优先的人机界面」）；
+- 顺序保持「**Backup → Build → Verify → Save → 再确认备份 → Purge**」，
+  Purge 与封存**不能**放进任何中间阶段组（见 §8）；
+- 小 PATCH（一次请求只改目标属性）**保持默认即可**，不必套 `withoutUndoGroup`；
+- 若脚本中途抛错，已闭合的阶段仍留在 Undo 历史里 —— 便于只回退出错的那一段。
+
+**写后自检（必做）**：BUILD 完成后在 AE 里按一次 `Ctrl+Z`，
+确认撤销的是**最后一个阶段**，而不是整场。若一次撤掉全部，说明分组没生效。
+
 ## 8｜撤销安全封存
 
 Engine Room 执行大型 BUILD / ASSET_REFACTOR 后：
