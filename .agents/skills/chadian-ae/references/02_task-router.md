@@ -63,6 +63,8 @@
 - `workflows/hybrid.md`
 - `mcp-direct-control.md`
 - `jsx-generation.md`
+- 当前 MCP 为 Engine Room → 增量加载 `adapters/engine-room-mcp.md`
+- Hybrid 中的 Raw JSX 若命中上方 **AE26 Scripting Gotchas Trigger** → 追加 `engineering/ae26-scripting-gotchas.md`
 - 只加载本任务涉及模块
 
 ## F｜COMPLEX_3D
