@@ -416,6 +416,7 @@ Mini 不负责硬扛复杂任务。出现以下任一情况，切完整版并按
 - 项目结构重构；
 - 整理历史 AEP / 半模板 / 小元素动画，使其变成人类易维护、AI 易读取、低 Token 快速 Patch 的标准化资产；
 - AE 制作方案 / 从零镜头设计 / AI 适用性与 Creative Authority 判断 / 模板视觉系统迁移；
+- Motion-sensitive 镜头需要 Previs Gate、复杂 AE BUILD SPEC 或 Visual Feedback Loop；
 - 深度动画 QA / 全工程审计；
 - Mini Patch 已经明显变成“重做一个系统”。
 
