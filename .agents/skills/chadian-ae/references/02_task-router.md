@@ -34,6 +34,21 @@
 - 相关工程模块
 - `engineering/expressions-and-compatibility.md`
 
+### AE26 Scripting Gotchas Trigger
+仅在以下任一情况追加：
+`engineering/ae26-scripting-gotchas.md`
+
+- Raw JSX 直接操作 Shape Contents / indexed `addProperty`；
+- Parent / Rig 坐标空间、2.5D / 3D 父子换算；
+- Repeater 级联 / Shape 结构；
+- Layer reorder；
+- KeyframeEase / temporal ease；
+- 报错包含 `Object is invalid`、非法保留字，或出现明显“脚本成功但结构 / 坐标不对”的宿主行为。
+
+普通文字 / 颜色 / Transform Patch、已有原生 MCP 工具可直接完成的操作，不加载 Gotchas。
+
+若当前执行底座为 Engine Room，其工具自身特有行为仍以 `adapters/engine-room-mcp.md` 为准，不把执行器版本细节塞进通用 Gotchas。
+
 若 JSX 包含复杂共享动画，不要因为“脚本能批量打关键帧”就复制动画；按 Motion Router / Relationship Trigger 加载对应模块。
 
 ## D｜DIRECT_MCP
