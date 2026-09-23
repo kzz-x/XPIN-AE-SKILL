@@ -44,3 +44,4 @@
 19. **Engine Room Adapter**：当前执行底座是 Engine Room 时，XPIN 负责设计 / 路由，Engine Room 负责真实状态与执行；优先 bounded read、stable id、snapshot→diff、property read-back。写失败可能已经部分落地，禁止原样盲目重跑。
 20. **Visual Feedback Loop**：明显视觉变化使用少量代表性关键 Pose / Contact Sheet 做 See→Measure→Correct；截图只定位视觉症状，真实 AE 数据用于定位原因。连续 Motion 的最终手感仍需 AE 前台人工预览。
 21. **Learned ≠ Pattern**：`references/learned/` 保存已批准审美与规律；`references/patterns/` 保存已验证 Rig / Expression / JSX / Layout / Build Pattern。成功执行不自动晋升，长期写入仍需用户批准。
+22. **Chinese-First Human Interface（中文优先的人机界面）**：凡最终由用户在 AE 工程、控制面板、Marker、注释、Undo、执行方案或验收结果中直接阅读的内容，默认中文优先。新建的合成 / 文件夹 / 图层 / 预合成 / Null / Camera / Light / 控制器 / 自定义 Effect 名 / Placeholder / Marker / Essential Graphics 名称等，优先使用清晰中文语义；技术英文必须保留时写成“中文｜English”或“English（中文说明）”，不得留下无解释的英文堆叠。底层 `matchName`、API、Expression / JSX 标识符、插件固定参数、文件扩展名等机器接口保持原值，避免为了汉化破坏兼容性。已有工程做普通 Patch 时不因本规则擅自批量重命名；新建对象和明确的整理 / 重构任务按中文优先执行。
