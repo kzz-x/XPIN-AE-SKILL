@@ -65,7 +65,7 @@
 在确认依赖后：
 - 清理明确无用 / 重复 / 废弃对象；
 - 统一合成、图层、控制器命名；
-- 按 BG / SOURCE / GRAPHIC / TEXT / FX / CTRL / OUTPUT 等角色整理；
+- 内部 `ROLE` 可按 BG / SOURCE / GRAPHIC / TEXT / FX / CTRL / OUTPUT 等稳定代码整理；**用户可见的文件夹 / 合成 / 图层名称仍必须中文优先**，必要时写成 `中文｜ROLE_CODE`；
 - 减少无意义多层嵌套，但不为了“扁平”破坏合理预合成；
 - 不依赖 Layer Index 定位关键对象；
 - 关键对象优先保留稳定名称 / AI_ID / ROLE。
