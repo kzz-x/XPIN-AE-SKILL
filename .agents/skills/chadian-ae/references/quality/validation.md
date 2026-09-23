@@ -67,3 +67,27 @@ M2–M4 或用户明确要求深度动画验收时，追加读取：
 开场 / 运动中间态 / Hero / 最终 / 必要的转场状态。
 
 静帧只能检查 staging / 状态 / 构图；Timing、Spacing、Weight、Continuity、Relationship 稳定性仍需在 AE 前台连续预览或实际修改目标做验证。
+
+
+## Undo Finalization Validation｜撤销封存验收
+
+仅大型 BUILD / NEW_PROJECT / ASSET_REFACTOR / 结构重构需要检查；普通小 PATCH 不做自动 Purge。
+
+执行 `app.purge(PurgeTarget.UNDO_CACHES)` 前必须逐项确认：
+- 修改前恢复点真实存在，并且对应本轮修改前状态；
+- 当前工作 Project 仍是正式工程，不是备份副本；
+- BUILD 没有未处理异常或部分写入状态；
+- 目标结构、关键表达式、素材依赖、控制器和必要视觉检查已经通过；
+- 当前正式 AEP 已成功保存；
+- 清 Undo 前再次确认恢复点仍可用；
+- 用户没有要求保留 Undo；
+- 当前不是实验 / Previs / 尚待确认的版本。
+
+任何一项无法确认：
+**停止 Purge。**
+可以保留当前已完成工程，但必须明确报告“未执行撤销封存”以及具体原因。
+
+Purge 后验证：
+- 不再声称 Purge 前操作仍可通过 Ctrl+Z 恢复；
+- 后续 PATCH 应重新正常积累新的 Undo 历史；
+- 大回滚路径指向已验证的 AEP 恢复点，而不是 Undo History。
