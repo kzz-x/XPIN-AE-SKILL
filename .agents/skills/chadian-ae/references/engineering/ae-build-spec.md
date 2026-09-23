@@ -67,6 +67,12 @@ AE 执行合同｜AE BUILD SPEC
 验证｜VERIFY
 - 状态回读 + 代表性视觉时间点
 
+撤销策略｜UNDO STRATEGY
+- BUILD 默认单次 / 少量执行；内部约 3–6 个逻辑 UndoGroup
+- 禁止最外层总 UndoGroup
+- 小 PATCH 保留 Undo
+- 大型 BUILD 只有在恢复点与正式保存都验证成功后才允许 Purge Undo Cache
+
 禁止项｜DO NOT
 - 明确禁止的做法 / 不允许的重建
 ```
@@ -130,7 +136,22 @@ BUILD SPEC 必须与 `ae-implementation-spec.md` 一致：
 - 哪些 Motion 必须用户 AE 前台连续播放判断；
 - 哪些属于人工 Polish，不以自动 QA 判定“完成”。
 
-## 8｜项目侧保存
+## 8｜撤销封存计划
+
+复杂 BUILD 在执行前就明确：
+- 本任务是否属于大型 BUILD，需要完成后封存 Undo；
+- 修改前恢复点如何建立与验证；
+- BUILD 内部准备拆成哪 3–6 个逻辑 UndoGroup；
+- 是否可以在单次 JSX 内完成，避免无意义 MCP 往返；
+- 哪些验证通过后才能保存并 Purge；
+- 哪些情况必须保留 Undo。
+
+默认顺序：
+`Backup → Build → Verify → Save → Re-check Backup → Purge Undo`
+
+小 PATCH 不进入该流程。
+
+## 9｜项目侧保存
 
 当 BUILD SPEC 对后续持续修改明显有价值时，可保存到项目侧文档，例如：
 - `_ae/specs/<shot>.build.md`
@@ -138,7 +159,7 @@ BUILD SPEC 必须与 `ae-implementation-spec.md` 一致：
 
 不要强制所有临时任务落文件；只有可复用、长期 Patch 的镜头值得保存。
 
-## 9｜最终目标
+## 10｜最终目标
 
 BUILD SPEC 应让一个新的执行 Agent 在不重新发散创意的情况下回答：
 
