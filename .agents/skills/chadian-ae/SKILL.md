@@ -128,6 +128,7 @@ M2–M4 额外验证：
 - 工程规范：`references/engineering/`
   - AE 设计实现说明：`references/engineering/ae-implementation-spec.md`（需要把设计翻译成 AE 技法时加载）
   - 复杂执行合同：`references/engineering/ae-build-spec.md`（复杂镜头 / Previs 通过 / 交给 Codex 执行时按需）
+  - AE26 / ExtendScript 实战陷阱：`references/engineering/ae26-scripting-gotchas.md`（仅命中 Router 的 Raw JSX / Shape / Parent / Repeater / KeyframeEase / 宿主故障 Trigger 时加载）
   - 长期资产 Fast Path：`references/engineering/project-context-map.md`（模板 / 老工程整理时按需）
 - Motion System：`references/motion/`（M2–M4 按需）
 - 高级能力：`references/capabilities/`

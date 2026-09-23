@@ -118,6 +118,11 @@
 
 根据 Task Router 加载对应 Workflow。
 
+Raw JSX / AE26 宿主陷阱按需读取：
+`engineering/ae26-scripting-gotchas.md`
+
+仅在 Shape Contents / `addProperty`、Parent / 坐标空间、Repeater、图层重排、KeyframeEase，或对应脚本故障命中时加载；普通 MCP Patch 不读取。
+
 ## 插件
 只在：
 1. 原生不足；

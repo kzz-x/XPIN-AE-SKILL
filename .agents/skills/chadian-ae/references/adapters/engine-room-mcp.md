@@ -87,6 +87,70 @@ Engine Room 写失败不代表“什么都没发生”。
 
 大型 BUILD 不使用“一个不可验证的巨大事务”覆盖全部施工，但也不要为了 Undo 分组机械拆成大量 MCP 往返。默认优先单次或少量执行调用：先 bounded read 确认状态，再让 JSX 在内部按约 3–6 个逻辑 UndoGroup 完成 BUILD，最后统一做必要的 diff / property read-back / visual check。只有确实需要中间验证或存在高风险边界时，才拆成多个 MCP 阶段。
 
+### ⚠️ Undo 执行缺口：`run_jsx` 默认外层组会吞掉内部阶段
+
+Engine Room 当前的 `run_jsx` 默认会在调用外层建立一个 UndoGroup。AE 的嵌套 UndoGroup 会并入外层，因此如果直接在默认 `run_jsx` 里再写 3–6 个 `app.beginUndoGroup()`，用户最终仍可能只得到一个「整场 BUILD」撤销步。
+
+### 大型 BUILD：首选 `undoGroup:false`
+
+当目标就是让一个 `run_jsx` 内部产生 3–6 个真正独立的撤销阶段时，**首选在工具调用层关闭默认外层组**：
+
+```text
+run_jsx({
+  ...,
+  undoGroup: false
+})
+```
+
+然后由 JSX 自己管理阶段：
+
+```js
+app.beginUndoGroup("阶段一｜基础结构");
+try { /* ... */ } finally { app.endUndoGroup(); }
+
+app.beginUndoGroup("阶段二｜视觉元素");
+try { /* ... */ } finally { app.endUndoGroup(); }
+
+app.beginUndoGroup("阶段三｜动画系统");
+try { /* ... */ } finally { app.endUndoGroup(); }
+```
+
+这样才与核心规则「BUILD 内约 3–6 个独立 UndoGroup、且不增加无意义 MCP 往返」一致。
+
+### `withoutUndoGroup(fn)`：只做局部 escape hatch
+
+`withoutUndoGroup(fn)` 的职责不同：当本次 `run_jsx` **仍保留默认外层 UndoGroup**，但某一个操作必须临时脱离该组时使用。典型例子是当前 Engine Room 已知的 `copyToComp` 限制。
+
+不要把「整个 BUILD 自己管理 3–6 个 UndoGroup」默认实现成：
+
+```js
+return withoutUndoGroup(function () {
+  // 整场 BUILD
+});
+```
+
+因为它会关闭当前外层组，并在结束后重新打开 Engine Room 的 continuation group；这不是大型 BUILD 自主管理完整 Undo 架构的最清晰入口。
+
+要点：
+- 大型 BUILD 需要内部独立撤销阶段 → **`undoGroup:false` + JSX 内部 3–6 个 UndoGroup**；
+- 小 PATCH → 保持 `run_jsx` 默认单一 UndoGroup 即可；
+- 单个特殊操作必须暂时离开默认 UndoGroup → `withoutUndoGroup(fn)`；
+- 每个自建 UndoGroup 必须在**同一次 `run_jsx` / evalScript 调用内**打开并关闭，不能跨调用；
+- 阶段名按中文优先规则命名；
+- 顺序仍为「Backup → Build → Verify → Save → 再确认备份 → Purge」，Purge 不放入任何阶段组；
+- Engine Room 版本变化时，以当前工具 schema / 官方 guide 为准；若 `undoGroup:false` 不存在，不要猜替代行为。
+
+**Undo 架构验证不作为生产 BUILD 的破坏性必做步骤。** 需要验证该机制时，只在测试工程 / 新版本升级检查中人工确认一次 AE Edit 菜单和 Ctrl+Z 行为；生产工程不要为了“自检”主动撤销再重做。
+
+
+### Engine Room 特有脚本边界
+
+这些属于**当前 Engine Room 执行器行为**，不写进通用 AE26 Gotchas；版本升级后优先以 Engine Room 自身 Skill / Guide / tool schema 为准。
+
+- `app.executeCommand()` 依赖宿主焦点 / 当前选择，在 Bridge / MCP 环境可能静默无效；优先使用明确的 DOM / Engine Room API 等价操作，例如 `CompItem.duplicate()`、`layer.duplicate()`、原生 reorder 工具等。
+- 不要在 Raw `run_jsx` 里直接把 `comp.saveFrameToPng(...)` 当常规截图方案：它存在异步写盘 / 对话框等宿主边界。优先使用 Engine Room 的 `screenshot_frame / screenshot_layer`，由执行器负责等待 PNG 完整落盘与返回图像。
+- `run_jsx` 失败不会自动回滚已经落地的前半段；仍按 §6 的 Partial Write Safety 先看 diff / read-back，再决定 Patch。
+
 ## 8｜撤销安全封存
 
 Engine Room 执行大型 BUILD / ASSET_REFACTOR 后：
@@ -117,7 +181,7 @@ Engine Room 返回写入成功 ≠ 可以直接 Purge；必须通过上述验证
 详细闭环见：
 `../quality/visual-feedback-loop.md`
 
-## 9｜Engine Room 故障边界
+## 10｜Engine Room 故障边界
 
 - timeout：可能仍在 AE 执行，不立即重发。
 - connection refused：先走 Engine Room setup / discovery，不用重建工程。
@@ -126,7 +190,7 @@ Engine Room 返回写入成功 ≠ 可以直接 Purge；必须通过上述验证
 
 具体版本行为以 Engine Room 当前 Skill / Guide 为准；XPIN 不复制易过期的工具实现细节。
 
-## 10｜完成条件
+## 11｜完成条件
 
 Engine Room 执行结束至少确认：
 - diff 与预期修改范围一致；

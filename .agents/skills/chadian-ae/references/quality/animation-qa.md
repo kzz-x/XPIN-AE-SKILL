@@ -115,7 +115,95 @@
 
 如果必须逐层翻找几十个关键帧，Motion Architecture 不合格。
 
-## 10｜通过标准
+## 10｜Motion 可测量项｜逐帧速度 / 加速度诊断
+
+静帧看不出 Timing / Weight / 单帧卡顿，但数值采样可以辅助定位。**它是诊断工具，不是统一审美评分器。**
+
+### 先声明预期 Motion Profile
+
+采样前先判断当前 Motion Phase 想要什么，例如：
+- `EASE_IN`：总体加速；
+- `EASE_OUT`：总体减速；
+- `EASE_IN_OUT`：先加速后减速；
+- `CONSTANT`：近似匀速；
+- `HOLD`：速度接近 0；
+- `IMPACT / RECOIL`：允许瞬时峰值与反向；
+- `SPRING / BOUNCE`：允许多次方向变化与衰减振荡。
+
+**只有预期 Profile 本身要求单调时，才用“单调递增 / 递减”作为检查条件。** 非单调速度本身不是错误。
+
+### A｜逐帧采样：查卡顿、pop、单帧异常
+
+检测“卡不卡”优先使用：
+
+```js
+var dt = comp.frameDuration;
+var prev = null;
+var prevSpeed = null;
+var out = [];
+
+for (var t = t0; t <= t1 + dt * 0.25; t += dt) {
+  var v = prop.valueAtTime(t, false);
+  if (prev !== null) {
+    var d;
+    if (v instanceof Array) {
+      var sum = 0;
+      for (var i = 0; i < v.length; i++) sum += Math.pow(v[i] - prev[i], 2);
+      d = Math.sqrt(sum);
+    } else {
+      d = Math.abs(v - prev);
+    }
+
+    var speed = d / dt;
+    var accel = (prevSpeed === null) ? null : (speed - prevSpeed) / dt;
+    out.push({ t:t, delta:d, speed:speed, accel:accel });
+    prevSpeed = speed;
+  }
+  prev = v;
+}
+```
+
+逐帧重点找：
+- 设计上没有理由的单帧速度尖峰；
+- 本应连续运动却突然 0 → 大峰值 → 0；
+- EASE_OUT 尾段突然重新加速；
+- CONSTANT 段出现明显周期性停顿；
+- 没有设计意图的方向瞬间反转。
+
+### B｜粗采样：看宏观速度轮廓
+
+`0.05–0.1s` 或每 2–3 帧的粗采样可以用来观察整体加速 / 减速趋势，但**不能拿来证明没有单帧卡顿**。30fps 下 0.1s 已跨约 3 帧，60fps 下跨约 6 帧，可能把局部异常平均掉。
+
+### 不同属性不要混成一个单位
+
+- Position：像素 / 秒；必要时看路径方向与弧长；
+- Scale：百分比 / 秒；
+- Rotation：度 / 秒；
+- 不要把 Position、Scale、Rotation 的 raw 数值放进同一阈值比较。
+
+如果对象受 Parent / Camera / Expression / 3D Rig 共同驱动，**只采 local Position 可能与屏幕可见速度不一致**。这时采承担真实运动职责的 Master / Rig，或用合适的 comp/world-space 结果做验证。
+
+### 判读原则
+
+| 现象 | 判读 |
+|---|---|
+| 与声明的 Motion Profile 一致，变化连续 | 通常正常 |
+| 无设计理由的单帧 spike / stop-go | 高概率需要检查 |
+| EASE_IN / OUT 段明显违反预期单调趋势 | 检查曲线、关键帧空间分布或时间映射 |
+| SPRING / BOUNCE / IMPACT 出现非单调 | 可能完全正确，应看振幅、衰减和节奏 |
+| 粗采样平滑，但逐帧存在尖峰 | 仍属于实际卡顿风险 |
+
+常见修正方向：
+- 路径速度异常 → 检查贝塞尔参数与真实弧长，不默认“参数等距 = 空间等距”；
+- 解析 Motion → 明确 `time → progress` 映射方向，避免把反函数缓动判断写反；
+- 关键帧过密且每个都高 influence → 检查是否人为制造了反复减速；
+- 共享 Motion → 优先修 Master / Rig，而不是逐层抹平曲线。
+
+**最终验收仍以 AE 前台连续播放 + Motion Profile 意图为准。** 数值只能告诉你“哪里值得看”，不能自动决定“有没有味道”。
+
+---
+
+## 11｜通过标准
 
 复杂动画通过 QA 时应同时满足：
 
