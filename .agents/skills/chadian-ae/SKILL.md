@@ -17,7 +17,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 1. 先读 `references/00_core-invariants.md`。
 2. 再读 `references/01_capability-map.md`。
 3. 用 `references/02_task-router.md` 判断任务类型与 Motion Complexity。
-4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。若任务包含 AE 设计 / 制作方案、AI 适用性判断或模板迁移，按 Router 增量读取 `references/workflows/creative-authority.md` 与 `references/engineering/ae-implementation-spec.md`。
+4. 只加载该任务需要的 Workflow / Engineering / Capability / Motion / Quality 模块。若命中 Reference-First Trigger，再增量读取 `references/workflows/reference-first.md`。若任务包含 AE 设计 / 制作方案、AI 适用性判断或模板迁移，按 Router 增量读取 `references/workflows/creative-authority.md` 与 `references/engineering/ae-implementation-spec.md`。Motion-sensitive 镜头按需加载 `references/workflows/previs-first.md`；复杂执行前按需生成 `references/engineering/ae-build-spec.md`。当前执行底座为 Engine Room 时，按需加载 `references/adapters/engine-room-mcp.md`。
 5. 当前会话已读过的模块不要重复读取，除非：
    - 上下文压缩后精确规则丢失；
    - 任务类型发生变化；
@@ -42,6 +42,9 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
 - **Creative Authority Before Build**：不要默认让 AI 同时承担导演、构图、Motion Design 与 AE 执行；先判断 AI 应该直接生成、扩展已有系统，还是只做工程辅助。
 - **Design Includes Implementation**：AE 方案要写清实现技法；主 Timing / Hero Motion 是否保留真实关键帧，持续 / 程序化行为是否用 Expression，以及 Layer Style / Native Effect / Plugin / CTRL 的实现方向。
+- **Previs Before Polish**：当高级感主要依赖构图、Pose、Timing、Camera 或 Typography 时，先用低成本 Previs 验证动作，再工程化和上材质。
+- **Build Contract Before Complex Build**：复杂镜头在设计与执行之间优先形成 AE BUILD SPEC，锁定结构、关系、Motion phase、实现法、人工区域与验证点。
+- **Visual Feedback Is Bounded**：视觉验收使用少量高信息关键 Pose / Contact Sheet，发现问题后回到真实 AE 数据定位原因，不逐帧截图。
 
 ## 2｜任务启动
 
@@ -85,7 +88,9 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - `references/motion/motion-principles.md`：Timing / Spacing / Weight / Anticipation / Inertia / Follow Through / Rhythm 等可执行原则。
 - `references/motion/motion-profiles.md`：UI / Mechanical / Typography / Data / Camera / Soft Graphic 的差异化运动逻辑。
 - `references/motion/motion-control-architecture.md`：Master Motion Channels → Precomp + Time Remap → Layer Local Motion。
+- `references/motion/motion-primitives.md`：EASE / SPRING / FOLLOW / STAGGER / PATH_FOLLOW 等成熟动作积木（按需）。
 - `references/quality/animation-qa.md`：复杂动画质量与可编辑性验收。
+- `references/quality/visual-feedback-loop.md`：See → Measure → Correct 的有界视觉反馈。
 
 共享运动优先上提；独特运动留在局部。3+ 图层共享同类运动时，优先控制器 / Parent / Expression / Stagger，而不是复制关键帧。
 
@@ -118,8 +123,11 @@ M2–M4 额外验证：
 - Workflow：`references/workflows/`
   - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
   - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
+  - Previs：`references/workflows/previs-first.md`（Motion-sensitive 镜头按需）
 - 工程规范：`references/engineering/`
   - AE 设计实现说明：`references/engineering/ae-implementation-spec.md`（需要把设计翻译成 AE 技法时加载）
+  - 复杂执行合同：`references/engineering/ae-build-spec.md`（复杂镜头 / Previs 通过 / 交给 Codex 执行时按需）
+  - 长期资产 Fast Path：`references/engineering/project-context-map.md`（模板 / 老工程整理时按需）
 - Motion System：`references/motion/`（M2–M4 按需）
 - 高级能力：`references/capabilities/`
 - 质量与验收：`references/quality/`
@@ -128,3 +136,10 @@ M2–M4 额外验证：
   - 学习优秀 AEP / 提炼构图、Motion、材质与视觉规律：`recipes/learn-from-ae-project.md`
 - 已批准长期学习库：`references/learned/index.md`（仅命中 Learned Library Trigger 时读取，再只加载相关 1–3 张卡）
 - 完整旧规范：`references/archive/ae-standard-v1.4-full.md`
+
+
+## 执行底座与长期库
+
+- Engine Room Adapter：`references/adapters/engine-room-mcp.md`（仅当前 MCP 为 Engine Room 时加载）
+- Pattern Library：`references/patterns/index.md`（已验证 Rig / Expression / JSX / Layout / Build Pattern；只有触发时读取）
+- Learned Library 保存“审美与规律”；Pattern Library 保存“已验证执行模式”，两者不要混用。
