@@ -117,6 +117,8 @@
 
 目标是让普通参数修改无需重新理解整个工程。
 
+若该资产会长期复用，整理完成后按 `../references/engineering/project-context-map.md` 生成极轻量 Context Map，记录 Root Comp、主要 ID、控制器、素材槽、依赖、Fast Patch 与 Manual Zones。Context Map 只是索引；以后与真实 AE 状态冲突时，以 AE 状态为准并更新 Map。
+
 ## Undo / Patch Safety
 
 - 不用一个巨大 JSX UndoGroup 覆盖整个重构。
@@ -154,6 +156,6 @@
 - 一次处理一个资产根合成 / 一个 AEP；
 - 每个资产独立恢复点；
 - 使用同一套命名与控制规则；
-- 每个资产生成极短的 Asset Map；
+- 每个资产生成极短的 Asset Map / Project Context Map；
 - 完成一个再进入下一个，避免上下文和 Undo 混杂；
 - 已整理资产后续优先直接 Patch，不再次完整 Refactor。
