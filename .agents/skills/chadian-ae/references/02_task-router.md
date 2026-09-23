@@ -20,6 +20,9 @@
 - `engineering/animation-and-timing.md`
 - 任务触发的素材 / 3D / Effects 模块
 - `quality/validation.md`
+- 若是复杂镜头 / 长期可 Patch 构建 → `engineering/ae-build-spec.md`
+- 若 Motion taste 是主要难点 → `workflows/previs-first.md`
+- 若有明显视觉变化需自动检查 → `quality/visual-feedback-loop.md`
 
 创建新视觉元素 / 动画模块时按下方 AE Expert Preflight 判断是否加载 Native / Relationship 模块。
 若 Motion Complexity 达 M2–M4，再走 Motion Router。
@@ -37,6 +40,8 @@
 加载：
 - `workflows/mcp-direct-control.md`
 - 修改现有工程再加 `modify-existing.md`
+- 当前 MCP 为 Engine Room → 增量加载 `adapters/engine-room-mcp.md`
+- 明显视觉变化 → 按需加载 `quality/visual-feedback-loop.md`
 
 ## E｜HYBRID
 加载：
@@ -70,6 +75,7 @@
 - `workflows/review-debug.md`
 - `quality/validation.md`
 - `quality/render-policy.md`
+- 视觉 / 构图 / Camera / Typography 问题 → `quality/visual-feedback-loop.md`
 - 再按错误类型加载对应模块
 
 动画质量 / 节奏 / Camera / 关键帧架构 → `quality/animation-qa.md`。
@@ -84,6 +90,7 @@
 - `engineering/project-architecture.md`
 - `engineering/controls-and-tokens.md`
 - `engineering/expressions-and-compatibility.md`
+- 若资产会长期复用 → `engineering/project-context-map.md`
 
 规则：
 - 先锁定资产根合成，只沿必要依赖读取，不默认全工程扫描；
@@ -133,6 +140,8 @@
 - `workflows/creative-authority.md`
 - `engineering/ae-implementation-spec.md`
 - `engineering/animation-and-timing.md`（有 Motion 时）
+- Motion-sensitive 且尚未有可靠 Previs / 模板 → `workflows/previs-first.md`
+- 复杂镜头 / 需要交给 Codex 稳定执行 → `engineering/ae-build-spec.md`
 - 创建新元素 / 材质时按 AE Expert Preflight 决定是否加 `capabilities/native-ae.md`
 - 需要真实参考时走 Reference-First Trigger
 - Motion 达 M2–M4 时再按 Motion Router 增量加载，不因“写方案”自动读取整套 Motion
@@ -160,6 +169,7 @@
 - 需要明确 wiggle / loop / spring / distance-driven / Follow / Auto Layout 等程序化技巧；
 - 需要明确 Layer Style / Native Effect / Plugin / Adjustment Layer / CTRL 的实现方式；
 - 需要把设计方案直接交给 Codex 执行。
+- 复杂执行需要明确 Managed / Manual Boundary、Motion Phase、Verify 点时 → `engineering/ae-build-spec.md`。
 
 普通改字 / 改色 / 改参数 / 已有动画小 Patch 不加载这两个模块。
 
@@ -303,3 +313,22 @@ HIGH：新视觉方向、完整场景、复杂 3D、插件依赖、素材路线�
 
 ## Grill-me
 仅在多条明显不同创意路线、关键条件缺失、技术路线成本差异很大、错一次会大面积返工时触发；最多 1–5 个关键问题。
+
+
+---
+
+## Pattern Library Trigger
+
+只有以下情况读取 `references/patterns/index.md`：
+- 用户要求复用之前成功的 Rig / Expression / JSX / Layout；
+- 当前任务明显匹配已登记 Pattern trigger；
+- 新方案已多次验证，希望减少重复生成；
+- 需要把一次成功执行晋升为长期可复用模式。
+
+先读 Index，只加载命中的单张 Pattern Card。不要因为 Pattern Library 存在就扫描全部。
+
+## Motion Primitive Trigger
+
+当方案明确出现 spring / recoil / follow / drift / bounce / lean / kinetic / squash-stretch / throw / path-follow / stagger / sequence / retime，且需要决定参数与实现边界时，加载 `motion/motion-primitives.md`。
+
+Primitive 只提供成熟实现词汇，不能替代 Reference、Profile 与真人 Motion 判断。
