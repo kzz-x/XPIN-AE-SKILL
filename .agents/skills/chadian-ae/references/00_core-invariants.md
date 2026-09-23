@@ -45,6 +45,45 @@
 - **Undo Safety**：大型 BUILD 不使用一个覆盖全工程的巨大 UndoGroup；按逻辑模块拆成少量可理解步骤。后续 PATCH 一次请求只做一个小型原子 Undo，禁止为改几个参数重跑完整 BUILD。
 - 每个 UndoGroup 必须可靠闭合；优先 `try / finally`，避免异常导致后续人工 Undo 行为异常。
 
+
+## 中文优先的人机界面
+
+原则：**给人看的中文优先，给机器读的稳定标识不乱翻译。**
+
+默认使用中文的用户可见内容：
+- Project Folder / Comp / Precomp / Layer / Null / Camera / Light 名称；
+- 控制层、Expression Control、自定义 Effect 实例名；
+- Placeholder / 素材槽 / 模块名；
+- Marker Comment、Layer Comment 中给用户看的说明；
+- Essential Graphics / MOGRT 暴露名称；
+- UndoGroup 名称；
+- AE 制作方案、BUILD SPEC、执行提示、验收结果中用户需要直接阅读的字段。
+
+命名格式优先级：
+1. 能纯中文表达 → 直接中文，如 `动画控制`、`主体_手机`、`素材槽_驾驶室`。
+2. 英文是行业术语或机器约定且保留有价值 → `中文｜English`，如 `动画控制｜CTRL_MOTION`、`入场｜IN`。
+3. 英文名称不可由脚本重命名（插件参数、AE 固定 UI、API / matchName）→ 保持英文原值，并在相邻的中文层名、Comment、控制层或交付说明中补中文解释。
+4. 品牌名、产品名、型号、文件扩展名、代码、路径、API、Expression / JSX 变量与枚举不强行翻译。
+
+禁止：
+- 新建 `Shape Layer 1 / Null 3 / Comp 17 / Main / Controller / Background` 等无中文解释的默认英文名；
+- 新建一整套 `CTRL_GLOBAL / CTRL_MOTION / HERO / BG / HUD` 仅英文用户界面；
+- Marker 只写 `IN / HOLD / OUT` 而没有中文；
+- 为“看起来专业”而堆英文缩写。
+
+兼容与保护：
+- 普通 Existing Project Patch 不为满足命名规范而擅自批量重命名旧层，避免破坏 Expression、脚本、人工习惯；
+- 新建对象从一开始按中文优先；
+- 用户明确要求“整理 / 重构 / 标准化命名”时，可把旧英文名称迁移为中文优先，但必须先检查表达式、脚本、链接和插件依赖；
+- `AI_ID / ROLE / TYPE` 等稳定机器字段可继续使用英文键和值；若用户会直接看到 Comment，应另加一行中文说明，不要改坏机器解析。
+
+### 中文可读性验收
+完成新建工程或结构性修改前，检查本次新建的用户可见对象：
+- 是否存在无必要的纯英文图层 / 合成 / 控制器 / Marker；
+- 必须保留的英文是否已有中文说明；
+- 用户能否不理解内部代码，也能快速判断“这个层是什么、这个控件改什么、这个 Marker 表示什么”。
+
+
 ## 动画
 - 明显运动必须有合理关键帧和曲线。
 - 动作曲线应匹配元素材质、重量、功能。
