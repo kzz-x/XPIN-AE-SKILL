@@ -21,6 +21,7 @@
 - 任务触发的素材 / 3D / Effects 模块
 - `quality/validation.md`
 - 若是复杂镜头 / 长期可 Patch 构建 → `engineering/ae-build-spec.md`
+- 若从零视觉设计 / 中高视觉复杂度 / 口播转视觉 / 构图材质光影决定质量 → `workflows/visual-anchor.md`，先定图再 BUILD
 - 若 Motion taste 是主要难点 → `workflows/previs-first.md`
 - 若有明显视觉变化需自动检查 → `quality/visual-feedback-loop.md`
 
@@ -157,6 +158,7 @@
 - `workflows/creative-authority.md`
 - `engineering/ae-implementation-spec.md`
 - `engineering/animation-and-timing.md`（有 Motion 时）
+- 命中 Visual Anchor Trigger 且尚无已确认视觉锚点 → `workflows/visual-anchor.md`；先把参考图 / 关键帧图确认好，图不满意不进入 BUILD
 - Motion-sensitive 且尚未有可靠 Previs / 模板 → `workflows/previs-first.md`
 - 复杂镜头 / 需要交给 Codex 稳定执行 → `engineering/ae-build-spec.md`
 - 创建新元素 / 材质时按 AE Expert Preflight 决定是否加 `capabilities/native-ae.md`
@@ -171,7 +173,33 @@
 - 已有模板 / 已批准 AEP / 已确定 Motion 时，AI 以读取、迁移、扩展为主，不重新发明视觉语言；
 - 用户只要求执行一个已锁定方案时，不必重复做完整 Creative Authority 讨论，只保留已确定权限边界。
 
-## Creative Authority / Implementation Trigger
+## Visual Anchor Trigger
+
+以下情况加载 `workflows/visual-anchor.md`：
+- 从零设计完整镜头；
+- 中高视觉复杂度，构图 / 比例 / 空间层级 / 材质 / 光影决定最终质量；
+- 2.5D / 3D / Camera / 多模块信息场；
+- 口播 / 文案需要先转成具体视觉画面；
+- 用户反馈 AI 直接执行容易太 PPT、太模板、一眼 AI 或构图跑偏；
+- 单次 BUILD 成本高，错误方向会明显返工。
+
+默认行为：
+- 主动提醒：**先生成 / 确认参考图或关键帧图；图不满意，先不做。**
+- 可用 Anchor：用户参考图、当前工程截图、用户 Blockout、生成关键帧图、已批准上一版、上游 Handoff。
+- 已有足够明确 Anchor → 不重复生图，直接把它设为 visual truth。
+- Anchor 已确认后，Execution Prompt 只写 Motion / Timing / Audio / Relationship / Constraints / Verify，不把图片重新翻译成长篇描述。
+- 真实产品 / 品牌 / 设备需要准确时，Visual Anchor 不能替代 Reference First 的真实素材依据。
+- Motion taste 仍未锁定时，Visual Anchor 后继续走 Previs First；Visual Anchor 锁“长什么样”，Previs 锁“怎么动”。
+
+以下情况通常不触发：
+- 改字 / 改色 / 改尺寸 / 单层小 Patch；
+- 已有成熟模板内的规则化扩展；
+- 用户明确要求跳过出图直接执行；
+- 当前 Handoff / AEP 已经把构图、材质、比例和视觉层级锁定。
+
+---
+
+# Creative Authority / Implementation Trigger
 
 以下情况命中 `workflows/creative-authority.md`：
 - 从零设计 AE 镜头；
