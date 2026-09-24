@@ -61,8 +61,12 @@ AE 执行合同｜AE BUILD SPEC
 控制项｜CONTROLS
 - 只暴露高频参数，用户可见名称中文优先
 
+AI运动边界｜AI MOTION BOUNDARY
+- 默认是否采用简单运镜 + 单一主动作；哪些复杂 Camera / Hero Motion 不交给 AI 从零完成
+- AI 先完成哪些 Scene / LookDev / Rig / 基础动画；哪些明确交给人工接管
+
 人工精修｜HUMAN POLISH
-- 明确保留给人工调整的点
+- 明确保留给人工调整的点，尤其主 Camera Path、Hero Graph、复杂动作衔接与 1–3 帧节奏微调
 
 验证｜VERIFY
 - 状态回读 + 代表性视觉时间点
@@ -92,9 +96,11 @@ BUILD SPEC 的作用是“声明目标结构”，不是每次把整个 Comp rep
 ## 4｜AI / 人工边界（Managed / Manual Boundary）
 
 每个复杂 BUILD 应尽量区分：
-- `AI_MANAGED`：结构、批量层、可再生模块；
-- `HUMAN_TUNED`：Hero Graph、Path、Camera polish、Typography 等；
+- `AI_MANAGED`：结构、批量层、可再生模块，以及场景 / 模型 / 材质 / 灯光 / Rig / 简单基础动画；
+- `HUMAN_TUNED`：Hero Graph、复杂 Path、Camera choreography、复杂动作衔接、Typography 与 1–3 帧级节奏微调；
 - `SHARED`：AI 可读取并局部修改，但不能自动重建。
+
+默认原则：**先让 AI 把静态质量和工程底座做到位，再决定它是否继续做动画。** 如果简单的模型旋转、轻推镜头、灯光闪烁或局部循环已经能完成表达，就不要升级成复杂 Motion。
 
 可使用 Comment / AI_ID / ROLE / 文档记录表达边界。
 
