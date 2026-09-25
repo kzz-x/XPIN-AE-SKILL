@@ -6,6 +6,10 @@
 
 **Human-editable + AI-readable + Low-token patchable + Long-term reusable**
 
+## 与模板化任务的边界
+
+如果用户明确说“做成模板 / 模板化 / 沉淀模板库 / 拆独立组件 / 做成视觉系统包”，不要只执行本 Recipe；应升级到 `templateize-style-pack.md`，并读取 `../references/engineering/human-ai-template-library.md`。本 Recipe 只负责其中的“现有资产整理”部分。
+
 ## 触发条件
 
 用户表达以下意图时使用本 Recipe：
@@ -70,8 +74,8 @@
 - 不依赖 Layer Index 定位关键对象；
 - 关键对象优先保留稳定名称 / AI_ID / ROLE。
 
-### 5. Build a Control Surface
-优先建立单一、明显的控制入口，例如 `00_CTRL`。
+### 5. 建立清晰控制入口
+控制层应跟随所属合成：**在每个主要可编辑合成的时间线最上方放控制 Null**，例如 `CTRL_控制器`；主编辑合成可使用 `CTRL_全局控制`。不要为了“统一”在项目面板额外建立一个独立 CTRL 文件夹作为主要使用入口。
 
 只暴露真正高频修改项：
 - 文案
@@ -111,7 +115,7 @@
 ### 8. AI Fast Path
 整理后的资产应允许未来 AI 优先按以下路径读取：
 
-`资产说明 / 00_CTRL → 目标图层 → 必要依赖`
+`资产说明 / 目标合成顶部 CTRL_控制器 → 目标图层 → 必要依赖`
 
 只有修改失败、依赖不明或用户要求深度重构时，才扩大扫描范围。
 
