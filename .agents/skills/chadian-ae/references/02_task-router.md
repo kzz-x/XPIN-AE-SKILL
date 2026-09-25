@@ -173,6 +173,31 @@
 - 已有模板 / 已批准 AEP / 已确定 Motion 时，AI 以读取、迁移、扩展为主，不重新发明视觉语言；
 - 用户只要求执行一个已锁定方案时，不必重复做完整 Creative Authority 讨论，只保留已确定权限边界。
 
+## L｜TEMPLATE_STYLE_PACK
+典型：
+- “做成模板 / 整理成模板 / 模板化”
+- “沉淀到模板库 / 做成人和 AI 共用模板”
+- “把这个完整 AEP 拆成 Full Kit + 场景 + 独立组件”
+- “把这套视觉语言做成 Style Pack”
+
+加载：
+- `recipes/templateize-style-pack.md`
+- `references/engineering/human-ai-template-library.md`
+- `recipes/refactor-existing-asset.md`
+- `workflows/modify-existing.md`
+- `engineering/project-architecture.md`
+- `engineering/controls-and-tokens.md`
+- 素材替换 / Relink / Collect 真实发生时再加 `engineering/assets-and-replacement.md`
+- Motion / 插件 / 3D / MOGRT 只有真实触发时才加载对应模块
+
+规则：
+- **Source Isolation Gate**：源 AEP / 源素材默认只读；先恢复点，再创建独立模板化工作副本；所有结构性写入只发生在副本。
+- 不因“做成模板”重做已经确认的视觉与 Motion；先保真整理，再抽象结构。
+- 一个视觉系统包以“完整套装”为唯一设计母体；场景和独立组件从完整套装派生。
+- 模板型 AEP 的控制层跟合成走：每个主要可编辑合成时间线最上方放控制 Null；不使用项目面板独立控制文件夹作为主要控制入口。
+- 正式发布版不可直接修改；生产调用必须复制到工作区。
+- 插件、字体、脚本、预设、LUT、Codec、3D / HDRI / 贴图、外部数据、Adobe 版本等换机风险必须进入依赖检查；缺失时先提醒，不静默替换。
+
 ## Visual Anchor Trigger
 
 以下情况加载 `workflows/visual-anchor.md`：
