@@ -26,6 +26,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 6. `references/archive/ae-standard-v1.4-full.md` 是冷档案 / Source of Truth。只有模块未覆盖、规则冲突、全工程审计或维护 Skill 本身时才读取。
 7. 不要因为任务里出现关键帧就读取 Motion System。普通 M0–M1 动画只使用轻量规则；M2–M4 才按 Router 增量加载 Motion 模块。
 8. 用户要求“学习这个 AE 工程 / 提炼这个 AEP 的审美与动画规律”时，路由到 `recipes/learn-from-ae-project.md`。学习阶段默认只读；先生成候选 Learning Pack。任何长期知识写入 `references/learned/` 或核心 reference 前，都必须经过用户明确确认的 Promotion Gate，禁止边学边自动污染 Skill。
+9. 用户表达“做成模板 / 模板化 / 整理成模板 / 沉淀模板库 / 拆独立组件 / 做成视觉系统包”等意图时，路由到 `recipes/templateize-style-pack.md`，并加载 `references/engineering/human-ai-template-library.md`。模板化前先隔离源工程：源 AEP / 源素材默认只读，建立恢复点并创建独立模板化工作副本后才允许结构性写入。
 
 ## 1｜永远生效的底线
 
@@ -62,6 +63,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - COMPLEX_3D
 - AE_PROJECT_LEARN
 - AE_DESIGN_PLAN
+- TEMPLATE_STYLE_PACK
 
 若涉及动画，再判断 Motion Complexity：M0 / M1 / M2 / M3 / M4。
 
@@ -139,6 +141,8 @@ M2–M4 额外验证：
 - 常用任务 Recipe：`recipes/`
   - 历史工程 / 半模板 / 小元素标准化：`recipes/refactor-existing-asset.md`
   - 学习优秀 AEP / 提炼构图、Motion、材质与视觉规律：`recipes/learn-from-ae-project.md`
+  - 做成模板 / 视觉系统包 / 拆独立组件：`recipes/templateize-style-pack.md`
+- 人机共用模板库规范：`references/engineering/human-ai-template-library.md`（仅模板化 / 模板库任务加载）
 - 已批准长期学习库：`references/learned/index.md`（仅命中 Learned Library Trigger 时读取，再只加载相关 1–3 张卡）
 - 完整旧规范：`references/archive/ae-standard-v1.4-full.md`
 
