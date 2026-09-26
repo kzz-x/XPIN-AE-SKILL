@@ -32,10 +32,10 @@
 9. 当任务出现多对象编排、对象运动逻辑差异、Camera choreography、3+ 图层共享同类运动、Master Progress / Parent Rig / Precomp retime、复杂机械运动或大量重复关键帧时，升级完整版并按 `02_task-router.md` 判断 M2–M4。
 10. 复杂 Motion 的目标不是“多打关键帧”，而是让 AI 先设计运动，再建立人类易调的控制系统：**Shared motion goes upward. Unique motion stays local.**
 11. 用户要求“整理老工程 / 模板 / 小元素动画 / 让人和 AI 都方便改 / 降低后续 Token”时，直接升级完整版并走 `recipes/refactor-existing-asset.md`。默认只读资产根合成及必要依赖，不进行全工程扫描。
-12. **Reference First**：创建新视觉/新动画，或任务涉及准确产品、复杂机械、类生物运动、物理规律、成熟 UI/HUD/Camera 语言时，先判断是否需要图片、视频、GIF/Lottie、成熟动效或可复用资产参考。普通改字改色和已有动画小 Patch 不增加这一步；复杂任务按完整版 Router 加载 `workflows/reference-first.md`。
+12. **Search First**：创建新视觉 / 新动画时先区分 Reference First 与 Asset First。准确产品、复杂机械、类生物运动、物理规律、成熟 UI/HUD/Camera 语言 → Reference First；语义图标、Logo、Animated Icon/Lottie、3D Model/Props、HDRI/Texture/Material、成熟模板/组件 → Asset First。二者可独立或同时触发。命中 Asset First 时，确认无合适现成资产前不得仅因为 Shape / JSX 更容易就从零重画。普通改字改色和已有动画小 Patch 不增加搜索步骤；复杂任务按完整版 Router 加载对应 workflow。
 13. **Creative Authority Gate**：涉及“出 AE 制作方案 / 从零做镜头 / 这个镜头适不适合 AI / 让 Codex 做到什么程度 / 模板风格迁移”时，先判断 `AI_DIRECT_BUILD / HUMAN_DESIGN_AI_ENGINEER / HUMAN_MOTION_AI_ASSIST` 与 Authority 0–3。默认优先 `HUMAN_DESIGN_AI_ENGINEER + Authority 1`；Authority 3 默认关闭。详细规则按 Router 加载 `workflows/creative-authority.md`。
 14. **Design Includes Implementation**：AE 制作方案不能只写画面和动作结果；应按需明确主 Motion 用关键帧还是 Expression、哪些持续行为用 wiggle / loop / spring / 距离驱动、Layer Style / Native Effect / Plugin 怎么用、控制层暴露什么、哪些必须保留人工 Graph 调整。详细规则按 Router 加载 `engineering/ae-implementation-spec.md`。
-15. **来自差点后期的 Handoff**：若上游来自 `kzz-x/chadian-post-GTP-project`，把其已确认的镜头目标、构图、参考、素材、时长/画幅和锁定约束视为输入，不重新从零发散视觉方案。差点AE负责把它转成可执行 AE 方案/工程；仅在 AE 可实现性、工程安全或素材条件确有冲突时提出调整。
+15. **来自差点后期的 Handoff**：若上游来自 `kzz-x/chadian-post-GTP-project`，把其已确认的镜头目标、构图、REFERENCE_BRIEF、ASSET_MANIFEST、LOCKED_ASSETS / MISSING_ASSETS、Visual Anchor、Motion Reference、时长/画幅和锁定约束视为输入，不重新从零发散或重复搜索已锁定资产。差点AE负责把它转成可执行 AE 方案/工程；仅在 AE 可实现性、工程安全或素材条件确有冲突时提出调整。
 16. **AE Project Learning**：用户说“学习这个 AE 工程 / 学一下这个 AEP / 把这个镜头的构图、动画、材质学下来”等时，直接升级完整版并走 `recipes/learn-from-ae-project.md`。学习阶段默认只读，只分析用户指定资产根合成及必要依赖；先生成候选 Learning Pack，不得自动写入 Skill。写入 `references/learned/` 或修改核心规则前，必须先向用户展示候选规律、建议作用域与写入位置，并明确询问“哪些要加入、怎么加入、并存/合并/覆盖哪一种”。只有用户明确确认后才能晋升；后续 learned 内容继续按 Index → 相关卡片渐进读取。
 
 
