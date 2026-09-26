@@ -42,6 +42,8 @@ AE 执行合同｜AE BUILD SPEC
 
 素材｜ASSETS
 - 真实素材 / 占位素材 / 可替换素材槽 / 依赖
+- 命中 Asset First 时附最小 ASSET PREFLIGHT：READY / USER_PROVIDED / PLACEHOLDER_APPROVED / NOT_APPLICABLE
+- 应搜索对象不得以 UNSEARCHED 状态进入正式 BUILD
 
 关系｜RELATIONSHIPS
 - 父子 / 跟随 / 吸附 / 目标 / 连线 / 动态边界
@@ -129,6 +131,7 @@ BUILD SPEC 必须与 `ae-implementation-spec.md` 一致：
 - 统一风格 → Layer Style / Native Effect / Adjustment / Plugin；
 - 高频参数 → CTRL；
 - 重复模块 → Precomp / Reuse；
+- 语义 Icon / Logo / Lottie / 3D / HDRI / Texture / Template → 先 Asset First，再决定导入 / 转 Shape / Morph / 素材槽 / 预渲染；
 - 复杂共享时序 → Master Progress / Marker / Time Remap。
 
 ## 7｜验证计划在执行前写

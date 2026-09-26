@@ -46,7 +46,7 @@
 - **Relationship Before Independent Keyframes**：多个对象存在 Parent / Follow / Attach / Carry / Target / Connect / Shared Motion 等关系时，优先编码关系，不靠多套关键帧人工同步。
 - 能动态引用的目标位置 / 尺寸 / Bounds，不默认烘焙成当前固定数值。
 - 复杂产品、车辆、建筑、机械、人物、设备等，优先真实素材 / 官方素材 / 3D / 高质量外部资产。
-- 简单几何、UI、数据图表、路径动画可优先 AE 原生。
+- 简单无语义几何、数据图表、自定义路径动画可优先 AE 原生；有明确语义的 Icon / Symbol / Logo / 标准 UI Asset 不因“简单”而跳过 Asset First。
 - 使用高级能力必须有收益，不为炫技堆 3D、Glow、粒子、Camera、Expression、插件。
 - 视觉目标 > 实现方便。
 - 事实正确 > 静帧参考中的错误。
@@ -54,7 +54,7 @@
 - **Creative Authority**：有现成模板 / AEP / 人工设计结论时，默认读取并扩展，不重新发明；AI 自主决定构图、Motion taste 与视觉语言只在用户明确授权时启用。
 - **AI Assist Before AI Replace**：当镜头高级感主要依赖构图、Timing、Spacing、Camera 或 Typography 判断时，优先让人锁定设计，AI 做工程化、表达式、控制层、批量扩展和 QA。
 
-## Reference First\n- 新视觉 / 新动画 / 复杂结构 / 真实性重要时，先判断是否需要图片、视频、成熟动效、真实运动或可复用资产参考。\n- 准确产品、人物、复杂机械、类生物运动、物理现象不要因为 JSX / Shape 更容易写就凭空发明。\n- 静帧主要约束视觉；明显 Motion 任务应优先有视频 / GIF / Lottie / 成熟动画参考。\n- 能直接复用官方素材、SVG、Lottie、Footage、3D 或模板时，先评估复用，不默认从零重建。\n- 关键参考缺失时优先使用可替换 Placeholder，并明确未核验部分；不得把占位或 AI 猜测说成真实结构。\n- 详细流程仅在 Router 命中时读取 `workflows/reference-first.md`，普通局部 Patch 不增加上下文成本。\n\n## AE26 / 脚本
+## Search First\n- Reference First 与 Asset First 是独立门禁，可单独或同时触发。\n- 新视觉 / 新动画 / 复杂结构 / 真实性重要时，先判断是否需要图片、视频、成熟动效或真实运动参考。\n- 有明确语义的 Icon / Logo / Animated Icon / Lottie / 3D Model / HDRI / Texture / Material / Template 等，必须先判断是否有现成资产；确认没有合适结果后才允许自制。\n- 准确产品、人物、复杂机械、类生物运动、物理现象不要因为 JSX / Shape 更容易写就凭空发明。\n- 静帧主要约束视觉；明显 Motion 任务应优先有视频 / GIF / Lottie / 成熟动画参考。\n- 关键参考 / 资产缺失时优先使用可替换 Placeholder，并明确未核验部分；不得把占位或 AI 猜测说成真实结构。\n- 详细流程仅在 Router 命中时读取 `workflows/reference-first.md` / `workflows/asset-first.md`，普通局部 Patch 不增加上下文成本。\n\n## AE26 / 脚本
 - 兼容 AE26 中文版 / Windows。
 - JSX / Expression 底层优先 `matchName`。
 - 需要给人看的名称可中文。

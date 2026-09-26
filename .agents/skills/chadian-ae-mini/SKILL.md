@@ -116,7 +116,8 @@ Mini 用于高频局部任务。不要为了一个小修改加载完整版；但
 `真实素材 / PNG / SVG / AI / PSD / Footage / Text Animator / Shape Path / Trim Paths / Repeater / Mask / Track Matte / Layer Style / Native Effects / Adjustment Layer / Expression / Precomp / Parent / Null / Marker / Time Remap / 2.5D / Camera / Light / 3D Model / 已安装插件`
 
 选择标准：
-- 简单 UI、图标、数据、路径 → AE 原生矢量通常合适；
+- 简单无语义几何、数据、路径 → AE 原生矢量通常合适；
+- 有明确语义的 Icon / Symbol / Logo / 标准 UI Asset → 先 Asset First；只有确认没有合适现成资产或用户明确要求原创时才 AE 原生重绘；
 - 复杂产品、车辆、人物、建筑、机械、真实设备 → 优先真实素材 / 官方素材 / 3D / 高质量外部资产；
 - 普通描边 / 阴影先考虑 Layer Style / Native Effect，不默认额外画 Shape；
 - 逐字 / 逐词动画先考虑 Text Animator，不默认拆文字层；
@@ -129,18 +130,18 @@ Mini 用于高频局部任务。不要为了一个小修改加载完整版；但
 
 **容易脚本化，不是视觉决策依据。**
 
-### Reference-First｜需要准确时先找依据
+### Search First｜参考和现成资产先判断
 
 在创建新元素或新动画前快速判断一次：
 - 产品 / 品牌 / 零件 / 设备是否需要真实外观参考；
 - 动作是否涉及人、手、动物、复杂机械或物理规律；
-- 是否存在成熟视频 / GIF / Lottie / SVG / Footage / 模板可直接复用；
+- 是否存在成熟视频 / GIF / Lottie / SVG / Animated Icon / Footage / 3D / HDRI / Texture / 模板可直接复用；
+- 是否正在创建具有明确语义的图标 / Logo / UI Symbol；若是，不能因为原生 Shape 好画就跳过现成资产搜索；
 - 静帧是否只能说明“长什么样”，却不能说明“怎么动”。
 
 命中以上情况时，不要因为 Shape / JSX 最容易生成就凭空设计。优先使用用户提供、工程已有、官方或高质量参考；关键参考缺失时用可替换 Placeholder，并明确未核验部分。
 
-普通改字、改色、改尺寸、已有动画小 Patch 不必额外搜索。若需要系统性参考搜索、复杂 Motion 或多种实现路线比较：
-→ 升级完整版并加载 `workflows/reference-first.md`。
+普通改字、改色、改尺寸、已有动画小 Patch 不必额外搜索。若需要系统性参考搜索 → 升级完整版并加载 `workflows/reference-first.md`；若命中语义图标 / Logo / Lottie / 3D / HDRI / Texture / Template 等现成资产需求 → 升级完整版并加载 `workflows/asset-first.md`。
 
 如果不是“参考真实性”问题，而是**画面本身尚未锁定**（从零构图、空间、材质、口播转视觉），同样升级完整版，但改走 `workflows/visual-anchor.md`：先把关键帧图确认好，再写短执行 Prompt。
 
