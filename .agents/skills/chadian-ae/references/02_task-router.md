@@ -76,6 +76,7 @@
 - `engineering/animation-and-timing.md`
 - `quality/visual-quality.md`
 - 若从零做，再加 `new-project.md`
+- 需要通用 3D / HDRI / Texture / Model 时追加 Asset-First Trigger，先搜再建模
 
 复杂 Camera / 多对象动画按 M3+ 处理 Motion；Camera Target / Focus 等关系触发 Relationship Rig。
 
@@ -163,6 +164,7 @@
 - 复杂镜头 / 需要交给 Codex 稳定执行 → `engineering/ae-build-spec.md`
 - 创建新元素 / 材质时按 AE Expert Preflight 决定是否加 `capabilities/native-ae.md`
 - 需要真实参考时走 Reference-First Trigger
+- 涉及语义 Icon / Logo / Lottie / 3D / HDRI / Texture / Template 等时走 Asset-First Trigger
 - Motion 达 M2–M4 时再按 Motion Router 增量加载，不因“写方案”自动读取整套 Motion
 
 规则：
@@ -301,6 +303,35 @@ Relationship Rig 本身不自动意味着 M3/M4。简单 Parent / Follow Patch �
 - 用户明确要求只按现有参考 / 素材执行。
 
 Reference-First 不自动升级 Motion Complexity，也不等于必须搜索互联网；优先读取用户提供、工程已有和本地可用参考，必要时再外搜。
+
+---
+
+# Asset-First Trigger
+
+以下情况加载 `workflows/asset-first.md`：
+- 有明确语义的 Icon / Symbol / Logo / 标准 UI Asset；
+- Animated Icon / Lottie / Icon Morph；
+- Emoji / 标准工业符号 / 可复用图表符号；
+- 通用 3D Icon / 3D Model / Props；
+- HDRI / Texture / Material；
+- 官方产品 PNG / SVG / Press Kit；
+- 成熟 Template / Component / Motion Asset。
+
+只有需要选择外部资产源时，再增量读取 `assets/source-registry.md`。
+
+以下情况通常不加载：
+- 无语义圆 / 线 / 矩形；
+- 已有工程内的小 Patch；
+- 已锁定设计里的自定义装饰；
+- 明确数据决定的简单图表；
+- 上游 Handoff 已提供可直接使用的 `LOCKED_ASSETS`，且当前 AE 实现不缺资产。
+
+规则：
+- Asset First 与 Reference First 独立；一个任务可只命中其中一个，也可同时命中。
+- 应搜索对象若仍为 `UNSEARCHED`，不得进入正式 BUILD。
+- 搜不到合适资产时才进入 AE / AI / Blender 自制或 `PLACEHOLDER_APPROVED`。
+- 不因“Shape / JSX 很容易”跳过 Asset Search。
+- Asset First 本身不自动升级 Motion Complexity。
 
 ---
 
