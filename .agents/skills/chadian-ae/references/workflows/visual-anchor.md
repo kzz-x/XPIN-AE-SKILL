@@ -80,7 +80,7 @@ Visual Anchor 不限定来源，按当前任务选择最低成本且最明确的
 
 禁止“图还不满意，但先让 Codex 做出来再说”。
 
-### Step D｜生成短 Execution Prompt
+### Step D｜生成短 Execution Prompt（默认 P2 Directed Creative）
 Visual Anchor 已确认后，不要把图片重新翻译成几千字。
 
 执行提示词只补充图片无法表达的信息：
@@ -97,6 +97,8 @@ Visual Anchor 已确认后，不要把图片重新翻译成几千字。
 
 **Visual Anchor = visual truth**
 **Execution Prompt = motion + timing + behavior + constraints**
+
+**视觉锁定 ≠ 实现写死。** Anchor 已经明确的内容不要再次用坐标、逐层步骤、逐帧参数复述；除非该实现本身就是已确认设计的一部分，否则让执行 Agent 自选合理方法。
 
 ### Step E｜先做 V1，再关键帧验收
 默认先交付可编辑 V1：
@@ -185,6 +187,18 @@ Visual Anchor 已确认后：
 当实现方法没有唯一正确答案时，允许执行 Agent 自选 Native / Expression / Parent / Precomp / Camera 等方法，只锁定视觉与行为结果。
 
 ---
+
+### Prompt Freedom Mode
+
+Visual Anchor 通过后，默认使用 **P2 DIRECTED_CREATIVE**：锁视觉真值、主动作、节奏依据、硬约束与验收，不锁死无必要的实现细节。
+
+只有以下情况升级为 **P3 EXECUTION_SPEC**：
+- 用户已经明确指定关键帧 / Graph / Expression / Effect / Parent / CTRL 等实现；
+- 正在修复已知偏差或 Bug；
+- 需要精确复刻已经批准的 Motion；
+- 模板化、批量迁移或工程一致性要求高于探索空间。
+
+如果用户明确要“先让 Codex 自己试 / 看它能设计成什么样”，可在正式 BUILD 前用 **P1 CREATIVE_BRIEF** 做低成本候选 / Previs；候选通过后再进入 P2/P3。
 
 ## 7｜失败 / 降级规则
 
