@@ -44,6 +44,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - **Visual Anchor Before Expensive Build**：从零设计、中高视觉复杂度、2.5D/3D、口播转视觉或构图/材质/光影决定质量时，先生成或确认一个明确的视觉锚点。**图不满意，先不做。** Anchor 锁“长什么样”，执行提示词只补 Motion / Timing / Audio / Relationship / Constraints / Verify。
 - 复杂动画的目标不是“多打关键帧”，而是设计运动并建立可调的 Motion System。
 - **Creative Authority Before Build**：不要默认让 AI 同时承担导演、构图、Motion Design 与 AE 执行；先判断 AI 应该直接生成、扩展已有系统，还是只做工程辅助。
+- **Prompt Freedom Follows Creative Stage**：创作 Prompt 默认遵循 Explore → Select → Converge。探索用 P1 Creative Brief；正式首版默认 P2 Directed Creative；局部修改 / 精确复刻 / 工程收敛才用 P3 Execution Spec。不要一开始用长篇逐帧规格锁死 Agent。
 - **Design Includes Implementation**：AE 方案要写清实现技法；主 Timing / Hero Motion 是否保留真实关键帧，持续 / 程序化行为是否用 Expression，以及 Layer Style / Native Effect / Plugin / CTRL 的实现方向。
 - **Previs Before Polish**：当高级感主要依赖构图、Pose、Timing、Camera 或 Typography 时，先用低成本 Previs 验证动作，再工程化和上材质。
 - **Build Contract Before Complex Build**：复杂镜头在设计与执行之间优先形成 AE BUILD SPEC，锁定结构、关系、Motion phase、实现法、人工区域与验证点。
@@ -74,6 +75,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 
 当用户要求“出 AE 制作方案 / 设计镜头 / 判断 Codex 怎么做 / 这个镜头是否适合 AI / 用已有模板迁移风格”时：
 - 先按 `references/workflows/creative-authority.md` 输出极短 `AE ROUTE`；
+- 选择 Prompt Freedom Mode：探索/测试创意可用 P1；默认正式创作用 P2；设计已锁定后的修复、复刻、模板化与工程收敛用 P3；
 - 若命中 Visual Anchor Trigger，先用 `references/workflows/visual-anchor.md` 生成 / 选择 / 确认视觉锚点；用户未认可画面时不进入正式 BUILD；
 - 默认优先 `HUMAN_DESIGN_AI_ENGINEER + Authority 1`，不是默认 AI 从零创作；
 - 再按 `references/engineering/ae-implementation-spec.md` 把关键帧 / Expression / Relationship / Layer Style / Native Effect / Plugin / CTRL / 人工可调边界写进方案；
@@ -129,7 +131,7 @@ M2–M4 额外验证：
   - 参考驱动制作：`references/workflows/reference-first.md`（仅命中 Trigger 时加载）
   - 现成资产优先：`references/workflows/asset-first.md`（语义资产 / 3D / HDRI / Texture / Template 等命中时加载）
   - 视觉锚点门禁：`references/workflows/visual-anchor.md`（从零 / 中高视觉复杂度 / 口播转视觉时按需；图未确认不进入正式 BUILD）
-  - AI 适用性 / Creative Authority：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移时加载）
+  - AI 适用性 / Creative Authority / Prompt Freedom：`references/workflows/creative-authority.md`（AE 设计 / 制作方案 / 模板迁移 / Codex 执行提示词时加载）
   - Previs：`references/workflows/previs-first.md`（Motion-sensitive 镜头按需）
 - 资产源入口：`references/assets/source-registry.md`（仅 Asset First 需要选库时读取）
 - 工程规范：`references/engineering/`
