@@ -1,36 +1,324 @@
 # XPIN AE Skill
 
-Codex / Agent 使用的 After Effects Skill 仓库。
+**让 AI 不只会教你 AE，而是真的可以帮你操作 After Effects。**
 
-本仓库同时保存：
+你可以把它理解成：
 
-- `chadian-ae-mini`：默认轻量版，适合大多数日常 AE 修改，减少上下文占用。
-- `chadian-ae`：完整模块化版，适合复杂工程、完整镜头、3D、素材/插件/MOGRT、重构和深度验收。
+> 给 Codex、Claude Code 等 AI 准备的一本「After Effects 工作手册」。
 
-Codex 的选择规则写在根目录 `AGENTS.md`。默认先使用 Mini；只有任务复杂度需要时才升级到完整版。完整版也采用渐进式加载，不应默认读取整个 archive。
+接上可以控制 AE 的 MCP 之后，AI 就可以进一步帮你：
 
-完整版现包含按需加载的 Motion System：
-- `motion-principles.md`：运动设计原则与动作结构；
-- `motion-profiles.md`：UI / Mechanical / Typography / Data / Camera / Soft Graphic 的差异化运动逻辑；
-- `motion-control-architecture.md`：Master Motion Channels → Precomp + Time Remap → Layer Local Motion；
-- `quality/animation-qa.md`：复杂动画与关键帧可编辑性验收。
+- 查看当前 AE 工程
+- 修改图层
+- 改文字、颜色、尺寸
+- 调整关键帧
+- 替换素材
+- 创建合成
+- 搭动画
+- 整理工程
+- 制作完整镜头
 
-普通局部关键帧修改仍优先 Mini，不因 Motion System 的存在增加默认上下文成本。
+目标是让 AI 从“告诉你怎么做”，变成“真正帮你一起做”。
 
+---
 
-## XPIN AE v2 workflow layer
+## 使用前：先让 AI 能控制 AE
 
-在现有 Mini / Full + Motion System 之上，完整版新增一层“设计 → 工程执行”的中间协议：
+**这个仓库本身不是 MCP。**
 
-- `workflows/previs-first.md`：Motion-sensitive 镜头先灰盒预演，避免直接堆材质后才发现构图和节奏像 PPT。
-- `engineering/ae-build-spec.md`：复杂镜头的结构化施工合同，把设计意图转成 Codex 可稳定执行的 Build Spec。
-- `adapters/engine-room-mcp.md`：针对当前主要使用的 Engine Room MCP，规范 bounded read、stable id、snapshot/diff、partial write safety 与 contact sheet。
-- `quality/visual-feedback-loop.md`：See → Measure → Correct，有边界地使用关键 Pose / Contact Sheet，而不是逐帧视觉循环。
-- `motion/motion-primitives.md`：EASE / SPRING / FOLLOW / STAGGER / PATH_FOLLOW 等成熟动作积木。
-- `patterns/index.md`：与 Learned Library 分开的“成功执行 Pattern”注册表。
-- `engineering/project-context-map.md`：老工程 / 模板整理后的轻量 Fast Path，降低未来 AI 读取成本。
+如果你只想让 AI 给你 AE 制作建议，可以直接使用。
 
-推荐复杂生产链：
-`Reference → Creative Authority → Previs → AE BUILD SPEC → Engineering Skeleton → Primary Motion → Secondary/Material → Visual Feedback → Human Polish → Patch → Pattern/Learning Promotion`
+但如果你希望 AI **真的打开、读取和修改你的 AE 工程**，需要先安装一个能连接 After Effects 的 MCP / 控制工具。
 
-简单 Patch 仍优先 Mini，不读取上述完整链路。
+如果你还没有安装，可以直接对 AI 说：
+
+```text
+我还没有 AE MCP，帮我安装和配置一个。
+```
+
+或者：
+
+```text
+检查一下我现在有没有可用的 AE MCP。
+```
+
+Agent 在真正修改工程前，也应该先确认自己是否已经能够连接 AE。
+
+如果没有连接成功，就应该先告诉你，而不是假装已经操作了 AE。
+
+---
+
+## 举个例子
+
+以前你问 AI：
+
+> 帮我把这个标题动画做得更自然一点。
+
+它可能只能回答：
+
+> 可以调整缩放、透明度和缓动。
+
+最后还是你自己去 AE 里做。
+
+接上 MCP + XPIN AE Skill 后，希望变成：
+
+```text
+你：
+把当前选中的标题动画改自然一点
+
+AI：
+读取当前选中的图层
+↓
+检查已有关键帧
+↓
+修改动画
+↓
+检查修改结果
+↓
+留下可以继续手动调整的 AE 工程
+```
+
+---
+
+## 它能帮你做什么？
+
+### 简单修改
+
+比如：
+
+```text
+把这个文字改成白色
+标题放大一点
+把选中的图层往上移动
+替换这张图片
+把这几个关键帧调自然一点
+```
+
+这种日常工作优先走轻量模式。
+
+---
+
+### 做完整动画
+
+也可以处理更复杂的工作，比如：
+
+- 信息卡片动画
+- 数据图表
+- UI 动画
+- 文字动画
+- 2.5D / 3D 场景
+- Camera 动画
+- 科技类 Motion Design
+- 从零搭一个完整镜头
+
+---
+
+## 简单任务和复杂任务会自动分开
+
+仓库里有两套 Skill。
+
+### Mini
+
+负责日常小修改：
+
+- 改字
+- 改颜色
+- 移动图层
+- 简单关键帧
+- 替换素材
+
+这样不会为了一个很小的操作，让 AI 读取一大堆复杂规则。
+
+### Full
+
+遇到下面这类任务时再使用：
+
+- 从零做完整镜头
+- 复杂动画
+- 3D / Camera
+- 大型工程整理
+- 模板化
+- 深度检查
+
+---
+
+## 复杂镜头：先看图，再开工
+
+对于比较复杂的画面，一个很重要的原则是：
+
+**先确定画面长什么样，再让 AI 去 AE 里搭。**
+
+可以先准备：
+
+- 参考图
+- 设计稿
+- AI 生成的关键帧
+- Blockout
+- 当前 AE 截图
+
+如果静态画面本身还不好看，就先继续改图。
+
+不要急着让 AI 花很多时间搭工程。
+
+---
+
+## 能找到现成素材，就不要重画
+
+如果需要：
+
+- Logo
+- 图标
+- UI
+- 产品图
+- 3D 模型
+- 材质
+- 动画模板
+
+会优先考虑有没有现成可用的资产。
+
+**AE 里画得出来，不代表一定应该从零画。**
+
+---
+
+## 尽量留下“正常的 AE 工程”
+
+AI 很容易做出一种东西：
+
+> 看起来能跑，但人根本不想接着改。
+
+这个 Skill 会尽量要求：
+
+- 图层名字看得懂
+- 合成结构别太乱
+- 关键帧可以继续调整
+- 常用参数方便找到
+- 不乱删原来的东西
+- 修改前尽量留恢复点
+- 尽量使用 AE 正常、可编辑的做法
+
+目标不是只得到一个结果。
+
+而是：
+
+> **做完之后，你还愿意继续打开这个工程工作。**
+
+---
+
+## AI 不一定要包办所有动画
+
+复杂 Camera、Graph、Hero Motion，有时人工仍然更稳定。
+
+所以更推荐：
+
+```text
+AI：
+搭场景
+整理图层
+做材质
+建立控制
+做基础动画
+
+人：
+调最终节奏
+调 Graph
+调 Camera
+做最后的手感
+```
+
+把重复劳动交给 AI，把最影响成片质感的部分留给人。
+
+---
+
+## MCP 和这个 Skill 是什么关系？
+
+可以简单理解成：
+
+```text
+MCP
+= AI 控制 AE 的“手”
+
+XPIN AE Skill
+= AI 操作 AE 时使用的“工作方法”
+```
+
+只有 MCP，AI 虽然能碰 AE，但不一定知道应该先看什么、哪些不能乱改、一个正常工程应该怎么搭。
+
+XPIN AE Skill 就是补这一层。
+
+---
+
+## 和「差点后期」一起使用
+
+另一个项目：
+
+**[差点后期](https://github.com/kzz-x/chadian-post-GTP-project)**
+
+主要负责：
+
+```text
+这一段视频应该做什么画面？
+```
+
+XPIN AE Skill 主要负责：
+
+```text
+这个画面进入 AE 后应该怎么做？
+```
+
+组合起来：
+
+```text
+文稿
+↓
+差点后期
+↓
+确定镜头和画面
+↓
+XPIN AE Skill
+↓
+AI 操作 After Effects
+↓
+人工最后调整
+```
+
+---
+
+## 怎么开始？
+
+### 1. 先准备 AE MCP
+
+如果还没有，直接让你的 AI 帮你检查、安装和配置。
+
+### 2. 让 Agent 读取
+
+```text
+AGENTS.md
+```
+
+它会根据任务自动选择简单模式或完整模式。
+
+### 3. 直接开始说人话
+
+例如：
+
+```text
+把我当前选中的标题动画改自然一点。
+```
+
+或者：
+
+```text
+按照这张参考图，在当前合成里做一个类似的信息动效。
+```
+
+---
+
+## 为什么做这个项目？
+
+这个项目真正想解决的已经不只是：
+
+> AI 能不能控制 After Effects？
+
+而是：
+
+> **AI 能不能真正进入一个后期师的工作流程，并且做完以后，人还愿意继续接着这个工程工作？**
