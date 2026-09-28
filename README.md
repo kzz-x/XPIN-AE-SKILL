@@ -1,6 +1,6 @@
 # XPIN AE Skill
 
-**让 AI 不只会教你 AE，而是真的可以帮你操作 After Effects。**
+**让 AI 帮你操作 After Effects。**
 
 你可以把它理解成：
 
