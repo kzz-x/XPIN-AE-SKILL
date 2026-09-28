@@ -9,7 +9,21 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 
 **视觉完成度高 + 工程可编辑 + 动画合理 + 能继续人工修改 + 能继续由 AI 局部修改 + 不为自动化便利牺牲质量。**
 
-## 0｜渐进式加载规则
+## 0｜执行前先确认 AE 连接
+
+如果本轮只是给 AE 建议、方案或解释，不需要阻塞。
+
+但只要用户要求你**直接读取 / 修改 / 制作 AE 工程**，必须先确认当前环境存在可用的 AE MCP / 控制工具。
+
+- 已连接：继续读取真实 AE 状态并执行。
+- 未安装、未连接或无法确认：先告诉用户“要让 AI 直接操作 AE，需要先安装并连接 AE MCP / 控制工具”，并主动问：**“要不要我帮你检查、安装和配置 AE MCP？”**
+- 用户同意且当前环境允许安装时，可以继续协助安装 / 配置；环境不允许时给出真实步骤。
+- MCP 未真正可用前，不得假装已经读取、修改、保存或渲染 AE。
+- 本 Skill 不是 MCP 本身；它负责告诉 Agent 应该怎样安全、专业地使用 AE。
+
+---
+
+## 1｜渐进式加载规则
 
 不要因为任务复杂就默认读取整个规范。
 
@@ -28,7 +42,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 8. 用户要求“学习这个 AE 工程 / 提炼这个 AEP 的审美与动画规律”时，路由到 `recipes/learn-from-ae-project.md`。学习阶段默认只读；先生成候选 Learning Pack。任何长期知识写入 `references/learned/` 或核心 reference 前，都必须经过用户明确确认的 Promotion Gate，禁止边学边自动污染 Skill。
 9. 用户表达“做成模板 / 模板化 / 整理成模板 / 沉淀模板库 / 拆独立组件 / 做成视觉系统包”等意图时，路由到 `recipes/templateize-style-pack.md`，并加载 `references/engineering/human-ai-template-library.md`。模板化前先隔离源工程：源 AEP / 源素材默认只读，建立恢复点并创建独立模板化工作副本后才允许结构性写入。
 
-## 1｜永远生效的底线
+## 2｜永远生效的底线
 
 - **Read Before Write**：能读取真实 AE 状态时，先读再改。
 - **Patch First**：能局部改就不重建。
@@ -50,7 +64,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - **Build Contract Before Complex Build**：复杂镜头在设计与执行之间优先形成 AE BUILD SPEC，锁定结构、关系、Motion phase、实现法、人工区域与验证点。
 - **Visual Feedback Is Bounded**：视觉验收使用少量高信息关键 Pose / Contact Sheet，发现问题后回到真实 AE 数据定位原因，不逐帧截图。
 
-## 2｜任务启动
+## 3｜任务启动
 
 内部先判断：
 - NEW_PROJECT
@@ -71,7 +85,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 如果用户已经明确说“直接做”“不用出图”“不要方案”，不要机械阻塞。
 如果需求清晰，不要默认 Grill-me；只有重大歧义、高返工风险或路线分叉时才问 1–5 个关键问题。
 
-## 3｜设计到执行
+## 4｜设计到执行
 
 当用户要求“出 AE 制作方案 / 设计镜头 / 判断 Codex 怎么做 / 这个镜头是否适合 AI / 用已有模板迁移风格”时：
 - 先按 `references/workflows/creative-authority.md` 输出极短 `AE ROUTE`；
@@ -82,7 +96,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 - M0 / 极小 Patch 不机械输出完整设计块；
 - Authority 3 只有用户明确授权才启用。
 
-## 4｜执行方式
+## 5｜执行方式
 
 - **MCP**：真实状态读取、目标定位、局部修改、验证。
 - **JSX**：批量创建、确定性结构、重复模块、参数化搭建。
@@ -101,7 +115,7 @@ description: 面向 Codex / MCP / JSX 的模块化 After Effects 生产 Skill。
 
 共享运动优先上提；独特运动留在局部。3+ 图层共享同类运动时，优先控制器 / Parent / Expression / Stagger，而不是复制关键帧。
 
-## 5｜完成条件
+## 6｜完成条件
 
 完成前必须验证：
 - 目标对象真的被正确修改；
