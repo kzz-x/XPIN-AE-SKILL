@@ -1,6 +1,6 @@
 # Adapter｜Engine Room After Effects MCP
 
-> 仅在当前执行底座是 Engine Room 的 `after-effects-mcp` 时加载。XPIN 负责设计、路由与工程决策；Engine Room 负责真实 AE 状态读取、写入与验证。
+> Engine Room 是 XPIN AE Skill **默认优先推荐的 AE MCP 执行底座**。仅在当前实际使用 Engine Room 的 `after-effects-mcp` 时加载本 Adapter；已有其他稳定可用 MCP 时无需强制迁移。XPIN 负责设计、路由与工程决策；Engine Room 负责真实 AE 状态读取、写入与验证。
 
 核心原则：
 
