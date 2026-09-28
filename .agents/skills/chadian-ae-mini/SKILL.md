@@ -13,11 +13,13 @@ description: 轻量但完整的 After Effects 日常操作规范。用于 Codex 
 
 但只要用户要求你**直接读取 / 修改 / 制作 AE 工程**，必须先确认当前环境存在可用的 AE MCP / 控制工具。
 
-- 已连接：继续读取真实 AE 状态并执行。
-- 未安装、未连接或无法确认：先告诉用户“要让 AI 直接操作 AE，需要先安装并连接 AE MCP / 控制工具”，并主动问：**“要不要我帮你检查、安装和配置 AE MCP？”**
+- 已有可用 AE MCP / 控制工具：继续读取真实 AE 状态并执行；不要仅为了统一方案强制迁移。
+- 没有可用 AE MCP：**首选推荐 Engine Room After Effects MCP（`@engine-room/after-effects-mcp`）**。XPIN 对它已有最完整适配，因此新安装默认优先它。
+- 未安装、未连接或无法确认：先告诉用户“要让 AI 直接操作 AE，需要先安装并连接 AE MCP；XPIN 默认推荐 Engine Room”，并主动问：**“要不要我帮你检查并安装 / 配置 Engine Room After Effects MCP？”**
 - 用户同意且当前环境允许安装时，可以继续协助安装 / 配置；环境不允许时给出真实步骤。
+- Engine Room 明确不可用、不兼容、缺少当前任务能力，或用户明确指定其他方案时，再使用其他 MCP / 控制工具。
 - MCP 未真正可用前，不得假装已经读取、修改、保存或渲染 AE。
-- 本 Skill 不是 MCP 本身；它负责告诉 Agent 应该怎样安全、专业地使用 AE。
+- 本 Skill 不是 MCP 本身；它负责告诉 Agent 应该怎样安全、专业地使用 AE。Engine Room 是默认推荐底座，不是唯一允许底座。
 
 ---
 
