@@ -30,16 +30,24 @@
 
 但如果你希望 AI **真的打开、读取和修改你的 AE 工程**，需要先安装一个能连接 After Effects 的 MCP / 控制工具。
 
+### 默认推荐：Engine Room After Effects MCP
+
+XPIN AE Skill 当前**优先推荐 [Engine Room After Effects MCP](https://github.com/Engine-Room-Games/after-effects-mcp)**（`@engine-room/after-effects-mcp`）。
+
+原因不是“只能用它”，而是 XPIN 已经针对它整理了更完整的执行 Adapter，包括真实状态读取、Snapshot / Diff、写后验证、截图验收、Batch / JSX 边界、Undo 与常见 Bridge 故障处理。对第一次安装 AE MCP 的用户，默认先选它，通常最省事。
+
+如果你已经有其他稳定可用的 AE MCP，不需要为了 XPIN 强制更换；只有当前工具不兼容或缺少任务所需能力时，再考虑迁移。
+
 如果你还没有安装，可以直接对 AI 说：
 
 ```text
-我还没有 AE MCP，帮我安装和配置一个。
+我还没有 AE MCP，帮我检查并安装 Engine Room After Effects MCP。
 ```
 
 或者：
 
 ```text
-检查一下我现在有没有可用的 AE MCP。
+检查一下我现在有没有可用的 AE MCP；如果没有，优先帮我配置 Engine Room。
 ```
 
 Agent 在真正修改工程前，也应该先确认自己是否已经能够连接 AE。
@@ -287,7 +295,7 @@ AI 操作 After Effects
 
 ### 1. 先准备 AE MCP
 
-如果还没有，直接让你的 AI 帮你检查、安装和配置。
+如果还没有，直接让你的 AI 帮你检查、安装和配置。**默认优先 Engine Room After Effects MCP；已有其他稳定可用方案则无需强制迁移。**
 
 ### 2. 让 Agent 读取
 
