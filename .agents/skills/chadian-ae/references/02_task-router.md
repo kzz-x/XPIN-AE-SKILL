@@ -1,435 +1,126 @@
 # 02｜Task Router
 
-先路由，再加载。不要“任务复杂 = 读全部”。
-
-## A｜EXISTING_PROJECT_PATCH
-典型：改选中图层、文字 / 颜色 / 尺寸 / 少量关键帧、替换素材、修改一个模块。
-
-加载：
-- `workflows/modify-existing.md`
-- `workflows/mcp-direct-control.md`（若 MCP）
-- 与目标属性有关的 1 个 Engineering / Capability 模块
-
-普通局部动画仍可留 Mini；不要因为出现关键帧就自动升级完整版。
-
-## B｜NEW_PROJECT
-加载：
-- `workflows/new-project.md`
-- `engineering/project-architecture.md`
-- `engineering/controls-and-tokens.md`
-- `engineering/animation-and-timing.md`
-- 任务触发的素材 / 3D / Effects 模块
-- `quality/validation.md`
-- 若是复杂镜头 / 长期可 Patch 构建 → `engineering/ae-build-spec.md`
-- 若从零视觉设计 / 中高视觉复杂度 / 口播转视觉 / 构图材质光影决定质量 → `workflows/visual-anchor.md`，先定图再 BUILD
-- 若 Motion taste 是主要难点 → `workflows/previs-first.md`
-- 若有明显视觉变化需自动检查 → `quality/visual-feedback-loop.md`
-
-创建新视觉元素 / 动画模块时按下方 AE Expert Preflight 判断是否加载 Native / Relationship 模块。
-若 Motion Complexity 达 M2–M4，再走 Motion Router。
-若 NEW_PROJECT 同时要求 AI 自己决定设计 / 构图 / Motion，先按 `K｜AE_DESIGN_PLAN` 做 Creative Authority Gate；若视觉与 Motion 已由用户 / 上游 Handoff 锁定，则直接执行，不重复发散。
-
-## C｜JSX_BUILD
-加载：
-- `workflows/jsx-generation.md`
-- 相关工程模块
-- `engineering/expressions-and-compatibility.md`
-
-### AE26 Scripting Gotchas Trigger
-仅在以下任一情况追加：
-`engineering/ae26-scripting-gotchas.md`
-
-- Raw JSX 直接操作 Shape Contents / indexed `addProperty`；
-- Parent / Rig 坐标空间、2.5D / 3D 父子换算；
-- Repeater 级联 / Shape 结构；
-- Layer reorder；
-- KeyframeEase / temporal ease；
-- 报错包含 `Object is invalid`、非法保留字，或出现明显“脚本成功但结构 / 坐标不对”的宿主行为。
-
-普通文字 / 颜色 / Transform Patch、已有原生 MCP 工具可直接完成的操作，不加载 Gotchas。
-
-若当前执行底座为 Engine Room，其工具自身特有行为仍以 `adapters/engine-room-mcp.md` 为准，不把执行器版本细节塞进通用 Gotchas。
-
-若 JSX 包含复杂共享动画，不要因为“脚本能批量打关键帧”就复制动画；按 Motion Router / Relationship Trigger 加载对应模块。
-
-## D｜DIRECT_MCP
-加载：
-- `workflows/mcp-direct-control.md`
-- 修改现有工程再加 `modify-existing.md`
-- 当前 MCP 为 Engine Room → 增量加载 `adapters/engine-room-mcp.md`
-- 明显视觉变化 → 按需加载 `quality/visual-feedback-loop.md`
-
-## E｜HYBRID
-加载：
-- `workflows/hybrid.md`
-- `mcp-direct-control.md`
-- `jsx-generation.md`
-- 当前 MCP 为 Engine Room → 增量加载 `adapters/engine-room-mcp.md`
-- Hybrid 中的 Raw JSX 若命中上方 **AE26 Scripting Gotchas Trigger** → 追加 `engineering/ae26-scripting-gotchas.md`
-- 只加载本任务涉及模块
-
-## F｜COMPLEX_3D
-加载：
-- `capabilities/3d-camera-models.md`
-- `engineering/assets-and-replacement.md`
-- `engineering/project-architecture.md`
-- `engineering/animation-and-timing.md`
-- `quality/visual-quality.md`
-- 若从零做，再加 `new-project.md`
-- 需要通用 3D / HDRI / Texture / Model 时追加 Asset-First Trigger，先搜再建模
-
-复杂 Camera / 多对象动画按 M3+ 处理 Motion；Camera Target / Focus 等关系触发 Relationship Rig。
-
-## G｜MOGRT_TEMPLATE
-加载：
-- `capabilities/mogrt-essential-properties.md`
-- `engineering/controls-and-tokens.md`
-- `engineering/project-architecture.md`
-- `engineering/assets-and-replacement.md`
-
-复杂动画控制再加载 `motion/motion-control-architecture.md`。
-
-## H｜REVIEW_DEBUG
-加载：
-- `workflows/review-debug.md`
-- `quality/validation.md`
-- `quality/render-policy.md`
-- 视觉 / 构图 / Camera / Typography 问题 → `quality/visual-feedback-loop.md`
-- 再按错误类型加载对应模块
-
-动画质量 / 节奏 / Camera / 关键帧架构 → `quality/animation-qa.md`。
-若问题是 Shape 堆砌、错误手工模拟、对象同步困难 → 加载 Native / Relationship 模块。
-
-## I｜ASSET_REFACTOR
-典型：整理用户历史 AEP、半模板、小元素动画、复杂插件/表达式工程，使其同时适合人工维护与 AI 低 Token 快速修改。
-
-加载：
-- `recipes/refactor-existing-asset.md`
-- `workflows/modify-existing.md`
-- `engineering/project-architecture.md`
-- `engineering/controls-and-tokens.md`
-- `engineering/expressions-and-compatibility.md`
-- 若资产会长期复用 → `engineering/project-context-map.md`
-
-规则：
-- 先锁定资产根合成，只沿必要依赖读取，不默认全工程扫描；
-- 保持最终视觉与动画结果，不借整理之名重做；
-- 高频参数集中到明确控制入口，低频参数不要过度暴露；
-- 第三方插件允许保留，只记录与映射关键依赖；
-- 整理后未来 AI 默认走 `Asset Map / 00_CTRL → 目标图层 → 必要依赖`；
-- 批量整理时一次一个 AEP / 一个资产根合成，避免上下文、Undo 和依赖混杂。
-
-这是结构重构，默认完整版；但不自动加载 Motion / 3D / 素材模块，只有真实触发时才追加。
-
-
-## J｜AE_PROJECT_LEARN
-典型：
-- “学习这个 AE 工程 / AEP”
-- “把这个镜头里的关键帧曲线、构图、材质学下来”
-- “提炼这个优秀工程的动效规律”
-- “以后照这个工程的审美做”
-
-加载：
-- `recipes/learn-from-ae-project.md`
-- 若 Motion 是重点，再按需加载 `motion/motion-principles.md` / `motion/motion-profiles.md`
-- 共享控制 / 复杂 Motion 才追加 `motion/motion-control-architecture.md`
-- 曲线质量需要深度判断时追加 `quality/animation-qa.md`
-- 材质 / 插件 / 3D 只有真实触发时才加载对应 Capability
-
-规则：
-- 这是完整版任务，但**学习阶段默认只读**，不修改源 AEP；
-- 先锁定用户指定的资产根合成，只沿必要依赖读取，不默认扫描整个 Project；
-- 优先采样代表性静帧 + 工程结构 + 真实关键帧 / Ease / Effect 证据；
-- 把绝对坐标、秒数和参数同时归一化为比例 / 帧数 / 动作百分比，区分 `OBSERVED` 与 `INFERRED`；
-- 输出候选 `COMPOSITION_CARD / MOTION_CARD / MATERIAL_CARD / VISUAL_CARD`，工程结构确有价值时再加 `ENGINEERING_CARD`；
-- **学习不等于写入 Skill**。先生成候选 Learning Pack；
-- 写入 `references/learned/`、修改已有 learned card 或提升到核心 reference 前，必须进入 Promotion Gate，向用户说明候选规律、证据、建议 scope、目标位置、冲突与“新增 / 并存 / 合并 / 覆盖”建议，并明确询问用户；
-- 只有用户明确批准的条目才能写入；未确认内容保持候选状态；
-- 单案例默认进入 learned library，不直接升级为核心通用规则。
-
-## K｜AE_DESIGN_PLAN
-典型：
-- “给我出 AE 制作方案 / 动效方案”
-- “这镜头适不适合直接让 AI 做”
-- “给 Codex 一份执行方案”
-- “我先做好模板，AI 接下来做什么”
-- “把模板 B 改成模板 A 的液态玻璃 / 插件 / 材质系统”
-
-加载：
-- `workflows/creative-authority.md`
-- `engineering/ae-implementation-spec.md`
-- `engineering/animation-and-timing.md`（有 Motion 时）
-- 命中 Visual Anchor Trigger 且尚无已确认视觉锚点 → `workflows/visual-anchor.md`；先把参考图 / 关键帧图确认好，图不满意不进入 BUILD
-- Motion-sensitive 且尚未有可靠 Previs / 模板 → `workflows/previs-first.md`
-- 复杂镜头 / 需要交给 Codex 稳定执行 → `engineering/ae-build-spec.md`
-- 创建新元素 / 材质时按 AE Expert Preflight 决定是否加 `capabilities/native-ae.md`
-- 需要真实参考时走 Reference-First Trigger
-- 涉及语义 Icon / Logo / Lottie / 3D / HDRI / Texture / Template 等时走 Asset-First Trigger
-- Motion 达 M2–M4 时再按 Motion Router 增量加载，不因“写方案”自动读取整套 Motion
-
-规则：
-- 先判断 `AI_DIRECT_BUILD / HUMAN_DESIGN_AI_ENGINEER / HUMAN_MOTION_AI_ASSIST`；
-- 再判断 Creative Authority 0–3；默认优先 Authority 1，Authority 3 默认关闭；
-- 方案必须同时说明“怎么动”和“AE 里怎么实现”：Keyframe / Expression / Relationship / Native / Layer Style / Plugin / CTRL / 人工可调边界；
-- 结构型信息镜头可以 Authority 2 直接生成；Hero / 品牌 Motion / 高级 Typography / 复杂 Camera / 类生物与真实物理默认由人主导；
-- 已有模板 / 已批准 AEP / 已确定 Motion 时，AI 以读取、迁移、扩展为主，不重新发明视觉语言；
-- 用户只要求执行一个已锁定方案时，不必重复做完整 Creative Authority 讨论，只保留已确定权限边界。
-
-## L｜TEMPLATE_STYLE_PACK
-典型：
-- “做成模板 / 整理成模板 / 模板化”
-- “沉淀到模板库 / 做成人和 AI 共用模板”
-- “把这个完整 AEP 拆成 Full Kit + 场景 + 独立组件”
-- “把这套视觉语言做成 Style Pack”
-
-加载：
-- `recipes/templateize-style-pack.md`
-- `references/engineering/human-ai-template-library.md`
-- `recipes/refactor-existing-asset.md`
-- `workflows/modify-existing.md`
-- `engineering/project-architecture.md`
-- `engineering/controls-and-tokens.md`
-- 素材替换 / Relink / Collect 真实发生时再加 `engineering/assets-and-replacement.md`
-- Motion / 插件 / 3D / MOGRT 只有真实触发时才加载对应模块
-
-规则：
-- **Source Isolation Gate**：源 AEP / 源素材默认只读；先恢复点，再创建独立模板化工作副本；所有结构性写入只发生在副本。
-- 不因“做成模板”重做已经确认的视觉与 Motion；先保真整理，再抽象结构。
-- 一个视觉系统包以“完整套装”为唯一设计母体；场景和独立组件从完整套装派生。
-- 模板型 AEP 的控制层跟合成走：每个主要可编辑合成时间线最上方放控制 Null；不使用项目面板独立控制文件夹作为主要控制入口。
-- 正式发布版不可直接修改；生产调用必须复制到工作区。
-- 插件、字体、脚本、预设、LUT、Codec、3D / HDRI / 贴图、外部数据、Adobe 版本等换机风险必须进入依赖检查；缺失时先提醒，不静默替换。
-
-## Visual Anchor Trigger
-
-以下情况加载 `workflows/visual-anchor.md`：
-- 从零设计完整镜头；
-- 中高视觉复杂度，构图 / 比例 / 空间层级 / 材质 / 光影决定最终质量；
-- 2.5D / 3D / Camera / 多模块信息场；
-- 口播 / 文案需要先转成具体视觉画面；
-- 用户反馈 AI 直接执行容易太 PPT、太模板、一眼 AI 或构图跑偏；
-- 单次 BUILD 成本高，错误方向会明显返工。
-
-默认行为：
-- 主动提醒：**先生成 / 确认参考图或关键帧图；图不满意，先不做。**
-- 可用 Anchor：用户参考图、当前工程截图、用户 Blockout、生成关键帧图、已批准上一版、上游 Handoff。
-- 已有足够明确 Anchor → 不重复生图，直接把它设为 visual truth。
-- Anchor 已确认后，Execution Prompt 只写 Motion / Timing / Audio / Relationship / Constraints / Verify，不把图片重新翻译成长篇描述。
-- 真实产品 / 品牌 / 设备需要准确时，Visual Anchor 不能替代 Reference First 的真实素材依据。
-- Motion taste 仍未锁定时，Visual Anchor 后继续走 Previs First；Visual Anchor 锁“长什么样”，Previs 锁“怎么动”。
-
-以下情况通常不触发：
-- 改字 / 改色 / 改尺寸 / 单层小 Patch；
-- 已有成熟模板内的规则化扩展；
-- 用户明确要求跳过出图直接执行；
-- 当前 Handoff / AEP 已经把构图、材质、比例和视觉层级锁定。
-
----
-
-# Creative Authority / Implementation Trigger
-
-以下情况命中 `workflows/creative-authority.md`：
-- 从零设计 AE 镜头；
-- 判断某镜头是否值得交给 AI；
-- 规划 Codex / MCP / JSX 的工作范围；
-- 已有模板 / AEP，要扩展、迁移风格或复制 Motion / Material System；
-- 用户反馈 AI 构图 / 节奏 / 动画 taste 不稳定，希望改成辅助模式。
-
-以下情况同时命中 `engineering/ae-implementation-spec.md`：
-- 要输出 AE 制作方案 / 施工说明；
-- 设计阶段需要决定 Keyframe vs Expression；
-- 需要明确 wiggle / loop / spring / distance-driven / Follow / Auto Layout 等程序化技巧；
-- 需要明确 Layer Style / Native Effect / Plugin / Adjustment Layer / CTRL 的实现方式；
-- 需要把设计方案直接交给 Codex 执行。
-- 复杂执行需要明确 Managed / Manual Boundary、Motion Phase、Verify 点时 → `engineering/ae-build-spec.md`。
-
-普通改字 / 改色 / 改参数 / 已有动画小 Patch 不加载这两个模块。
-
----
-
-## Learned Library Trigger
-
-只有以下情况读取 `references/learned/index.md`：
-- 用户明确说“用之前学的 / 用频道风格 / 用这个工程学到的规律”；
-- 用户点名某个已学习的 motion / composition / material / visual；
-- 当前 Handoff 明确带有 learned tag；
-- 当前任务明确属于某个已批准的 channel / project / asset scope。
-
-读取 Index 后只加载最相关的 1–3 张卡，不扫描全部 learned 文件。
-简单 Patch 不因为存在 learned library 就额外增加上下文。
-
----
-
-# AE Expert Preflight Trigger
-
-以下情况加载 `capabilities/native-ae.md`：
-- 创建新的视觉元素；
-- 创建新的动画模块；
-- 从零搭镜头；
-- 重构现有结构；
-- 用户反馈“太基础 / 太像 Shape 堆砌 / 不好修改”；
-- Agent 准备用多个基础层模拟一个视觉效果。
-
-如果只是改文字、颜色、尺寸、已有 Effect 参数：
-→ 不额外加载。
-
-以下情况加载 `motion/relationship-rigs.md`：
-- 多个对象存在 Follow / Attach / Carry / Target / Connect / Align / Look At；
-- 目标位置未来可能变化；
-- 多个对象靠独立关键帧人工保持同步；
-- 大量重复 Position / Rotation / Scale Keyframe；
-- Auto Layout / Dynamic Bounds；
-- Camera / Focus 需要跟随目标。
-
-Relationship Rig 本身不自动意味着 M3/M4。简单 Parent / Follow Patch 可以低成本完成。
-
----
-
-# Reference-First Trigger
-
-以下情况加载 `workflows/reference-first.md`：
-- 从零创建新视觉 / 新动画，且参考会显著影响结果；
-- 产品 / 品牌 / 设备 / 零件外观必须准确；
-- 人、手、动物等类生物动作；
-- 复杂机械、装配、液体、金属、碰撞等结构或物理运动；
-- UI / HUD / 产品广告 / Camera 需要成熟运动语言；
-- 用户反馈“动作不自然 / 太模板 / 一眼 AI / 结构画错”；
-- 存在直接复用 PNG / SVG / Lottie / Footage / 3D / Template 的可能。
-
-以下情况通常不加载：
-- 改文字 / 颜色 / 尺寸；
-- 已有动画的小型 Patch；
-- 简单几何 / 数据 / 路径，且运动规律明确；
-- 用户明确要求只按现有参考 / 素材执行。
-
-Reference-First 不自动升级 Motion Complexity，也不等于必须搜索互联网；优先读取用户提供、工程已有和本地可用参考，必要时再外搜。
-
----
-
-# Asset-First Trigger
-
-以下情况加载 `workflows/asset-first.md`：
-- 有明确语义的 Icon / Symbol / Logo / 标准 UI Asset；
-- Animated Icon / Lottie / Icon Morph；
-- Emoji / 标准工业符号 / 可复用图表符号；
-- 通用 3D Icon / 3D Model / Props；
-- HDRI / Texture / Material；
-- 官方产品 PNG / SVG / Press Kit；
-- 成熟 Template / Component / Motion Asset。
-
-只有需要选择外部资产源时，再增量读取 `assets/source-registry.md`。
-
-以下情况通常不加载：
-- 无语义圆 / 线 / 矩形；
-- 已有工程内的小 Patch；
-- 已锁定设计里的自定义装饰；
-- 明确数据决定的简单图表；
-- 上游 Handoff 已提供可直接使用的 `LOCKED_ASSETS`，且当前 AE 实现不缺资产。
-
-规则：
-- Asset First 与 Reference First 独立；一个任务可只命中其中一个，也可同时命中。
-- 应搜索对象若仍为 `UNSEARCHED`，不得进入正式 BUILD。
-- 搜不到合适资产时才进入 AE / AI / Blender 自制或 `PLACEHOLDER_APPROVED`。
-- 不因“Shape / JSX 很容易”跳过 Asset Search。
-- Asset First 本身不自动升级 Motion Complexity。
-
----
-
-# Motion Router
-
-Motion Complexity 只判断 Motion System 加载范围，不替代任务类型路由。
-
-## M0｜无动画
-文字、颜色、素材、布局、静帧、纯参数修改。
-→ 不加载 Motion 模块。
-
-## M1｜局部简单动画
-单层或少量图层；简单关键帧微调；无复杂共享节奏 / Camera / 动画系统。
-→ 默认 Mini 或 `engineering/animation-and-timing.md` 足够。
-→ 若出现简单 Relationship，可只加载 `relationship-rigs.md`，不必整套 Motion。
-
-## M2｜编排型动画
-多个对象需要先后、Stagger、不同运动性格，或 Motion Quality 是重点。
-
-加载：
-- `motion/motion-principles.md`
-- `motion/motion-profiles.md`
-
-3+ 图层共享同类运动时加：
+> **非启动必读。** Full `SKILL.md` 的 Quick Router 足够时不要读取本文件。只有任务分类模糊、多个模块同时命中或需要判断 Motion Complexity 时读取。
+
+## Context Budget
+
+- 先判断任务，再加载 reference；
+- 执行前默认新增 0–2 个最直接相关模块；
+- 不因“可能有用”读取整个目录；
+- 已足够执行就停止；
+- 故障 reference 只在真实故障后加载。
+
+## 1｜任务类型
+
+### EXISTING_PROJECT_PATCH
+现有工程局部修改。
+- 小范围 → 应优先 Mini。
+- 结构复杂才加载 `workflows/modify-existing.md`。
+- Engine Room 专属行为按真实需要读取对应 adapter 子文档。
+
+### NEW_PROJECT / COMPLETE_SHOT
+从零创建完整镜头 / 工程。
+按需：
+- 创作权限 → `workflows/creative-authority.md`
+- 未锁视觉 → `workflows/visual-anchor.md`
+- 真实参考 → `workflows/reference-first.md`
+- 现成资产 → `workflows/asset-first.md`
+- 实现翻译 → `engineering/ae-implementation-spec.md`
+
+不要默认全部加载。
+
+### JSX_BUILD / HYBRID
+只有大型批量 / DOM 缺口才使用。
+- 一般 JSX → `workflows/jsx-generation.md`
+- AE26 特定脚本坑 → `engineering/ae26-scripting-gotchas.md`
+- Engine Room 大型 Undo → `adapters/engine-room/jsx-undo.md`
+
+### ASSET_REFACTOR
+→ `recipes/refactor-existing-asset.md`
+
+### TEMPLATE_STYLE_PACK
+→ `recipes/templateize-style-pack.md`
+需要模板库结构细节时再加 `engineering/human-ai-template-library.md`。
+
+### AE_PROJECT_LEARN
+→ `recipes/learn-from-ae-project.md`
+学习默认只读；长期晋升仍需用户批准。
+
+### REVIEW_DEBUG
+先根据症状读取最小模块。
+Engine Room 错误不要一口气读整个 Adapter：
+- connection → `adapters/engine-room/connection-recovery.md`
+- JSX/Undo → `adapters/engine-room/jsx-undo.md`
+- screenshot → `adapters/engine-room/screenshot.md`
+- other → `adapters/engine-room/troubleshooting.md`
+
+## 2｜Reference / Asset / Visual Anchor
+
+### Reference First
+触发：真实产品结构、复杂机械 / 生物 / 物理运动、成熟 UI/HUD/Camera 语言等。
+→ `workflows/reference-first.md`
+
+### Asset First
+触发：Logo、SVG、Lottie、3D Model、HDRI、Texture、Material、Template / Component。
+→ `workflows/asset-first.md`
+
+### Visual Anchor
+触发：从零构图、中高视觉复杂度、2.5D/3D、材质光影决定质量、口播转视觉且画面未锁。
+→ `workflows/visual-anchor.md`
+
+三者互不自动绑定。已有锁定结果时直接复用。
+
+## 3｜Motion Complexity
+
+### M0
+无动画 / 静态参数。
+→ 不加载 Motion。
+
+### M1
+单层 / 少量图层简单动画。
+→ Mini 优先；无需 Motion System。
+
+### M2
+多个对象 Stagger / Overlap / 运动性格差异明显。
+→ `motion/motion-principles.md`
+需要类型差异再加 `motion/motion-profiles.md`。
+
+### M3
+3+ 对象共享 Motion、Master Progress、Parent Rig、Camera、Precomp retime。
+→ 在 M2 基础上按需加：
 - `motion/motion-control-architecture.md`
-
-有关联关系时加：
 - `motion/relationship-rigs.md`
 
-## M3｜系统型复杂动画
-多对象编排、Camera、Parent Rig、Master Progress、共享表达式、重复模块 retime、明显分段动作。
+### M4
+多合成、复杂 3D / Camera、机械系统、大型 Hybrid / 模板化 Motion Architecture。
+→ M3 基础上只加真实命中的 3D / Engineering / QA 模块。
 
-加载：
-- `motion/motion-principles.md`
-- `motion/motion-profiles.md`
-- `motion/motion-control-architecture.md`
-- `quality/animation-qa.md`
-- 关系触发时 `motion/relationship-rigs.md`
+不要因为有 Overshoot、Easy Ease 或几个关键帧就升级。
 
-## M4｜大型 / 高风险 Motion System
-多合成联动、复杂 Camera + 3D、机械系统、Hybrid / 大型 JSX、模板化 Motion Architecture、深度重构。
+## 4｜Speech Trigger
 
-→ M3 基础上按任务追加 3D / Expression / Workflow / Capability 模块。
-→ 完成前必须做 `quality/animation-qa.md`。
+用户要求按口播 / 旁白 / 音频自动识别节奏、语义点、Source↔Comp 时间映射或生成 Marker：
+→ `motion/speech-driven-motion.md`
 
-## Motion 升级信号
-- 3+ 对象共享同类动画；
-- 多对象 Stagger / Overlap；
-- Camera 与主体协调；
-- UI / 机械 / 文字 / 数据需要不同运动逻辑；
-- 用户反馈统一 Easy Ease / 太模板 / 没重量 / 没节奏；
-- 大量重复关键帧难以统一修改。
+已有足够 Marker 时直接用 Marker，不做 ASR。
 
-不要因为“有 Overshoot / Easy Ease / 3 个关键帧”就升级。
+## 5｜能力不确定时
 
----
+只有真的不知道 AE 原生 / MCP 能否实现，才读：
+→ `01_capability-map.md`
 
-## Speech-Driven Motion Trigger
+不要把 Capability Map 当固定前置。
 
-用户要求按口播 / 旁白 / 音频节奏、自动识别语义点、生成 / 校准 Motion Marker时：
-→ 加载 `motion/speech-driven-motion.md`
+## 6｜复杂执行合同
 
-规则：
-- Marker First；
-- Marker 不足才 Speech Assist；
-- 只分析当前时间线实际使用的 source ranges；
-- 自动结果先转 Comp Marker；
-- 用户 Marker 永远优先。
+完整复杂镜头、M3–M4、多模块高风险 Build，且结构/关系容易返工时：
+→ `engineering/ae-build-spec.md`
 
-Speech-Driven 本身不强制 M3/M4。
+简单明确任务不要机械生成完整 Build Spec。
 
----
+## 7｜Pattern / Learned
 
-## 风险等级
-LOW：局部参数 / 单层 / 单模块修改 → 不需要方案门禁。
+- 复用已验证 Rig / Expression / JSX / Layout → 先读 `patterns/index.md`，只读命中卡。
+- 需要已批准审美规律 → 先读 `learned/index.md`，只读命中卡。
 
-MEDIUM：多个模块、结构调整、明显动画设计 → 先简短计划。
-
-HIGH：新视觉方向、完整场景、复杂 3D、插件依赖、素材路线改变、大面积重构 → 必要时先方案 / 静帧 / 用户确认。
-
-## Grill-me
-仅在多条明显不同创意路线、关键条件缺失、技术路线成本差异很大、错一次会大面积返工时触发；最多 1–5 个关键问题。
-
-
----
-
-## Pattern Library Trigger
-
-只有以下情况读取 `references/patterns/index.md`：
-- 用户要求复用之前成功的 Rig / Expression / JSX / Layout；
-- 当前任务明显匹配已登记 Pattern trigger；
-- 新方案已多次验证，希望减少重复生成；
-- 需要把一次成功执行晋升为长期可复用模式。
-
-先读 Index，只加载命中的单张 Pattern Card。不要因为 Pattern Library 存在就扫描全部。
-
-## Motion Primitive Trigger
-
-当方案明确出现 spring / recoil / follow / drift / bounce / lean / kinetic / squash-stretch / throw / path-follow / stagger / sequence / retime，且需要决定参数与实现边界时，加载 `motion/motion-primitives.md`。
-
-Primitive 只提供成熟实现词汇，不能替代 Reference、Profile 与真人 Motion 判断。
+禁止扫描全部长期库。
