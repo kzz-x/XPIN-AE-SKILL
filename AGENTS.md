@@ -1,70 +1,64 @@
 # XPIN AE Skill Routing
 
-本仓库提供两套 After Effects Skill。任何 AE 制作、修改、调试、MCP / JSX 任务，先按下述规则选择 Skill。
+本仓库提供两套 After Effects Skill。目标：**能力不缩水，但默认上下文尽可能小。**
 
-## 0｜先确认能不能控制 AE
+## 1｜先选 Skill
 
-如果用户只是咨询 AE、要制作方案或学习工作流，不要求直接修改工程，可以正常回答，不强制安装任何工具。
+默认使用 `chadian-ae-mini`：
+- 选中层 / 单层 / 少量图层；
+- 改字、颜色、尺寸、位置、素材；
+- 简单 M0–M1 关键帧；
+- 普通局部 Patch。
 
-如果用户希望 AI **直接读取、修改或制作 After Effects 工程**，在进入 Mini / Full 路由前先检查当前环境是否已经有可用的 AE MCP / 控制工具：
+直接使用 `chadian-ae`：
+- 从零完整镜头 / 工程；
+- 中高视觉复杂度、Visual Anchor、Reference / Asset Search；
+- M2–M4 多对象 Motion / Camera / 3D；
+- 大型 JSX / Hybrid / 结构重构；
+- 口播自动分析、MOGRT、插件；
+- 模板化 / Style Pack；
+- 学习 / 拆解 AEP；
+- 全工程审计或深度 Debug。
 
-1. **已有可用 AE MCP / 控制工具** → 继续执行，并以真实 AE 状态为准；不要为了“统一工具”强制用户迁移。
-2. **没有可用 AE MCP** → 默认首选推荐 **Engine Room After Effects MCP**（`@engine-room/after-effects-mcp`）。本仓库对 Engine Room 已有最完整的 Adapter、验证路径与故障处理规则，因此新安装优先使用它。
-3. 未安装、未连接或无法确认时，先明确告诉用户：**要让 AI 直接操作 AE，需要先安装并连接 AE MCP / 控制工具；XPIN 默认推荐 Engine Room。**
-4. 然后主动询问：**“要不要我帮你检查并安装 / 配置 Engine Room After Effects MCP？”**
-5. 如果当前 Agent 具备安装 / 配置能力且用户同意，可以继续协助；如果不具备，就给出真实可执行的安装步骤，不得假装已连接。
-6. 只有当 Engine Room 明确不可用、不兼容、缺少当前任务所需能力，或用户明确指定其他方案时，才优先考虑其他 AE MCP / 控制工具。
-7. 在 MCP 真正可用前，不得声称已经读取、修改、保存或渲染了 AE 工程。
-8. **Engine Room + Premiere 启动顺序硬规则**：当前实际使用 Engine Room MCP 时，默认提醒用户 **先启动 After Effects，再启动 Premiere Pro**。如果 PR 已经先打开，且 Engine Room / AE MCP 出现端口占用、连接异常或调用失败，**第一恢复动作是关闭 PR，确保 AE 与 Engine Room 先正常连接，再重新打开 PR**。这是生产稳定性前置条件，不要先浪费时间反复改端口、重发现、固定端口或重装；只有关闭 PR、恢复“AE 先启动”后仍异常，才进入进一步端口诊断。
+**明显命中 Full 时不要先读 Mini。**
 
-本仓库是 AE 工作流 / Skill，不是 MCP 本身。**Engine Room 是默认推荐执行底座，但不是唯一允许的底座。** 已有其他稳定可用工具时保持兼容；只有使用 Engine Room 时才加载其专属 Adapter，不得把 Engine Room 特有能力假定为通用 MCP 能力。
+## 2｜直接操作 AE 前
 
-## Available skills
+只咨询、出方案、解释时不要求 MCP。
 
-- `chadian-ae-mini`
-  - 路径：`.agents/skills/chadian-ae-mini/SKILL.md`
-  - 默认优先使用。
-  - 适合：单层/少量图层修改、当前选中图层、文字/颜色/尺寸/关键帧微调、简单素材替换、一般局部 Patch、普通 MCP 操作。
-  - 目标：最小上下文成本，同时保持 Read Before Write、Patch First、恢复点保护、AE26 中文兼容、能力预检、默认不完整渲染等核心规则。
+要直接读取 / 修改 / 制作 AE：
+- 已有可用 AE MCP → 使用真实状态执行；
+- 没有可用 MCP → 默认推荐 Engine Room After Effects MCP；
+- 未连接时先说明需要连接，不得假装已操作工程；
+- Engine Room 不是唯一允许底座，已有其他稳定工具不强制迁移。
 
-- `chadian-ae`
-  - 路径：`.agents/skills/chadian-ae/SKILL.md`
-  - 完整模块化版。
-  - 在以下情况升级使用：从零创建完整镜头/工程；多模块或多合成联动；复杂动画系统；2.5D/3D/Camera/Light/3D Model；素材搜索/替换槽；插件；MOGRT/Essential Properties；大型 JSX；Hybrid MCP+JSX；结构重构；历史 AEP / 半模板 / 小元素动画标准化整理；学习 / 拆解优秀 AEP 的构图、关键帧曲线、Motion、材质与视觉规律并形成可复用知识包；质量不达标后的深度排查；全工程审计。
-  - 使用完整版时仍然必须渐进式加载：先读其 `SKILL.md`，再按 Router 只读需要的 references / recipes。不要默认读取 `references/archive/ae-standard-v1.4-full.md`。
-  - Motion System 位于 `references/motion/`，只有明显动画设计 / 编排 / 共享控制需求时才按 Router 加载。
-  - AE 设计 / 制作方案先按需加载 `references/workflows/creative-authority.md` 判断 AI 应做到什么程度，再用 `references/engineering/ae-implementation-spec.md` 把关键帧 / Expression / Layer Style / Native Effect / Plugin / CTRL 等实现方法写进方案。
-  - Motion taste / Camera / Typography 是主难点时按需进入 `workflows/previs-first.md`；复杂执行前按需生成 `engineering/ae-build-spec.md`；使用 Engine Room MCP 时按需加载 `adapters/engine-room-mcp.md`。
+### Engine Room + Premiere
+使用 Engine Room 时：**先启动 AE，确认 MCP 正常，再启动 PR。**
 
-## Routing rules
+若 PR 已先开且出现端口 / 连接异常：**第一动作关闭 PR，让 AE / Engine Room 先恢复，再开 PR。** 仍异常才进入 Engine Room connection recovery，不先反复改端口或重装。
 
-1. 默认从 `chadian-ae-mini` 开始。
-2. 如果 Mini 足以安全完成任务，不升级完整版。
-3. 如果任务明显触发完整版条件，可以直接使用 `chadian-ae`，无需先把 Mini 全文再读一遍。
-4. 同一聊天/会话已经读取过的 Skill 或 reference，不要无意义重复读取；任务类型变化、上下文压缩、规则冲突或用户要求复核时再重读。
-5. 用户说“这个/当前/选中的图层”时，必须实时读取 AE selection，不按名称猜。
-6. **Recovery Point Gate**：每个用户请求视为一次修改批次。对现有 AEP 第一次写入前，必须先确认存在可恢复点；能安全自动备份就先建立备份，不能可靠备份就明确提醒用户。高风险批量修改、结构重构、大型 JSX、删除/替换大量对象时，没有可靠恢复点不要直接做破坏性写入。不要把备份副本切成当前工作工程。
-7. 默认不完整渲染成片；用户会在 AE 前台预览。需要验收时只输出少量关键帧静帧，除非用户明确授权完整渲染。
-8. **不要因为任务里出现关键帧就升级 Motion System。** 单层/少量图层简单关键帧仍走 Mini。
-9. 当任务出现多对象编排、对象运动逻辑差异、Camera choreography、3+ 图层共享同类运动、Master Progress / Parent Rig / Precomp retime、复杂机械运动或大量重复关键帧时，升级完整版并按 `02_task-router.md` 判断 M2–M4。
-10. 复杂 Motion 的目标不是“多打关键帧”，而是让 AI 先设计运动，再建立人类易调的控制系统：**Shared motion goes upward. Unique motion stays local.**
-11. 用户要求“整理老工程 / 模板 / 小元素动画 / 让人和 AI 都方便改 / 降低后续 Token”时，直接升级完整版并走 `recipes/refactor-existing-asset.md`。默认只读资产根合成及必要依赖，不进行全工程扫描。
-12. **Search First**：创建新视觉 / 新动画时先区分 Reference First 与 Asset First。准确产品、复杂机械、类生物运动、物理规律、成熟 UI/HUD/Camera 语言 → Reference First；语义图标、Logo、Animated Icon/Lottie、3D Model/Props、HDRI/Texture/Material、成熟模板/组件 → Asset First。二者可独立或同时触发。命中 Asset First 时，确认无合适现成资产前不得仅因为 Shape / JSX 更容易就从零重画。普通改字改色和已有动画小 Patch 不增加搜索步骤；复杂任务按完整版 Router 加载对应 workflow。
-13. **Creative Authority Gate**：涉及“出 AE 制作方案 / 从零做镜头 / 这个镜头适不适合 AI / 让 Codex 做到什么程度 / 模板风格迁移”时，先判断 `AI_DIRECT_BUILD / HUMAN_DESIGN_AI_ENGINEER / HUMAN_MOTION_AI_ASSIST` 与 Authority 0–3。默认优先 `HUMAN_DESIGN_AI_ENGINEER + Authority 1`；Authority 3 默认关闭。详细规则按 Router 加载 `workflows/creative-authority.md`。
-14. **Design Includes Implementation**：AE 制作方案不能只写画面和动作结果；应按需明确主 Motion 用关键帧还是 Expression、哪些持续行为用 wiggle / loop / spring / 距离驱动、Layer Style / Native Effect / Plugin 怎么用、控制层暴露什么、哪些必须保留人工 Graph 调整。详细规则按 Router 加载 `engineering/ae-implementation-spec.md`。
-15. **来自差点后期的 Handoff**：若上游来自 `kzz-x/chadian-post-GTP-project`，把其已确认的镜头目标、构图、REFERENCE_BRIEF、ASSET_MANIFEST、LOCKED_ASSETS / MISSING_ASSETS、Visual Anchor、Motion Reference、时长/画幅和锁定约束视为输入，不重新从零发散或重复搜索已锁定资产。差点AE负责把它转成可执行 AE 方案/工程；仅在 AE 可实现性、工程安全或素材条件确有冲突时提出调整。
-16. **AE Project Learning**：用户说“学习这个 AE 工程 / 学一下这个 AEP / 把这个镜头的构图、动画、材质学下来”等时，直接升级完整版并走 `recipes/learn-from-ae-project.md`。学习阶段默认只读，只分析用户指定资产根合成及必要依赖；先生成候选 Learning Pack，不得自动写入 Skill。写入 `references/learned/` 或修改核心规则前，必须先向用户展示候选规律、建议作用域与写入位置，并明确询问“哪些要加入、怎么加入、并存/合并/覆盖哪一种”。只有用户明确确认后才能晋升；后续 learned 内容继续按 Index → 相关卡片渐进读取。
+## 3｜永远生效的底线
 
+- **Read Before Write**：只读当前任务需要的真实状态。
+- **Patch First**：能局部改，不重建。
+- **Preserve Manual Work**：保护人工关键帧、Graph、Expression、Parent、Matte、Mask、Effects、素材与结构。
+- **Recovery Point**：现有 AEP 本轮第一次写入前先确认可恢复点；高风险修改没有可靠恢复点不做破坏性写入。
+- 用户说“当前 / 这个 / 选中的” → 实时读取 selection，不猜。
+- 用户可见的新建对象默认中文优先；机器接口保持原值。
+- 默认不完整渲染；需要验收只取少量代表性帧，除非用户明确授权成片。
+- 写后必须回读关键状态；工具返回成功 ≠ 工程正确。
 
-17. **Previs Before Polish**：Hero / 品牌 Motion / Camera / 高级 Typography 等 Motion-sensitive 镜头，如果没有成熟模板或已锁定动画，优先先做灰盒 Previs，确认构图、Pose、节奏、Camera、Hold 后再工程化和上材质。
-18. **Build Contract**：复杂完整镜头、多模块、M2–M4、或“给 Codex 完整执行方案”时，设计与执行之间按需建立 `AE BUILD SPEC`；明确 LOCKED、STRUCTURE、RELATIONSHIPS、MOTION PHASES、PRIMARY/SECONDARY、CONTROLS、HUMAN POLISH、VERIFY、DO NOT。
-19. **Engine Room Adapter**：当前执行底座是 Engine Room 时，XPIN 负责设计 / 路由，Engine Room 负责真实状态与执行；优先 bounded read、stable id、snapshot→diff、property read-back。写失败可能已经部分落地，禁止原样盲目重跑。
-20. **Visual Feedback Loop**：明显视觉变化使用少量代表性关键 Pose / Contact Sheet 做 See→Measure→Correct；截图只定位视觉症状，真实 AE 数据用于定位原因。连续 Motion 的最终手感仍需 AE 前台人工预览。
-21. **Learned ≠ Pattern**：`references/learned/` 保存已批准审美与规律；`references/patterns/` 保存已验证 Rig / Expression / JSX / Layout / Build Pattern。成功执行不自动晋升，长期写入仍需用户批准。
-22. **Chinese-First Human Interface（中文优先的人机界面）**：凡最终由用户在 AE 工程、控制面板、Marker、注释、Undo、执行方案或验收结果中直接阅读的内容，默认中文优先。新建的合成 / 文件夹 / 图层 / 预合成 / Null / Camera / Light / 控制器 / 自定义 Effect 名 / Placeholder / Marker / Essential Graphics 名称等，优先使用清晰中文语义；技术英文必须保留时写成“中文｜English”或“English（中文说明）”，不得留下无解释的英文堆叠。底层 `matchName`、API、Expression / JSX 标识符、插件固定参数、文件扩展名等机器接口保持原值，避免为了汉化破坏兼容性。已有工程做普通 Patch 时不因本规则擅自批量重命名；新建对象和明确的整理 / 重构任务按中文优先执行。
-23. **Undo Finalization Gate（撤销安全封存）**：小型 PATCH 保留 AE Undo，禁止自动清空；大型 BUILD / NEW_PROJECT / ASSET_REFACTOR / 结构重构完成后，只有在“修改前恢复点已验证 + BUILD 验证通过 + 当前正式 AEP 已成功保存 + 恢复点再次确认存在”的前提下，才允许执行 `app.purge(PurgeTarget.UNDO_CACHES)`，把当前结果设为新的人工工作起点。任一条件失败、执行中报错、任务仍属试验 / Previs、或用户明确要求保留 Undo 时，禁止 Purge。Purge 前后不得切换到备份副本工作。
-24. **Undo 分组不等于多轮执行**：大型 BUILD 默认优先单次或少量 JSX / MCP 执行，在脚本内部按约 3–6 个逻辑阶段使用独立 UndoGroup；禁止最外层再套一个覆盖整个 BUILD 的总 UndoGroup。不要为了 Undo 分组额外增加 MCP 往返、反复读取工程或拆成大量 Agent 回合；PATCH 则一次用户请求对应一个小型原子 UndoGroup。
-25. **Visual Anchor Gate（先定图，再动工）**：从零设计、中高视觉复杂度、2.5D/3D、材质/光影/构图依赖明显、口播转视觉、或用户已反馈 AI 自由设计容易跑偏时，默认先生成/选择并确认一个明确的 Visual Anchor（参考图、关键帧设计图、当前工程截图、用户 Blockout 或已批准静帧），再进入 Codex / MCP / JSX 正式 BUILD。**图不满意，先不做。** 已有足够明确的 Anchor 不重复生图。Anchor 负责锁定“长什么样”；执行提示词只补 Motion / Timing / Audio / Relationship / Constraints / Verify，禁止把图片再机械翻译成长篇文字。详细规则按 Router 加载 `references/workflows/visual-anchor.md`。
-26. **AI-Friendly Motion Default（简单运动优先）**：AI 从零参与 AE / 3D 镜头时，默认先把预算花在场景、模型、材质、灯光、构图和可编辑工程结构上；除非叙事确实需要，不主动设计复杂 Camera choreography、多段连续变形、长路径追拍或高难度动作衔接。优先采用固定机位或单一轻推/轻移/轻绕 + 少量持续运动（模型缓慢旋转、灯光闪烁、局部呼吸、简单机械运动、材质/UI状态变化）。若复杂运动确实必要，方案阶段必须标注 `AI易失败/建议人工接管`，优先让 AI 先完成 LookDev / Scene Build / Rig / 基础关键帧，再由用户手调主 Graph、Camera Path 或复杂动作。
+## 4｜Context Budget｜渐进加载硬规则
 
-27. **Templateization / Style Pack Gate（模板化 / 视觉系统包门禁）**：用户表达“做成模板 / 整理成模板 / 模板化 / 沉淀到模板库 / 拆成独立组件 / 做成视觉系统包 / 人和 AI 共用模板”等意图时，直接升级完整版并加载 `recipes/templateize-style-pack.md`，再按其要求读取 `references/engineering/human-ai-template-library.md`。模板化任务必须先执行 **Source Isolation Gate**：源 AEP 与源素材默认只读，先建立恢复点并复制出独立模板化工作副本，所有重命名、整理、删层、拆组件、Relink / 依赖收集只作用于副本；禁止覆盖、移动、删除用户本地原件。正式发布模板只读，生产使用必须复制到工作区。模板型 AEP 的控制层属于各自合成内部，主要可编辑合成时间线最上方放控制 Null，不用项目面板独立 CTRL 文件夹替代。模板化任务的依赖收集默认使用 **AI 自主依赖收集**，不依赖 AE 原生 Collect Files：先收工程真实引用，再补扫字体、插件、脚本、预设、LUT、3D / HDRI / 贴图等环境依赖；只复制当前模板真实需要的最小必要集合，许可或自包含性不明确时只记录。模板化任务允许自动生成**轻量预览视频**：只渲染代表性短片段，默认低分辨率 / 低成本编码，已有预览优先复用；预览不得演变成完整长片渲染或成为流程主要耗时。
+**不要预读 references。**
+
+- Mini 普通 Patch：除 Mini `SKILL.md` 外，默认读取 **0 个 reference**。
+- Full：先只读 Full `SKILL.md`；执行前默认新增 **0–2 个直接命中的 reference / recipe**。
+- 已经足够执行就停止读取。
+- 同一会话已经读过的文件不重复读取，除非内容确实丢失 / 变化。
+- 故障文档只在真实故障出现后加载。
+- `00_core-invariants.md`、`01_capability-map.md`、`02_task-router.md` **都不是 Full 启动必读项**。
+- 禁止为了“全面理解规范”扫描整个 `references/`、`recipes/` 或 archive。
+- 只有复合高风险任务确实同时命中多个独立模块时，才可超过 2 个；仍应逐个加载，而不是一次性全读。
+
+**默认路径：AGENTS → Mini → MCP。复杂任务才：AGENTS → Full → 命中的 1–2 个模块 → MCP。**
