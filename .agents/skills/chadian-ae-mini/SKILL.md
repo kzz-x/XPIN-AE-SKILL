@@ -21,6 +21,14 @@ description: 轻量但完整的 After Effects 日常操作规范。用于 Codex 
 - MCP 未真正可用前，不得假装已经读取、修改、保存或渲染 AE。
 - 本 Skill 不是 MCP 本身；它负责告诉 Agent 应该怎样安全、专业地使用 AE。Engine Room 是默认推荐底座，不是唯一允许底座。
 
+### Engine Room + Premiere｜启动顺序硬规则
+只要当前实际使用 **Engine Room After Effects MCP**，执行 AE 任务前必须优先提醒用户：**先启动 AE，再启动 PR。**
+
+- 如果 AE 已先启动并且 Engine Room 正常连接，可以再打开 Premiere Pro。
+- 如果 PR 已经先打开，而 Engine Room 出现端口占用、连接异常、404 / 非预期响应或调用失败：**先关闭 PR**，让 AE / Engine Room 先恢复正常；确认可用后再重新打开 PR。
+- 不要把“自动重发现端口 / 改 7778 / 固定专用端口 / 重装”当成这个场景的首选修复。该冲突已多次尝试修端口但不稳定，生产流程以 **AE 先启动，或先关闭 PR** 为准。
+- 只有关闭 PR、恢复正确启动顺序后仍然异常，才进入 Engine Room Adapter 的进一步端口诊断。
+
 ---
 
 目标不是“命令执行成功”，而是：
