@@ -8,6 +8,15 @@
 
 ## 1｜启动顺序
 
+### 1.0｜Engine Room + Premiere：AE 必须先启动
+
+这是 Engine Room 生产环境的**硬性前置提醒**，优先级高于后面的端口诊断：
+
+- 默认顺序：**先启动 After Effects → 确认 Engine Room / AE MCP 可用 → 再启动 Premiere Pro**。
+- 如果 Premiere Pro 已经先打开，并出现端口占用、连接异常、404 / 非预期 HTTP 响应或调用失败：**第一动作是关闭 PR**，让 AE / Engine Room 先恢复正常；确认 MCP 可用后再重新打开 PR。
+- 不要在这个场景里先反复尝试自动重发现、修改 7778、固定专用端口、重装或其他“修端口”方案。该冲突经过多次修复尝试仍不稳定，生产流程以 **AE 先启动 / PR 先关闭** 为可靠路径。
+- 只有关闭 PR、恢复正确启动顺序后仍异常，才继续本 Adapter 后面的端口诊断。
+
 复杂 BUILD / NEW_PROJECT / ASSET_REFACTOR 默认按需：
 
 1. `get_house_style`：读取当前项目局部视觉规范；没有就继续，不阻塞。
@@ -189,18 +198,26 @@ AE_MCP_PORT（若设置）
 
 ### 关于 Premiere / 其他 CEP
 
-如果当前机器上，先启动 Premiere 会同时启动某个占用目标端口的 CEP / 本地 HTTP 服务，那么“先开 PR → 再开 AE”**可能稳定触发**这个问题。
+在当前已验证的 Engine Room + AE/PR 工作环境里，**先启动 PR 再启动 AE 会稳定造成端口占用 / 连接异常风险**。因此 Skill 不再把它只当“可能触发”的普通故障，而是直接采用安全启动顺序：
 
-但：
-- **Premiere 本身不是根因**；
-- 也不要把某个具体插件（例如 Motion Bro）写成通用结论；
-- 真正根因是：**当前缓存的 op port 被“不是 AE MCP、但会正常响应 HTTP”的程序占用，而 AE MCP Panel 已在另一个端口。**
+> **AE 先启动；如果 PR 已先启动且 Engine Room 异常，先关闭 PR。**
 
-具体占用者以当前机器实测为准。
+从底层看，占用者仍可能是 PR 启动时带起的 CEP / 本地 HTTP 服务，而不一定是 Premiere 主进程本身；但这不改变生产操作规则。Agent 不应为了追查具体占用插件而耽误任务，也不要优先尝试修端口。
+
+只有在关闭 PR、确认 AE / Engine Room 先启动后问题依旧存在时，才继续检查 `bridgeReachable` / `portAgreement`、缓存 op port、其他 CEP 或本地 HTTP 服务。
 
 ### 修复顺序
 
-#### A｜先诊断
+#### 0｜先恢复正确启动顺序
+
+1. 如果 PR 已打开：**先关闭 Premiere Pro**；
+2. 确保 After Effects 已启动；
+3. 让 Engine Room / AE MCP 先完成连接并确认可用；
+4. 需要 PR 时，再重新打开 Premiere Pro。
+
+在这一顺序恢复前，**不要先改端口、固定端口、重装或反复重连**。只有完成上述步骤后仍异常，才进入下面诊断。
+
+#### A｜再诊断
 
 1. 运行 `check_setup`；
 2. 同时看 `bridgeReachable` 和 `portAgreement`；
