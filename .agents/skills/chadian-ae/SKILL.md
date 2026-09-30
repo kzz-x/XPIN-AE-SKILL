@@ -95,6 +95,7 @@ Engine Room 是默认优先推荐底座，但不是唯一允许底座。
 - 已有明确 Reference / Blockout / Visual Anchor 时直接复用，不重复搜索 / 生图。
 - 命中 Asset First 时，优先官方 / 用户现有 / 授权清晰资产；找不到再原创。
 - Visual Anchor 命中时：**图不满意，先不进入正式 BUILD。**
+- **图像模型路由**：平面设计、3D/2.5D、软件/UI、电脑生成视觉等非写实设计类 Visual Anchor，若 GPT 出图明显偏写实，优先提醒并建议改用 **Banana** 生成/重做参考图；满意后再进入 AE BUILD。
 - Prompt Freedom：探索 P1；正式首版默认 P2；精确收敛 / Patch / 复刻 P3。详细规则只在需要时读 creative-authority。
 
 ## 6｜复杂执行
