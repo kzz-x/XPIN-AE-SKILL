@@ -32,6 +32,21 @@ END
 
 例如轻微常驻漂浮可在方案里直接指定低频、低幅 `wiggle()` 并把 Frequency / Amplitude 接到 CTRL；主入场则保留真实关键帧，方便人工按帧微调。
 
+## Keyframe Budget
+
+普通单阶段 A → B 动作默认从 **2 个主关键帧**开始；需要 anticipation / overshoot / settle 时通常增加到 3–4 个有意义的关键帧，再用 Temporal Ease / Spatial Bezier / Graph Editor 塑造速度。
+
+禁止用密集关键帧模拟缓动。除非用户明确要求逐帧数据 / Tracking / Bake，否则不要用 frame loop 连续 `setValueAtTime()` 把可计算运动烘焙成几十个关键帧。
+
+## Non-destructive Override
+
+需要在不破坏原动画的前提下继续人工调整时，优先级：
+1. **Parent 动画 + Child 本地 Transform**：用户直接拖 Child 改构图，Parent 动画保持不变；
+2. 同一属性必须叠加人工 Offset 时，使用短 Expression / Control，例如 Position `value + offset`、Rotation `value + angle`、Scale `value * multiplier`；
+3. Follow / Delay / Secondary Motion 再考虑 `valueAtTime()` 等关系表达式。
+
+不要为了“可调”复制第二套关键帧。Keyframes 定义主运动，Expression 负责关系与 Override。
+
 ## 基础元素级控制
 按需要控制：
 - 位移距离
