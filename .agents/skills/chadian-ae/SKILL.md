@@ -34,6 +34,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 - 用户可见新建对象中文优先；机器接口保持原值。
 - 默认不完整渲染。
 - 写后 read-back；复杂结构按需 snapshot / diff。
+- **新建完整动画 / M2–M4 / 3+ 图层共享 Motion / 明确要求后续人工易改时，首个主关键帧前必须先确定 Motion Ownership、Parent / Rig 与 Adjustment Strategy；命中 `engineering/editable-engineering-gate.md` 时不得跳过。**
 - Search / Asset / Visual Anchor 只有命中时加载，普通 Patch 不增加这些步骤。
 
 ## 2｜Quick Router
@@ -46,6 +47,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 - Motion-sensitive Hero / Camera / Typography 需要先试节奏 → `workflows/previs-first.md`
 
 ### AE 工程
+- 新建完整动画 / 多层共享运动 / 强调后续人工可改 / 少关键帧 / Parent / 非破坏 Offset → `engineering/editable-engineering-gate.md`
 - 需要把设计翻译成真实 AE 技法 → `engineering/ae-implementation-spec.md`
 - 复杂执行需要锁定结构 / 关系 / Verify → `engineering/ae-build-spec.md`
 - 不确定 AE 是否有原生能力 → **此时才读** `01_capability-map.md`
@@ -104,11 +106,13 @@ Engine Room 是默认优先推荐底座，但不是唯一允许底座。
 1. 只读目标资产根与必要依赖；
 2. Recovery Point；
 3. 必要时形成短 Build Contract；
-4. 选择原生 MCP / Batch / JSX / Hybrid；
-5. 写入；
-6. read-back / diff；
-7. 视觉变化明显时再做少量关键 Pose；
-8. 未经授权不完整渲染。
+4. 命中可编辑 Motion Gate 时，先建立 **Engineering Skeleton**：`00_CTRL → Motion/Group Null/Rig → Visual Layers`，并声明 Global / Group / Local / Repeated Motion 归属；
+5. 选择原生 MCP / Batch / JSX / Hybrid；
+6. 先做 Primary Motion；禁止先逐层复制关键帧再补控制器；
+7. 执行 Editable QA：Parent、Keyframe Count、重复 Transform、Expression / Offset、人工 Override 路径；失败先整理工程；
+8. 再做 Secondary / Stagger / Follow Through；
+9. read-back / diff；视觉变化明显时检查少量关键 Pose；
+10. 未经授权不完整渲染。
 
 不要为了 Undo、验证或“全面了解”增加大量无意义 MCP 往返。
 
@@ -128,6 +132,8 @@ Engine Room 是默认优先推荐底座，但不是唯一允许底座。
 - Expression / Parent / Matte / Source 正常；
 - 工程仍可编辑；
 - 复杂 Motion 没退化成大量重复关键帧；
+- 共享运动已上移到 Parent / Rig / Master，而不是散落在子层；
+- 需要人工微调的对象存在清晰的 Local Transform 或 `value + offset` / multiplier 等非破坏 Override 路径；
 - 依赖 / Placeholder 清楚；
 - 未经授权没有完整渲染。
 
