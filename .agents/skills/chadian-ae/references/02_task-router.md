@@ -26,6 +26,7 @@
 - 真实参考 → `workflows/reference-first.md`
 - 现成资产 → `workflows/asset-first.md`
 - 实现翻译 → `engineering/ae-implementation-spec.md`
+- 完整多图层动画 / 强调可编辑工程 / 少关键帧 / Parent / Override → `engineering/editable-engineering-gate.md`
 
 不要默认全部加载。
 
@@ -88,6 +89,7 @@ Engine Room 错误不要一口气读整个 Adapter：
 ### M3
 3+ 对象共享 Motion、Master Progress、Parent Rig、Camera、Precomp retime。
 → 在 M2 基础上按需加：
+- `engineering/editable-engineering-gate.md`（新建 / 重构且可编辑性是交付要求时优先）
 - `motion/motion-control-architecture.md`
 - `motion/relationship-rigs.md`
 
