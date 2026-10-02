@@ -14,6 +14,7 @@
 - 从零完整镜头 / 工程；
 - 中高视觉复杂度、Visual Anchor、Reference / Asset Search；
 - M2–M4 多对象 Motion / Camera / 3D；
+- 完整新建多图层动画，尤其要求少关键帧、Parent 层级、非破坏 Offset、后续人工易改；
 - 大型 JSX / Hybrid / 结构重构；
 - 口播自动分析、MOGRT、插件；
 - 模板化 / Style Pack；
