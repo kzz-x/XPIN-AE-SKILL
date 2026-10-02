@@ -15,6 +15,7 @@
 
 命中后直接升级完整版 Skill，并读取：
 - `references/engineering/human-ai-template-library.md`
+- `references/engineering/chadian-controls.md`（只用于 Control Surface Pass；默认 5–15 个高频控件，不全参数化）
 - `recipes/refactor-existing-asset.md`
 - `workflows/modify-existing.md`
 - `engineering/project-architecture.md`
@@ -43,6 +44,7 @@
 ## AE 内部硬规则
 - 模板型 AEP 项目面板优先：`00_开始这里 / 01_主输出 / 02_编辑区 / 03_替换槽位 / 04_功能模块 / 05_素材 / 90_参考 / 99_核心`。
 - **控制器属于合成内部**：每个主要可编辑合成时间线最上方放自己的控制 Null；不要额外用项目面板“控制文件夹”替代这一入口。
+- 执行一次 **Control Surface Pass**：只暴露真正高频的 5–15 个参数，Quick 优先 5–8 个；优先设计意图宏控件，不把底层技术参数全部暴露。
 - 高频替换内容 SLOT 化。
 - 底层 Rig / 表达式 / 材质等进入核心区域，正常调用默认不动。
 - 人类可见命名中文优先。
