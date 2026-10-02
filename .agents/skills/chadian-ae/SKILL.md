@@ -48,6 +48,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 
 ### AE 工程
 - 新建完整动画 / 多层共享运动 / 强调后续人工可改 / 少关键帧 / Parent / 非破坏 Offset → `engineering/editable-engineering-gate.md`
+- 控件 / 控制面板 / 参数化 / 高频人工调参 / Preset / Control Surface → `engineering/chadian-controls.md`
 - 需要把设计翻译成真实 AE 技法 → `engineering/ae-implementation-spec.md`
 - 复杂执行需要锁定结构 / 关系 / Verify → `engineering/ae-build-spec.md`
 - 不确定 AE 是否有原生能力 → **此时才读** `01_capability-map.md`
@@ -66,6 +67,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 - 学习优秀 AEP → `recipes/learn-from-ae-project.md`
 - 做成模板 / Style Pack → `recipes/templateize-style-pack.md`
 - 模板库结构细节 → `engineering/human-ai-template-library.md`
+- 模板需要整理用户可见控制面 / 高频参数 → `engineering/chadian-controls.md`
 
 ## 3｜Engine Room
 
