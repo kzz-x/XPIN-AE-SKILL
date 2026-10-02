@@ -72,7 +72,7 @@
 - Marker / Control / Time Remap / Layer Keyframe 职责是否混乱；
 - 是否出现多套重复 CTRL_动画；
 - Expression 是否变成难维护黑盒；
-- 单对象是否仍可 Local Override。
+- 单对象是否仍可 Local Override；优先 Child Local Transform，必要时 `value + offset` / multiplier。
 
 ## 7｜Keyframe Compression QA
 
@@ -89,6 +89,19 @@
 通过原则：
 
 **Few meaningful keyframes > many duplicated keyframes.**
+
+### Editable Engineering Gate｜Hard Fail
+
+以下任一情况出现，复杂动画不得直接交付，先修工程：
+- 普通单阶段 Transform 明显靠密集关键帧模拟 ease / settle；
+- 非 Tracking / 数据驱动 / 明确 Bake 任务却使用逐帧 `setValueAtTime()`；
+- 3+ 图层复制相同或近似 Transform 关键帧，而共享运动本可上移；
+- 明显应该整体移动的组没有 Parent / Rig / Precomp / Master 控制；
+- Parent 与 Child 重复承担同一段整体位移 / 缩放 / 旋转；
+- 用户想改单个对象构图时只能改原动画关键帧，没有 Local Transform 或 Offset Override；
+- Expression / Controller 已存在，但人工无法快速判断“改构图”和“改动画”分别该去哪里。
+
+机器检查至少输出：动画层 Parent、每个动画属性 Keyframe Count、重复 Transform 候选、Controller / Expression、单对象人工 Override 路径。发现 FAIL 项先自动整理，再进入最终 Motion QA。
 
 ## 8｜Native Construction QA
 
