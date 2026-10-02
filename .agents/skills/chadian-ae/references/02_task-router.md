@@ -27,6 +27,7 @@
 - 现成资产 → `workflows/asset-first.md`
 - 实现翻译 → `engineering/ae-implementation-spec.md`
 - 完整多图层动画 / 强调可编辑工程 / 少关键帧 / Parent / Override → `engineering/editable-engineering-gate.md`
+- 控制面板 / 参数化 / 高频人工调参 / Preset / Control Surface → `engineering/chadian-controls.md`
 
 不要默认全部加载。
 
@@ -42,6 +43,7 @@
 ### TEMPLATE_STYLE_PACK
 → `recipes/templateize-style-pack.md`
 需要模板库结构细节时再加 `engineering/human-ai-template-library.md`。
+需要整理用户可见 CTRL / 高频参数 / Preset / SLOT 时再加 `engineering/chadian-controls.md`。
 
 ### AE_PROJECT_LEARN
 → `recipes/learn-from-ae-project.md`
