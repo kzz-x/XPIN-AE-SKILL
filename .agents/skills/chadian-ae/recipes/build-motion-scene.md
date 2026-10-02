@@ -45,6 +45,9 @@
 新建完整动画 / 多层共享 Motion / 强调后续人工可改：
 - `../references/engineering/editable-engineering-gate.md`
 
+用户明确要求控制面板 / 参数化 / Preset / 高频人工调参，或该镜头明显会长期复用：
+- `../references/engineering/chadian-controls.md`
+
 创建新视觉结构 / 重构：
 - `../references/capabilities/native-ae.md`
 
