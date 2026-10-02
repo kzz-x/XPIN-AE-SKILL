@@ -91,6 +91,7 @@ Mini 只负责 M0–M1：
 - 不统一套一份 Easy Ease；
 - 不默认 `Opacity 0→100 + Scale 80→100`；
 - 主节奏需要 Graph 时保留少量真实关键帧；
+- 已有动画上还要人工微调时，优先 **Parent 动画 + Child 本地 Transform**；必须叠加在同一属性时，用短 `value + offset` / multiplier 控制，不直接重写原关键帧；
 - 3+ 对象共享 Motion、明显 Stagger、Camera choreography、Master Progress、复杂机械 / Relationship Rig → 升级 Full。
 
 已有 Comp Marker 足够时可直接按 Marker 对齐；需要自动抽音频 / ASR / 语义 Marker → 升级 Full。
@@ -109,6 +110,7 @@ Mini 只负责 M0–M1：
 - Reference First / Asset First / Visual Anchor；
 - 中高视觉复杂度 / 2.5D / 3D / Camera；
 - M2–M4 多对象 Motion；
+- 完整多图层动画且要求 Parent 层级、关键帧压缩、非破坏人工 Override；
 - 大型 JSX / Hybrid / 结构重构；
 - 自动口播分析；
 - MOGRT / 插件；
