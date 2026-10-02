@@ -153,7 +153,42 @@ localProgress = remap(masterProgress, start, start + duration)
 
 ---
 
-## 8｜Expression 使用边界
+## 8｜Animation / Adjustment 分离
+
+目标：**动画成立后，人工仍能单独改一个对象，而不用碰原始关键帧。**
+
+优先结构：
+```text
+00_CTRL
+└─ NULL_组动画 / Rig        ← 主动画
+   └─ 视觉图层              ← 本地构图 / 人工微调
+```
+
+如果 Visual Layer 必须自己保留独有关键帧，又需要额外人工 Offset，则给该属性提供非破坏控制：
+
+```jsx
+// Position：Point Control / 3D Offset 视维度选择
+value + effect("位置偏移")("Point")
+
+// Rotation
+value + effect("旋转偏移")("Slider")
+
+// Opacity
+clamp(value + effect("透明度偏移")("Slider"), 0, 100)
+
+// Scale：比例控制通常比单纯相加更稳
+s = 1 + effect("缩放比例")("Slider") / 100;
+value * s
+```
+
+规则：
+- 能用 Parent + Child 本地 Transform 解决，优先它；这样可直接在 Comp 中拖动 Child；
+- 必须在同一属性叠加调整时，再用 `value + offset` / multiplier；
+- 不为了 Offset 改写、平移或复制原始关键帧；
+- Shared Motion 在父级，Unique Motion 在本层，Manual Adjustment 有独立入口；
+- Expression 保持短、可读、可关闭，不制造黑盒。
+
+## 9｜Expression 使用边界
 
 Expression 用于建立关系，不用于制造黑盒。
 
@@ -174,7 +209,7 @@ Expression 用于建立关系，不用于制造黑盒。
 
 ---
 
-## 9｜与 Marker 的关系
+## 10｜与 Marker 的关系
 
 推荐职责：
 ```text
@@ -190,7 +225,7 @@ Layer Keyframes = 对象独有动作
 
 ---
 
-## 10｜Motion Architecture QA
+## 11｜Motion Architecture QA
 
 复杂动画交付前检查：
 - 是否存在 3+ 图层复制同类关键帧？
@@ -200,5 +235,6 @@ Layer Keyframes = 对象独有动作
 - 移动 Target 后相关运动是否仍成立？
 - Master Progress / Stagger 是否真正可调？
 - 局部 override 是否保留？
+- 人工微调是否有明确入口：Child Local Transform 或 `value + offset` / multiplier？
 - Expression 是否清晰、无循环、无错误？
 - 人类是否能在 30 秒内找到主要控制入口？
