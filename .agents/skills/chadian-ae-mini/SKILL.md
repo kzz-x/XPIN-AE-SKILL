@@ -1,121 +1,33 @@
 ---
 name: chadian-ae-mini
-description: After Effects 日常轻量 Patch Skill。用于选中层、单层/少量图层、文字/颜色/尺寸/位置/素材替换、简单 M0–M1 关键帧与普通 MCP 操作；强调最小读取、恢复点、Patch First、保护人工修改和写后验证。复杂视觉、复杂 Motion、3D、大型 JSX、模板化等升级 chadian-ae。
+description: 极轻量 After Effects 修改规则。仅在确有需要时读取；禁止自动读取完整 AE Skill、references、recipes 或递归扫描仓库。
 ---
 
-# 差点AE-mini
+# 差点 AE Mini｜低 Token 模式
 
-你是 After Effects 日常制作与修改代理。Mini 的目标是：**用最少上下文安全完成小修改。**
+## 最高优先级
+- **不要自动读取任何完整版 AE Skill / reference / recipe。**
+- **不要递归扫描本仓库。**
+- 复杂任务也不得自动升级 Full；只有用户明确要求“启用/读取完整版 AE Skill”才允许。
+- 普通 AE 咨询、方案、提示词：无需读取任何 Skill。
 
-## 0｜Context Budget
+## 直接操作 AE 时
+1. **Read Before Write**：只读取当前任务直接需要的 Comp / Layer / Property / Selection。
+2. **Patch First**：能改现有对象就不重建，不扫描整个工程。
+3. **Preserve Manual Work**：保护已有关键帧、Graph、Expression、Parent、Matte、Mask、Effects、素材与人工调整。
+4. 现有工程首次写入前优先保留恢复点；高风险批量修改先停下说明风险。
+5. 写后只回读关键状态验证，不做无关全工程审计。
 
-普通 Mini Patch：
-- 只读本文件；
-- 默认 **不加载任何 Full reference**；
-- 不读 `00_core / 01_capability / 02_task-router`；
-- 不因为“可能有用”预读 Engine Room Adapter；
-- 足够执行就直接执行。
+## 动画与工程可编辑性
+- 优先少量关键帧 + Graph/Easing，不逐帧堆关键帧。
+- 多对象关系优先 Parent / Null / 控制层，保持父子层级清楚。
+- 已有动画上需要人工偏移时，优先 Parent Offset；必要时使用简短 `value + offset` / multiplier，而不是覆盖原动画。
+- 优先 AE 原生能力：Text Animator、Mask/Matte、Repeater、Precomp、Expression、Essential Properties。
+- 新建用户可见对象默认中文命名；API / matchName 保持原值。
+- 默认不整段渲染，只检查必要代表帧。
 
-## 1｜先确认 AE 可控
+## Engine Room
+使用 Engine Room 时：**先启动 AE 并确认 MCP 正常，再启动 Premiere Pro。**
+若 PR 先开后出现端口/连接异常，第一步先关 PR，让 AE / Engine Room 恢复。
 
-只咨询 / 解释不阻塞。
-
-需要直接操作 AE 时：
-- 先确认存在可用 AE MCP / 控制工具；
-- 没有时默认推荐 Engine Room；
-- 未连接不得假装已读取 / 修改 / 保存 / 渲染。
-
-使用 Engine Room：
-- **AE 先启动，PR 后启动**；
-- PR 已先开且连接异常 → 先关闭 PR，让 AE / Engine Room 恢复；
-- 正常 Mini Patch 不读 Engine Room reference；
-- 真正出现连接故障才升级 Full 并按需读 connection recovery。
-
-## 2｜一次 Mini Patch 的固定流程
-
-### A. Read Before Write
-只读任务直接需要的状态：
-- Project / Active Comp；
-- 用户说“当前 / 选中”时实时读取 selection；
-- 目标 Layer / Property；
-- 与本次修改直接相关的 keyframe / expression / parent / matte / mask / effect / source。
-
-**禁止为了了解工程扫描全部 Comp / Layer。**
-
-### B. Recovery Point
-现有 AEP 本轮第一次写入前确认可恢复点：
-- 能安全自动备份 → 建立一次；
-- 不能确认 → 明确提醒用户；
-- 高风险批量修改不属于 Mini，应升级 Full。
-
-### C. Patch First
-只改任务要求的最小范围。
-
-默认保护：
-- 人工关键帧与 Graph；
-- Expression；
-- Parent / Matte / Mask；
-- Effects / 调色；
-- 已有素材、命名、Marker、控制关系。
-
-能改现有对象就不删掉重建，不偷偷建立第二套平行结构。
-
-### D. Native / Relationship First
-小任务优先 AE 原生能力：
-- 整体移动 → Parent / Null；
-- 简单跟随 / 连接 → 短 Expression 或 Parent；
-- 逐字动画 → Text Animator；
-- Reveal → Mask / Matte；
-- 重复结构 → Repeater / Precomp。
-
-不要因为 Shape + Keyframe 容易自动生成就默认这么做。
-
-### E. Write & Verify
-写后回读关键属性，确认：
-- 对象正确；
-- 数值 / 关键帧正确；
-- Expression / Parent / Matte / Mask 未误伤；
-- 无重复层 / 重复 CTRL；
-- 素材未丢失。
-
-Engine Room 写失败或 timeout 时不要盲目原样重发；这已经超出普通 Mini，升级 Full 做对应故障处理。
-
-## 3｜简单动画
-
-Mini 只负责 M0–M1：
-- 单层 / 少量图层；
-- 简单 Timing / Ease / Offset；
-- 少量关键帧微调。
-
-要求：
-- 不统一套一份 Easy Ease；
-- 不默认 `Opacity 0→100 + Scale 80→100`；
-- 主节奏需要 Graph 时保留少量真实关键帧；
-- 已有动画上还要人工微调时，优先 **Parent 动画 + Child 本地 Transform**；必须叠加在同一属性时，用短 `value + offset` / multiplier 控制，不直接重写原关键帧；
-- 3+ 对象共享 Motion、明显 Stagger、Camera choreography、Master Progress、复杂机械 / Relationship Rig → 升级 Full。
-
-已有 Comp Marker 足够时可直接按 Marker 对齐；需要自动抽音频 / ASR / 语义 Marker → 升级 Full。
-
-## 4｜中文与渲染
-
-- 新建用户可见合成 / 图层 / Null / CTRL / Marker / Undo 名称默认中文优先；
-- `matchName`、API、Expression / JSX 标识符保持原值；
-- 普通 Patch 不擅自批量重命名旧工程；
-- 默认不完整渲染；明显视觉变化最多检查少量代表帧。
-
-## 5｜立即升级 Full 的情况
-
-出现任一项就停止扩写 Mini 规则，切 `chadian-ae`：
-- 从零完整镜头 / 工程；
-- Reference First / Asset First / Visual Anchor；
-- 中高视觉复杂度 / 2.5D / 3D / Camera；
-- M2–M4 多对象 Motion；
-- 完整多图层动画且要求 Parent 层级、关键帧压缩、非破坏人工 Override；
-- 大型 JSX / Hybrid / 结构重构；
-- 自动口播分析；
-- MOGRT / 插件；
-- 模板化 / Style Pack；
-- 学习 AEP；
-- 深度 Debug / 全工程审计。
-
-**Mini 的原则：能安全完成就直接做；不能就升级，不在 Mini 里把整个知识库重新读一遍。**
+Mini 的职责只有这些。没有明确必要时，宁可不读 Skill。
