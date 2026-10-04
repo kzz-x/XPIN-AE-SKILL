@@ -24,6 +24,8 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 
 如果任务分类仍不明确，才读取 `references/02_task-router.md`。
 
+如果进入 Full 后发现任务实际只是 **Simple Build**（单合成、约 1–5 个主要对象、M0–M1、无复杂 Camera / 3D / 关系 Rig / 模板化），应立即退回 Mini，停止继续加载 references。
+
 ## 1｜全局底线
 
 - Read Before Write；只读与任务直接相关的真实状态。
@@ -34,7 +36,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 - 用户可见新建对象中文优先；机器接口保持原值。
 - 默认不完整渲染。
 - 写后 read-back；复杂结构按需 snapshot / diff。
-- **新建完整动画 / M2–M4 / 3+ 图层共享 Motion / 明确要求后续人工易改时，首个主关键帧前必须先确定 Motion Ownership、Parent / Rig 与 Adjustment Strategy；命中 `engineering/editable-engineering-gate.md` 时不得跳过。**
+- **Editable Engineering Gate 只按真实结构需求触发：M2–M4、多个对象明确共享 Motion、复杂 Parent / Rig / Master Progress、模板化 / 长期复用，或用户明确要求共享控制与非破坏人工 Override。单纯“新建完整动画”不触发。**
 - Search / Asset / Visual Anchor 只有命中时加载，普通 Patch 不增加这些步骤。
 
 ## 2｜Quick Router
@@ -47,7 +49,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 - Motion-sensitive Hero / Camera / Typography 需要先试节奏 → `workflows/previs-first.md`
 
 ### AE 工程
-- 新建完整动画 / 多层共享运动 / 强调后续人工可改 / 少关键帧 / Parent / 非破坏 Offset → `engineering/editable-engineering-gate.md`
+- 多对象明确共享运动 / 复杂 Parent 或 Rig / Master Progress / 模板化长期复用 / 明确要求共享控制与非破坏 Override → `engineering/editable-engineering-gate.md`
 - 控件 / 控制面板 / 参数化 / 高频人工调参 / Preset / Control Surface → `engineering/chadian-controls.md`
 - 需要把设计翻译成真实 AE 技法 → `engineering/ae-implementation-spec.md`
 - 复杂执行需要锁定结构 / 关系 / Verify → `engineering/ae-build-spec.md`
