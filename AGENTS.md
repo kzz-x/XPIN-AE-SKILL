@@ -22,6 +22,7 @@ Mini 可以完成简单镜头的 **新建 → 动画 → 验证 → 保存 / 代
 出现以下任一真实复杂度再使用 `chadian-ae`：
 - 中高视觉复杂度、Visual Anchor、Reference / Asset Search；
 - M2–M4 多对象 Motion / Camera / 2.5D / 3D；
+- 复杂三维科普、结构演示、宏微观连续转场；
 - 多对象共享运动、复杂 Parent / Rig / Constraint / Master Progress；
 - 明确要求少关键帧 + 共享控制 + 非破坏人工 Override；
 - 建立 / 整理系统级 CTRL 控制面、参数化、Preset、差点控件；
