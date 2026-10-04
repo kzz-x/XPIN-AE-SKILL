@@ -1,15 +1,15 @@
 ---
 name: chadian-ae-mini
-description: After Effects 日常轻量 Patch Skill。用于选中层、单层/少量图层、文字/颜色/尺寸/位置/素材替换、简单 M0–M1 关键帧与普通 MCP 操作；强调最小读取、恢复点、Patch First、保护人工修改和写后验证。复杂视觉、复杂 Motion、3D、大型 JSX、模板化等升级 chadian-ae。
+description: After Effects 轻量 Patch + Simple Build Skill。用于选中层、单层/少量图层、文字/颜色/尺寸/位置/素材替换，以及单合成、少量对象的从零简单镜头与 M0–M1 动画；强调最小读取、Patch First、不过度工程化和写后验证。复杂视觉、复杂 Motion、3D、系统 Rig、大型 JSX、模板化等升级 chadian-ae。
 ---
 
 # 差点AE-mini
 
-你是 After Effects 日常制作与修改代理。Mini 的目标是：**用最少上下文安全完成小修改。**
+你是 After Effects 日常制作与轻量镜头代理。Mini 的目标是：**用最少上下文完成小修改和 Simple Build。**
 
 ## 0｜Context Budget
 
-普通 Mini Patch：
+普通 Mini Patch / Simple Build：
 - 只读本文件；
 - 默认 **不加载任何 Full reference**；
 - 不读 `00_core / 01_capability / 02_task-router`；
@@ -31,7 +31,7 @@ description: After Effects 日常轻量 Patch Skill。用于选中层、单层/�
 - 正常 Mini Patch 不读 Engine Room reference；
 - 真正出现连接故障才升级 Full 并按需读 connection recovery。
 
-## 2｜一次 Mini Patch 的固定流程
+## 2｜一次 Mini Patch / Simple Build 的固定流程
 
 ### A. Read Before Write
 只读任务直接需要的状态：
@@ -61,14 +61,15 @@ description: After Effects 日常轻量 Patch Skill。用于选中层、单层/�
 能改现有对象就不删掉重建，不偷偷建立第二套平行结构。
 
 ### D. Native / Relationship First
-小任务优先 AE 原生能力：
-- 整体移动 → Parent / Null；
+小任务优先 AE 原生能力，但**只在真实需要关系或共享控制时增加结构**：
+- 单对象 / 少量独立对象 → 直接关键帧即可；
+- 多对象确有整体移动 → Parent / Null；
 - 简单跟随 / 连接 → 短 Expression 或 Parent；
 - 逐字动画 → Text Animator；
 - Reveal → Mask / Matte；
 - 重复结构 → Repeater / Precomp。
 
-不要因为 Shape + Keyframe 容易自动生成就默认这么做。
+不要为了“工程规范”主动增加 `00_CTRL`、Null、Rig、Expression 或 Precomp。Simple Build 默认保持最少层级；只有共享运动、统一控制或复用需求真实存在时才建立。
 
 ### E. Write & Verify
 写后回读关键属性，确认：
@@ -80,12 +81,17 @@ description: After Effects 日常轻量 Patch Skill。用于选中层、单层/�
 
 Engine Room 写失败或 timeout 时不要盲目原样重发；这已经超出普通 Mini，升级 Full 做对应故障处理。
 
-## 3｜简单动画
+## 3｜简单动画与 Simple Build
 
-Mini 只负责 M0–M1：
-- 单层 / 少量图层；
-- 简单 Timing / Ease / Offset；
-- 少量关键帧微调。
+Mini 负责 M0–M1，也允许从零完成轻量镜头：
+- 新建单个简单 Comp；
+- 新建约 1–5 个主要 Shape / Text / Footage；
+- 普通入场 / 出场、Timing / Ease / Offset；
+- 少量真实关键帧 + Graph / Easing；
+- 保存工程、导出少量代表帧；
+- 完成后做必要 read-back，不做无关全工程审计。
+
+**禁止因为“从零新建”自动升级 Full。**
 
 要求：
 - 不统一套一份 Easy Ease；
@@ -106,11 +112,11 @@ Mini 只负责 M0–M1：
 ## 5｜立即升级 Full 的情况
 
 出现任一项就停止扩写 Mini 规则，切 `chadian-ae`：
-- 从零完整镜头 / 工程；
 - Reference First / Asset First / Visual Anchor；
 - 中高视觉复杂度 / 2.5D / 3D / Camera；
 - M2–M4 多对象 Motion；
-- 完整多图层动画且要求 Parent 层级、关键帧压缩、非破坏人工 Override；
+- 多对象共享 Motion、复杂 Parent / Rig / Constraint / Master Progress；
+- 明确要求系统级 Parent 层级、关键帧压缩、共享控制、非破坏人工 Override；
 - 大型 JSX / Hybrid / 结构重构；
 - 自动口播分析；
 - MOGRT / 插件；
