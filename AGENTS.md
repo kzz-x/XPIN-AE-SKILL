@@ -4,25 +4,35 @@
 
 ## 1｜先选 Skill
 
-默认使用 `chadian-ae-mini`：
-- 选中层 / 单层 / 少量图层；
-- 改字、颜色、尺寸、位置、素材；
-- 简单 M0–M1 关键帧；
-- 普通局部 Patch。
+**默认使用 `chadian-ae-mini`。是否“从零制作”不是 Full 判断标准，按实际复杂度路由。**
 
-直接使用 `chadian-ae`：
-- 从零完整镜头 / 工程；
+### Mini / Simple Build
+满足以下大部分条件时，即使是从零新建，也直接用 Mini：
+- 单合成、约 1–5 个主要视觉对象；
+- 普通 Shape / Text / Footage；
+- 改字、颜色、尺寸、位置、素材或简单新建；
+- M0–M1 简单关键帧、普通入场 / 出场；
+- 无复杂 Camera / 3D；
+- 无复杂对象关系、共享 Motion、系统 Rig；
+- 无模板化、系统级控件或长期复用要求。
+
+Mini 可以完成简单镜头的 **新建 → 动画 → 验证 → 保存 / 代表帧导出**，不要因为“从零”自动升级 Full。
+
+### Full
+出现以下任一真实复杂度再使用 `chadian-ae`：
 - 中高视觉复杂度、Visual Anchor、Reference / Asset Search；
-- M2–M4 多对象 Motion / Camera / 3D；
-- 完整新建多图层动画，尤其要求少关键帧、Parent 层级、非破坏 Offset、后续人工易改；
+- M2–M4 多对象 Motion / Camera / 2.5D / 3D；
+- 多对象共享运动、复杂 Parent / Rig / Constraint / Master Progress；
+- 明确要求少关键帧 + 共享控制 + 非破坏人工 Override；
 - 建立 / 整理系统级 CTRL 控制面、参数化、Preset、差点控件；
 - 大型 JSX / Hybrid / 结构重构；
 - 口播自动分析、MOGRT、插件；
-- 模板化 / Style Pack；
+- 模板化 / Style Pack / 长期复用；
 - 学习 / 拆解 AEP；
-- 全工程审计或深度 Debug。
+- 全工程审计或深度 Debug；
+- 用户明确要求启用 Full。
 
-**明显命中 Full 时不要先读 Mini。**
+**明显命中 Full 时不要先读 Mini；但“从零制作”本身永远不是 Full 触发器。**
 
 ## 2｜直接操作 AE 前
 
@@ -55,7 +65,7 @@
 
 **不要预读 references。**
 
-- Mini 普通 Patch：除 Mini `SKILL.md` 外，默认读取 **0 个 reference**。
+- Mini 普通 Patch / Simple Build：除 Mini `SKILL.md` 外，默认读取 **0 个 reference**。
 - Full：先只读 Full `SKILL.md`；执行前默认新增 **0–2 个直接命中的 reference / recipe**。
 - 已经足够执行就停止读取。
 - 同一会话已经读过的文件不重复读取，除非内容确实丢失 / 变化。
@@ -64,4 +74,4 @@
 - 禁止为了“全面理解规范”扫描整个 `references/`、`recipes/` 或 archive。
 - 只有复合高风险任务确实同时命中多个独立模块时，才可超过 2 个；仍应逐个加载，而不是一次性全读。
 
-**默认路径：AGENTS → Mini → MCP。复杂任务才：AGENTS → Full → 命中的 1–2 个模块 → MCP。**
+**默认路径：AGENTS → Mini / Simple Build → MCP。只有真实复杂度命中 Full 时：AGENTS → Full → 命中的 0–2 个模块 → MCP。**
