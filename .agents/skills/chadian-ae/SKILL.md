@@ -58,6 +58,7 @@ description: 模块化 After Effects 生产 Skill。用于完整镜头、复杂 
 
 ### Motion
 - M2+ 多对象编排 / Motion taste → `motion/motion-principles.md`
+- 复杂三维科普 / 结构动画 / 宏微观连续转场 / 互动 3D 迁入 AE → `motion/ai-motion-core.md`
 - 需要区分 UI / Mechanical / Typography / Data / Camera 性格 → `motion/motion-profiles.md`
 - 3+ 对象共享 Motion / Master / Parent / retime → `motion/motion-control-architecture.md`
 - 复杂 Attach / Constraint / Path Follow → `motion/relationship-rigs.md`
